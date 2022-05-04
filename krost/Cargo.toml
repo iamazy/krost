@@ -1,0 +1,23 @@
+[package]
+name = "krost"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = "1"
+serde_derive = "1"
+serde_json = { version = "1", features = ["preserve_order"] }
+parse-display = "0.5"
+serde_plain = "1"
+regex = "1"
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "1", default-features = false, features = ["full", "parsing"] }
+uuid = { version = "1", features = ["serde", "v4"] }
+integer-encoding = "3"
+thiserror = "1"
+itertools = "0.10"
+heck = "0.4"
+prettyplease = "0.1"
