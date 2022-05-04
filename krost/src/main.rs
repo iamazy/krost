@@ -134,10 +134,6 @@ fn parse_schema_file(path: &Path) -> Result<schema::Schema, KrostError> {
 
 fn collect_paths(path: &Path) -> Vec<PathBuf> {
     let buf = path.to_path_buf();
-    let buf = buf.join(
-        PathBuf::from_str("clients/src/main/resources/common/message")
-            .expect("could not form path from schema path"),
-    );
     println!(
         "collecting schema files in {}",
         buf.to_str().expect("could not convert path to string")
@@ -158,7 +154,7 @@ fn collect_paths(path: &Path) -> Vec<PathBuf> {
 }
 
 fn main() {
-    let path = Path::new("/Users/iamazy/Documents/GitHub/kafka");
+    let path = Path::new("message");
     let paths = collect_paths(path);
     let mut root_specs = vec![];
     for path in &paths[..] {
