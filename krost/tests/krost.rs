@@ -27,7 +27,7 @@ pub mod request {
             pub index: krost::primitive::Int32,
             ///The record data to be produced.
             #[kafka(added = 0i16)]
-            pub records: Option<records>,
+            pub records: Option<krost::record::RecordBatch>,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicProduceData {
@@ -105,7 +105,7 @@ pub mod request {
             pub topic: krost::primitive::String,
             ///The unique topic ID
             #[kafka(added = 13i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
             ///The partitions to fetch.
             #[kafka(added = 0i16)]
             pub partitions: Vec<FetchPartition>,
@@ -117,7 +117,7 @@ pub mod request {
             pub topic: krost::primitive::String,
             ///The unique topic ID
             #[kafka(added = 13i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
             ///The partitions indexes to forget.
             #[kafka(added = 7i16)]
             pub partitions: Vec<krost::primitive::Int32>,
@@ -183,7 +183,7 @@ pub mod request {
         pub struct MetadataRequestTopic {
             ///The topic id.
             #[kafka(added = 10i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
             ///The topic name.
             #[kafka(added = 0i16)]
             pub name: Option<krost::primitive::String>,
@@ -222,7 +222,7 @@ pub mod request {
             pub topic_name: krost::primitive::String,
             ///The unique topic ID.
             #[kafka(added = 5i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
             ///The state of each partition
             #[kafka(added = 2i16)]
             pub partition_states: Vec<LeaderAndIsrPartitionState>,
@@ -335,7 +335,7 @@ pub mod request {
             pub topic_name: krost::primitive::String,
             ///The topic id.
             #[kafka(added = 7i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
             ///The partition that we would like to update.
             #[kafka(added = 5i16)]
             pub partition_states: Vec<UpdateMetadataPartitionState>,
@@ -731,7 +731,7 @@ pub mod request {
             pub name: Option<krost::primitive::String>,
             ///The unique topic ID
             #[kafka(added = 6i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
         }
     }
     pub mod delete_records {
@@ -1831,7 +1831,7 @@ pub mod request {
             pub cluster_id: krost::primitive::String,
             ///The incarnation id of the broker process.
             #[kafka(added = 0i16)]
-            pub incarnation_id: uuid,
+            pub incarnation_id: krost::primitive::Uuid,
             ///The listeners of this broker
             #[kafka(added = 0i16)]
             pub listeners: Vec<Listener>,
@@ -2151,7 +2151,7 @@ pub mod response {
             pub preferred_read_replica: krost::primitive::Int32,
             ///The record data.
             #[kafka(added = 0i16)]
-            pub records: Option<records>,
+            pub records: Option<krost::record::RecordBatch>,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct FetchableTopicResponse {
@@ -2160,7 +2160,7 @@ pub mod response {
             pub topic: krost::primitive::String,
             ///The unique topic ID
             #[kafka(added = 13i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
             ///The topic partitions.
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionData>,
@@ -2279,7 +2279,7 @@ pub mod response {
             pub name: Option<krost::primitive::String>,
             ///The topic id.
             #[kafka(added = 10i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
             ///True if the topic is internal.
             #[kafka(added = 1i16, default = "false")]
             pub is_internal: krost::primitive::Bool,
@@ -2309,7 +2309,7 @@ pub mod response {
         pub struct LeaderAndIsrTopicError {
             ///The unique topic ID
             #[kafka(added = 5i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
             ///Each partition.
             #[kafka(added = 5i16)]
             pub partition_errors: Vec<LeaderAndIsrPartitionError>,
@@ -2827,7 +2827,7 @@ pub mod response {
             pub name: krost::primitive::String,
             ///The unique topic ID
             #[kafka(added = 7i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
             ///The error code, or 0 if there was no error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
@@ -2866,7 +2866,7 @@ pub mod response {
             pub name: Option<krost::primitive::String>,
             ///the unique topic ID
             #[kafka(added = 6i16)]
-            pub topic_id: uuid,
+            pub topic_id: krost::primitive::Uuid,
             ///The deletion error, or 0 if the deletion succeeded.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
@@ -4162,7 +4162,7 @@ pub mod response {
             pub position: krost::primitive::Int64,
             ///Snapshot data in records format which may not be aligned on an offset boundary
             #[kafka(added = 0i16)]
-            pub unaligned_records: records,
+            pub unaligned_records: krost::record::RecordBatch,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicSnapshot {

@@ -1,4 +1,5 @@
 pub mod primitive;
+pub mod record;
 pub mod render;
 pub mod schema;
 pub mod util;
@@ -11,38 +12,10 @@ use std::str::FromStr;
 use std::{fs, io};
 use thiserror::Error;
 
-pub trait Krost: KrostType {
+pub trait Krost: Serializable {
     fn version_added() -> i16;
     fn version_removed() -> Option<i16>;
     fn apikey() -> i16;
-}
-
-pub struct DecodeContext<D> {
-    pub decoder: D,
-    pub version: i16,
-}
-
-pub struct EncodeContext<E> {
-    pub encoder: E,
-    pub version: i16,
-}
-
-impl<E> EncodeContext<E> {
-    pub fn new(encoder: E, version: i16) -> Self {
-        EncodeContext { encoder, version }
-    }
-    pub fn into_inner(self) -> E {
-        self.encoder
-    }
-}
-
-impl<D> DecodeContext<D> {
-    pub fn new(decoder: D, version: i16) -> Self {
-        DecodeContext { decoder, version }
-    }
-    pub fn into_inner(self) -> D {
-        self.decoder
-    }
 }
 
 #[derive(Error, Debug)]
@@ -64,9 +37,9 @@ pub enum KrostError {
     },
 }
 
-pub trait KrostType: Sized {
-    fn decode<D: io::Read>(ctx: &mut DecodeContext<D>) -> Result<Self, KrostError>;
-    fn encode<E: io::Write>(&self, ctx: &mut EncodeContext<E>) -> Result<usize, KrostError>;
+pub trait Serializable: Sized {
+    fn decode<D: io::Read>(buf: &mut D) -> Result<Self, KrostError>;
+    fn encode<E: io::Write>(&self, buf: &mut E) -> Result<usize, KrostError>;
 }
 
 fn expand_fields(
@@ -170,7 +143,6 @@ fn main() {
     if let Ok(file) = syn::parse_file(&api_file_contents.to_string()) {
         let pretty = prettyplease::unparse(&file);
         fs::write("krost/tests/krost.rs", pretty).expect("Unable to write file");
-        // fs::write(API_KEY_TARGET, api_key_file_contents.to_string()).expect("Unable to write file");
         println!("generated modules");
     }
 }

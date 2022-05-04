@@ -61,6 +61,8 @@ impl KrostField {
             "int64" => quote! { krost::primitive::Int64 },
             "bytes" => quote! { Vec<u8> },
             "string" => quote! { krost::primitive::String },
+            "uuid" => quote! { krost::primitive::Uuid },
+            "records" => quote! { krost::record::RecordBatch },
             v => {
                 let type_ident = to_ident(v);
                 quote! { #type_ident }

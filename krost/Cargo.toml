@@ -21,3 +21,21 @@ thiserror = "1"
 itertools = "0.10"
 heck = "0.4"
 prettyplease = "0.1"
+crc32c = "0.6"
+flate2 = { version = "1", optional = true }
+lz4 = { version = "1.23", optional = true }
+snap = { version = "1", optional = true }
+zstd = { version = "0.10", optional = true }
+
+[features]
+default = [
+    "compression-gzip",
+    "compression-lz4",
+    "compression-snappy",
+    "compression-zstd",
+]
+
+compression-gzip = ["flate2"]
+compression-lz4 = ["lz4"]
+compression-snappy = ["snap"]
+compression-zstd = ["zstd"]

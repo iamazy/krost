@@ -1,4 +1,4 @@
-use crate::{DecodeContext, Krost, KrostError};
+use crate::{Krost, KrostError};
 
 fn version_check<T: Krost>(version: i16) -> Result<(), KrostError> {
     let version_added = <T as Krost>::version_added();
@@ -15,8 +15,9 @@ fn version_check<T: Krost>(version: i16) -> Result<(), KrostError> {
 }
 
 pub fn version_check_read<T: Krost, D: std::io::Read>(
-    ctx: &mut DecodeContext<D>,
+    version: i16,
+    buf: &mut D,
 ) -> Result<T, KrostError> {
-    version_check::<T>(ctx.version)?;
-    T::decode(ctx)
+    version_check::<T>(version)?;
+    T::decode(buf)
 }
