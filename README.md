@@ -105,3 +105,4 @@ and you could find whole code in `krost/tests/krost.rs`
 
 - [tychedelia/kafka-protocol-rs](https://github.com/tychedelia/kafka-protocol-rs)
 - [gardnervickers/kafka-protocol-rs](https://github.com/gardnervickers/kafka-protocol-rs)
+- [influxdata/rskafka](https://github.com/influxdata/rskafka)
