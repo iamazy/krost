@@ -83,7 +83,7 @@ pub mod request {
             pub index: krost::primitive::Int32,
             ///The record data to be produced.
             #[kafka(added = 0i16)]
-            pub records: Option<records>,
+            pub records: Option<krost::record::RecordBatch>,
         }
 
         #[derive(Debug, PartialEq, Krost, Clone)]
