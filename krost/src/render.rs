@@ -16,12 +16,13 @@ pub(crate) struct KrostField {
     pub(crate) type_name: String,
     pub(crate) version_added: Option<i16>,
     pub(crate) version_removed: Option<i16>,
+    pub(crate) flexible_versions: Option<i16>,
     pub(crate) default: Option<KrostValue>,
     pub(crate) doc: Option<String>,
 }
 
 impl KrostField {
-    pub(crate) fn from_schema(field: &schema::Field) -> Self {
+    pub(crate) fn from_schema(field: &schema::Field, flexible_versions: Option<i16>) -> Self {
         let collection = field.r#type.is_array();
         let nullable = field.nullable_versions.is_some();
         let field_name = field.name.to_snake_case();
@@ -46,8 +47,23 @@ impl KrostField {
             type_name,
             version_added,
             version_removed,
+            flexible_versions,
             default,
             doc,
+        }
+    }
+
+    pub(crate) fn tagged_fields(version_added: i16) -> Self {
+        Self {
+            collection: false,
+            nullable: false,
+            field_name: "_tagged_fields".to_string(),
+            type_name: "tagged_fields".to_string(),
+            version_added: Some(version_added),
+            version_removed: None,
+            flexible_versions: None,
+            default: None,
+            doc: Some("The tagged fields.".to_string()),
         }
     }
 
@@ -63,6 +79,7 @@ impl KrostField {
             "string" => quote! { krost::primitive::String },
             "uuid" => quote! { krost::primitive::Uuid },
             "records" => quote! { krost::record::RecordBatch },
+            "tagged_fields" => quote! { krost::primitive::TaggedFields },
             v => {
                 let type_ident = to_ident(v);
                 quote! { #type_ident }

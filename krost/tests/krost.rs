@@ -1,7 +1,7 @@
 #![allow(dead_code)]
-use from_variants::FromVariants;
-use krost::KrostType;
 use krost_derive::Krost;
+use krost::KrostType;
+use from_variants::FromVariants;
 pub mod request {
     pub mod produce {
         #[derive(Debug, PartialEq, Krost, Clone)]
@@ -19,6 +19,9 @@ pub mod request {
             ///Each topic to produce to.
             #[kafka(added = 0i16)]
             pub topic_data: Vec<TopicProduceData>,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionProduceData {
@@ -28,6 +31,9 @@ pub mod request {
             ///The record data to be produced.
             #[kafka(added = 0i16)]
             pub records: Option<krost::record::RecordBatch>,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicProduceData {
@@ -37,6 +43,9 @@ pub mod request {
             ///Each partition to produce to.
             #[kafka(added = 0i16)]
             pub partition_data: Vec<PartitionProduceData>,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod fetch {
@@ -76,6 +85,9 @@ pub mod request {
             ///Rack ID of the consumer making this request
             #[kafka(added = 11i16, default = "")]
             pub rack_id: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct FetchPartition {
@@ -97,6 +109,9 @@ pub mod request {
             ///The maximum bytes to fetch from this partition.  See KIP-74 for cases where this limit may not be honored.
             #[kafka(added = 0i16)]
             pub partition_max_bytes: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct FetchTopic {
@@ -109,6 +124,9 @@ pub mod request {
             ///The partitions to fetch.
             #[kafka(added = 0i16)]
             pub partitions: Vec<FetchPartition>,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ForgottenTopic {
@@ -121,6 +139,9 @@ pub mod request {
             ///The partitions indexes to forget.
             #[kafka(added = 7i16)]
             pub partitions: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod list_offsets {
@@ -136,6 +157,9 @@ pub mod request {
             ///Each topic in the request.
             #[kafka(added = 0i16)]
             pub topics: Vec<ListOffsetsTopic>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ListOffsetsPartition {
@@ -151,6 +175,9 @@ pub mod request {
             ///The maximum number of offsets to report.
             #[kafka(added = 0i16, default = "1")]
             pub max_num_offsets: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ListOffsetsTopic {
@@ -160,6 +187,9 @@ pub mod request {
             ///Each partition in the request.
             #[kafka(added = 0i16)]
             pub partitions: Vec<ListOffsetsPartition>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod metadata {
@@ -178,6 +208,9 @@ pub mod request {
             ///Whether to include topic authorized operations.
             #[kafka(added = 8i16)]
             pub include_topic_authorized_operations: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct MetadataRequestTopic {
@@ -187,6 +220,9 @@ pub mod request {
             ///The topic name.
             #[kafka(added = 0i16)]
             pub name: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod leader_and_isr {
@@ -214,6 +250,9 @@ pub mod request {
             ///The current live leaders.
             #[kafka(added = 0i16)]
             pub live_leaders: Vec<LeaderAndIsrLiveLeader>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct LeaderAndIsrTopicState {
@@ -226,6 +265,9 @@ pub mod request {
             ///The state of each partition
             #[kafka(added = 2i16)]
             pub partition_states: Vec<LeaderAndIsrPartitionState>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct LeaderAndIsrLiveLeader {
@@ -238,6 +280,9 @@ pub mod request {
             ///The leader's port.
             #[kafka(added = 0i16)]
             pub port: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod stop_replica {
@@ -265,6 +310,9 @@ pub mod request {
             ///Each topic.
             #[kafka(added = 3i16)]
             pub topic_states: Vec<StopReplicaTopicState>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct StopReplicaPartitionV0 {
@@ -274,6 +322,9 @@ pub mod request {
             ///The partition index.
             #[kafka(added = 0i16)]
             pub partition_index: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct StopReplicaTopicV1 {
@@ -283,6 +334,9 @@ pub mod request {
             ///The partition indexes.
             #[kafka(added = 1i16, removed = 2i16)]
             pub partition_indexes: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct StopReplicaPartitionState {
@@ -295,6 +349,9 @@ pub mod request {
             ///Whether this partition should be deleted.
             #[kafka(added = 3i16)]
             pub delete_partition: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct StopReplicaTopicState {
@@ -304,6 +361,9 @@ pub mod request {
             ///The state of each partition
             #[kafka(added = 3i16)]
             pub partition_states: Vec<StopReplicaPartitionState>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod update_metadata {
@@ -327,6 +387,9 @@ pub mod request {
             pub topic_states: Vec<UpdateMetadataTopicState>,
             #[kafka(added = 0i16)]
             pub live_brokers: Vec<UpdateMetadataBroker>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct UpdateMetadataTopicState {
@@ -339,6 +402,9 @@ pub mod request {
             ///The partition that we would like to update.
             #[kafka(added = 5i16)]
             pub partition_states: Vec<UpdateMetadataPartitionState>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct UpdateMetadataEndpoint {
@@ -354,6 +420,9 @@ pub mod request {
             ///The security protocol type.
             #[kafka(added = 1i16)]
             pub security_protocol: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct UpdateMetadataBroker {
@@ -372,6 +441,9 @@ pub mod request {
             ///The rack which this broker belongs to.
             #[kafka(added = 2i16)]
             pub rack: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod controlled_shutdown {
@@ -384,6 +456,9 @@ pub mod request {
             ///The broker epoch.
             #[kafka(added = 2i16, default = "-1")]
             pub broker_epoch: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod offset_commit {
@@ -408,6 +483,9 @@ pub mod request {
             ///The topics to commit offsets for.
             #[kafka(added = 0i16)]
             pub topics: Vec<OffsetCommitRequestTopic>,
+            ///The tagged fields.
+            #[kafka(added = 8i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetCommitRequestPartition {
@@ -426,6 +504,9 @@ pub mod request {
             ///Any associated metadata the client wants to keep.
             #[kafka(added = 0i16)]
             pub committed_metadata: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 8i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetCommitRequestTopic {
@@ -435,6 +516,9 @@ pub mod request {
             ///Each partition to commit offsets for.
             #[kafka(added = 0i16)]
             pub partitions: Vec<OffsetCommitRequestPartition>,
+            ///The tagged fields.
+            #[kafka(added = 8i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod offset_fetch {
@@ -453,6 +537,9 @@ pub mod request {
             ///Whether broker should hold on returning unstable offsets but set a retriable error code for the partitions.
             #[kafka(added = 7i16, default = "false")]
             pub require_stable: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetFetchRequestTopic {
@@ -462,6 +549,9 @@ pub mod request {
             ///The partition indexes we would like to fetch offsets for.
             #[kafka(added = 0i16, removed = 7i16)]
             pub partition_indexes: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetFetchRequestTopics {
@@ -471,6 +561,9 @@ pub mod request {
             ///The partition indexes we would like to fetch offsets for.
             #[kafka(added = 8i16)]
             pub partition_indexes: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetFetchRequestGroup {
@@ -480,6 +573,9 @@ pub mod request {
             ///Each topic we would like to fetch offsets for, or null to fetch offsets for all topics.
             #[kafka(added = 8i16)]
             pub topics: Option<Vec<OffsetFetchRequestTopics>>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod find_coordinator {
@@ -495,6 +591,9 @@ pub mod request {
             ///The coordinator keys.
             #[kafka(added = 4i16)]
             pub coordinator_keys: Vec<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod join_group {
@@ -525,6 +624,9 @@ pub mod request {
             ///The reason why the member (re-)joins the group.
             #[kafka(added = 8i16, default = "null")]
             pub reason: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct JoinGroupRequestProtocol {
@@ -534,6 +636,9 @@ pub mod request {
             ///The protocol metadata.
             #[kafka(added = 0i16)]
             pub metadata: Vec<u8>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod heartbeat {
@@ -552,6 +657,9 @@ pub mod request {
             ///The unique identifier of the consumer instance provided by end user.
             #[kafka(added = 3i16, default = "null")]
             pub group_instance_id: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod leave_group {
@@ -567,6 +675,9 @@ pub mod request {
             ///List of leaving member identities.
             #[kafka(added = 3i16)]
             pub members: Vec<MemberIdentity>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct MemberIdentity {
@@ -579,6 +690,9 @@ pub mod request {
             ///The reason why the member left the group.
             #[kafka(added = 5i16, default = "null")]
             pub reason: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod sync_group {
@@ -606,6 +720,9 @@ pub mod request {
             ///Each assignment.
             #[kafka(added = 0i16)]
             pub assignments: Vec<SyncGroupRequestAssignment>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct SyncGroupRequestAssignment {
@@ -615,6 +732,9 @@ pub mod request {
             ///The member assignment.
             #[kafka(added = 0i16)]
             pub assignment: Vec<u8>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_groups {
@@ -627,6 +747,9 @@ pub mod request {
             ///Whether to include authorized operations.
             #[kafka(added = 3i16)]
             pub include_authorized_operations: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod list_groups {
@@ -636,6 +759,9 @@ pub mod request {
             ///The states of the groups we want to list. If empty all groups are returned with their state.
             #[kafka(added = 4i16)]
             pub states_filter: Vec<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod sasl_handshake {
@@ -657,6 +783,9 @@ pub mod request {
             ///The version of the client.
             #[kafka(added = 3i16)]
             pub client_software_version: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod create_topics {
@@ -672,6 +801,9 @@ pub mod request {
             ///If true, check that the topics can be created as specified, but don't create anything.
             #[kafka(added = 1i16, default = "false")]
             pub validate_only: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct CreatableReplicaAssignment {
@@ -681,6 +813,9 @@ pub mod request {
             ///The brokers to place the partition on.
             #[kafka(added = 0i16)]
             pub broker_ids: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct CreateableTopicConfig {
@@ -690,6 +825,9 @@ pub mod request {
             ///The configuration value.
             #[kafka(added = 0i16)]
             pub value: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct CreatableTopic {
@@ -708,6 +846,9 @@ pub mod request {
             ///The custom topic configurations to set.
             #[kafka(added = 0i16)]
             pub configs: Vec<CreateableTopicConfig>,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod delete_topics {
@@ -723,6 +864,9 @@ pub mod request {
             ///The length of time in milliseconds to wait for the deletions to complete.
             #[kafka(added = 0i16)]
             pub timeout_ms: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DeleteTopicState {
@@ -732,6 +876,9 @@ pub mod request {
             ///The unique topic ID
             #[kafka(added = 6i16)]
             pub topic_id: krost::primitive::Uuid,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod delete_records {
@@ -744,6 +891,9 @@ pub mod request {
             ///How long to wait for the deletion to complete, in milliseconds.
             #[kafka(added = 0i16)]
             pub timeout_ms: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DeleteRecordsPartition {
@@ -753,6 +903,9 @@ pub mod request {
             ///The deletion offset.
             #[kafka(added = 0i16)]
             pub offset: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DeleteRecordsTopic {
@@ -762,6 +915,9 @@ pub mod request {
             ///Each partition that we want to delete records from.
             #[kafka(added = 0i16)]
             pub partitions: Vec<DeleteRecordsPartition>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod init_producer_id {
@@ -780,6 +936,9 @@ pub mod request {
             ///The producer's current epoch. This will be checked against the producer epoch on the broker, and the request will return an error if they do not match.
             #[kafka(added = 3i16, default = "-1")]
             pub producer_epoch: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod offset_for_leader_epoch {
@@ -792,6 +951,9 @@ pub mod request {
             ///Each topic to get offsets for.
             #[kafka(added = 0i16)]
             pub topics: Vec<OffsetForLeaderTopic>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetForLeaderPartition {
@@ -804,6 +966,9 @@ pub mod request {
             ///The epoch to look up an offset for.
             #[kafka(added = 0i16)]
             pub leader_epoch: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetForLeaderTopic {
@@ -813,6 +978,9 @@ pub mod request {
             ///Each partition to get offsets for.
             #[kafka(added = 0i16)]
             pub partitions: Vec<OffsetForLeaderPartition>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod add_partitions_to_txn {
@@ -831,6 +999,9 @@ pub mod request {
             ///The partitions to add to the transaction.
             #[kafka(added = 0i16)]
             pub topics: Vec<AddPartitionsToTxnTopic>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AddPartitionsToTxnTopic {
@@ -840,6 +1011,9 @@ pub mod request {
             ///The partition indexes to add to the transaction
             #[kafka(added = 0i16)]
             pub partitions: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod add_offsets_to_txn {
@@ -858,6 +1032,9 @@ pub mod request {
             ///The unique group identifier.
             #[kafka(added = 0i16)]
             pub group_id: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod end_txn {
@@ -876,6 +1053,9 @@ pub mod request {
             ///True if the transaction was committed, false if it was aborted.
             #[kafka(added = 0i16)]
             pub committed: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod write_txn_markers {
@@ -885,6 +1065,9 @@ pub mod request {
             ///The transaction markers to be written.
             #[kafka(added = 0i16)]
             pub markers: Vec<WritableTxnMarker>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct WritableTxnMarkerTopic {
@@ -894,6 +1077,9 @@ pub mod request {
             ///The indexes of the partitions to write transaction markers for.
             #[kafka(added = 0i16)]
             pub partition_indexes: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct WritableTxnMarker {
@@ -912,6 +1098,9 @@ pub mod request {
             ///Epoch associated with the transaction state partition hosted by this transaction coordinator
             #[kafka(added = 0i16)]
             pub coordinator_epoch: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod txn_offset_commit {
@@ -942,6 +1131,9 @@ pub mod request {
             ///Each topic that we want to commit offsets for.
             #[kafka(added = 0i16)]
             pub topics: Vec<TxnOffsetCommitRequestTopic>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TxnOffsetCommitRequestPartition {
@@ -957,6 +1149,9 @@ pub mod request {
             ///Any associated metadata the client wants to keep.
             #[kafka(added = 0i16)]
             pub committed_metadata: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TxnOffsetCommitRequestTopic {
@@ -966,6 +1161,9 @@ pub mod request {
             ///The partitions inside the topic that we want to committ offsets for.
             #[kafka(added = 0i16)]
             pub partitions: Vec<TxnOffsetCommitRequestPartition>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_acls {
@@ -993,6 +1191,9 @@ pub mod request {
             ///The permission type to match.
             #[kafka(added = 0i16)]
             pub permission_type: krost::primitive::Int8,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod create_acls {
@@ -1002,6 +1203,9 @@ pub mod request {
             ///The ACLs that we want to create.
             #[kafka(added = 0i16)]
             pub creations: Vec<AclCreation>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AclCreation {
@@ -1026,6 +1230,9 @@ pub mod request {
             ///The permission type for the ACL (allow, deny, etc.).
             #[kafka(added = 0i16)]
             pub permission_type: krost::primitive::Int8,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod delete_acls {
@@ -1035,6 +1242,9 @@ pub mod request {
             ///The filters to use when deleting ACLs.
             #[kafka(added = 0i16)]
             pub filters: Vec<DeleteAclsFilter>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DeleteAclsFilter {
@@ -1059,6 +1269,9 @@ pub mod request {
             ///The permission type.
             #[kafka(added = 0i16)]
             pub permission_type: krost::primitive::Int8,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_configs {
@@ -1074,6 +1287,9 @@ pub mod request {
             ///True if we should include configuration documentation.
             #[kafka(added = 3i16, default = "false")]
             pub include_documentation: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeConfigsResource {
@@ -1086,6 +1302,9 @@ pub mod request {
             ///The configuration keys to list, or null to list all configuration keys.
             #[kafka(added = 0i16)]
             pub configuration_keys: Option<Vec<krost::primitive::String>>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_configs {
@@ -1098,6 +1317,9 @@ pub mod request {
             ///True if we should validate the request, but not change the configurations.
             #[kafka(added = 0i16)]
             pub validate_only: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterableConfig {
@@ -1107,6 +1329,9 @@ pub mod request {
             ///The value to set for the configuration key.
             #[kafka(added = 0i16)]
             pub value: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterConfigsResource {
@@ -1119,6 +1344,9 @@ pub mod request {
             ///The configurations.
             #[kafka(added = 0i16)]
             pub configs: Vec<AlterableConfig>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_replica_log_dirs {
@@ -1128,6 +1356,9 @@ pub mod request {
             ///The alterations to make for each directory.
             #[kafka(added = 0i16)]
             pub dirs: Vec<AlterReplicaLogDir>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterReplicaLogDirTopic {
@@ -1137,6 +1368,9 @@ pub mod request {
             ///The partition indexes.
             #[kafka(added = 0i16)]
             pub partitions: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterReplicaLogDir {
@@ -1146,6 +1380,9 @@ pub mod request {
             ///The topics to add to the directory.
             #[kafka(added = 0i16)]
             pub topics: Vec<AlterReplicaLogDirTopic>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_log_dirs {
@@ -1155,6 +1392,9 @@ pub mod request {
             ///Each topic that we want to describe log directories for, or null for all topics.
             #[kafka(added = 0i16)]
             pub topics: Option<Vec<DescribableLogDirTopic>>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribableLogDirTopic {
@@ -1164,6 +1404,9 @@ pub mod request {
             ///The partition indexes.
             #[kafka(added = 0i16)]
             pub partitions: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod sasl_authenticate {
@@ -1173,6 +1416,9 @@ pub mod request {
             ///The SASL authentication bytes from the client, as defined by the SASL mechanism.
             #[kafka(added = 0i16)]
             pub auth_bytes: Vec<u8>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod create_partitions {
@@ -1188,12 +1434,18 @@ pub mod request {
             ///If true, then validate the request, but don't actually increase the number of partitions.
             #[kafka(added = 0i16)]
             pub validate_only: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct CreatePartitionsAssignment {
             ///The assigned broker IDs.
             #[kafka(added = 0i16)]
             pub broker_ids: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct CreatePartitionsTopic {
@@ -1206,6 +1458,9 @@ pub mod request {
             ///The new partition assignments.
             #[kafka(added = 0i16)]
             pub assignments: Option<Vec<CreatePartitionsAssignment>>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod create_delegation_token {
@@ -1218,6 +1473,9 @@ pub mod request {
             ///The maximum lifetime of the token in milliseconds, or -1 to use the server side default.
             #[kafka(added = 0i16)]
             pub max_lifetime_ms: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct CreatableRenewers {
@@ -1227,6 +1485,9 @@ pub mod request {
             ///The name of the Kafka principal.
             #[kafka(added = 0i16)]
             pub principal_name: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod renew_delegation_token {
@@ -1239,6 +1500,9 @@ pub mod request {
             ///The renewal time period in milliseconds.
             #[kafka(added = 0i16)]
             pub renew_period_ms: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod expire_delegation_token {
@@ -1251,6 +1515,9 @@ pub mod request {
             ///The expiry time period in milliseconds.
             #[kafka(added = 0i16)]
             pub expiry_time_period_ms: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_delegation_token {
@@ -1260,6 +1527,9 @@ pub mod request {
             ///Each owner that we want to describe delegation tokens for, or null to describe all tokens.
             #[kafka(added = 0i16)]
             pub owners: Option<Vec<DescribeDelegationTokenOwner>>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeDelegationTokenOwner {
@@ -1269,6 +1539,9 @@ pub mod request {
             ///The owner principal name.
             #[kafka(added = 0i16)]
             pub principal_name: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod delete_groups {
@@ -1278,6 +1551,9 @@ pub mod request {
             ///The group names to delete.
             #[kafka(added = 0i16)]
             pub groups_names: Vec<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod elect_leaders {
@@ -1293,6 +1569,9 @@ pub mod request {
             ///The time in ms to wait for the election to complete.
             #[kafka(added = 0i16, default = "60000")]
             pub timeout_ms: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicPartitions {
@@ -1302,6 +1581,9 @@ pub mod request {
             ///The partitions of this topic whose leader should be elected.
             #[kafka(added = 0i16)]
             pub partitions: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod incremental_alter_configs {
@@ -1314,6 +1596,9 @@ pub mod request {
             ///True if we should validate the request, but not change the configurations.
             #[kafka(added = 0i16)]
             pub validate_only: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterableConfig {
@@ -1326,6 +1611,9 @@ pub mod request {
             ///The value to set for the configuration key.
             #[kafka(added = 0i16)]
             pub value: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterConfigsResource {
@@ -1338,6 +1626,9 @@ pub mod request {
             ///The configurations.
             #[kafka(added = 0i16)]
             pub configs: Vec<AlterableConfig>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_partition_reassignments {
@@ -1350,6 +1641,9 @@ pub mod request {
             ///The topics to reassign.
             #[kafka(added = 0i16)]
             pub topics: Vec<ReassignableTopic>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ReassignablePartition {
@@ -1359,6 +1653,9 @@ pub mod request {
             ///The replicas to place the partitions on, or null to cancel a pending reassignment for this partition.
             #[kafka(added = 0i16, default = "null")]
             pub replicas: Option<Vec<krost::primitive::Int32>>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ReassignableTopic {
@@ -1368,6 +1665,9 @@ pub mod request {
             ///The partitions to reassign.
             #[kafka(added = 0i16)]
             pub partitions: Vec<ReassignablePartition>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod list_partition_reassignments {
@@ -1380,6 +1680,9 @@ pub mod request {
             ///The topics to list partition reassignments for, or null to list everything.
             #[kafka(added = 0i16, default = "null")]
             pub topics: Option<Vec<ListPartitionReassignmentsTopics>>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ListPartitionReassignmentsTopics {
@@ -1389,6 +1692,9 @@ pub mod request {
             ///The partitions to list partition reassignments for.
             #[kafka(added = 0i16)]
             pub partition_indexes: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod offset_delete {
@@ -1428,6 +1734,9 @@ pub mod request {
             ///Whether the match is strict, i.e. should exclude entities with unspecified entity types.
             #[kafka(added = 0i16)]
             pub strict: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ComponentData {
@@ -1440,6 +1749,9 @@ pub mod request {
             ///The string to match against, or null if unused for the match type.
             #[kafka(added = 0i16)]
             pub r#match: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_client_quotas {
@@ -1452,6 +1764,9 @@ pub mod request {
             ///Whether the alteration should be validated, but not performed.
             #[kafka(added = 0i16)]
             pub validate_only: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct EntityData {
@@ -1461,6 +1776,9 @@ pub mod request {
             ///The name of the entity, or null if the default.
             #[kafka(added = 0i16)]
             pub entity_name: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OpData {
@@ -1473,6 +1791,9 @@ pub mod request {
             ///Whether the quota configuration value should be removed, otherwise set.
             #[kafka(added = 0i16)]
             pub remove: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct EntryData {
@@ -1482,6 +1803,9 @@ pub mod request {
             ///An individual quota configuration entry to alter.
             #[kafka(added = 0i16)]
             pub ops: Vec<OpData>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_user_scram_credentials {
@@ -1491,12 +1815,18 @@ pub mod request {
             ///The users to describe, or null/empty to describe all users.
             #[kafka(added = 0i16)]
             pub users: Option<Vec<UserName>>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct UserName {
             ///The user name.
             #[kafka(added = 0i16)]
             pub name: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_user_scram_credentials {
@@ -1509,6 +1839,9 @@ pub mod request {
             ///The SCRAM credentials to update/insert.
             #[kafka(added = 0i16)]
             pub upsertions: Vec<ScramCredentialUpsertion>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ScramCredentialDeletion {
@@ -1518,6 +1851,9 @@ pub mod request {
             ///The SCRAM mechanism.
             #[kafka(added = 0i16)]
             pub mechanism: krost::primitive::Int8,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ScramCredentialUpsertion {
@@ -1536,6 +1872,9 @@ pub mod request {
             ///The salted password.
             #[kafka(added = 0i16)]
             pub salted_password: Vec<u8>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod vote {
@@ -1546,6 +1885,9 @@ pub mod request {
             pub cluster_id: Option<krost::primitive::String>,
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionData {
@@ -1564,6 +1906,9 @@ pub mod request {
             ///The offset of the last record written to the metadata log
             #[kafka(added = 0i16)]
             pub last_offset: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicData {
@@ -1572,6 +1917,9 @@ pub mod request {
             pub topic_name: krost::primitive::String,
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod begin_quorum_epoch {
@@ -1643,12 +1991,18 @@ pub mod request {
         pub struct DescribeQuorumRequest {
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionData {
             ///The partition index.
             #[kafka(added = 0i16)]
             pub partition_index: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicData {
@@ -1657,6 +2011,9 @@ pub mod request {
             pub topic_name: krost::primitive::String,
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_partition {
@@ -1671,6 +2028,9 @@ pub mod request {
             pub broker_epoch: krost::primitive::Int64,
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionData {
@@ -1689,6 +2049,9 @@ pub mod request {
             ///The expected epoch of the partition which is being updated. For legacy cluster this is the ZkVersion in the LeaderAndIsr request.
             #[kafka(added = 0i16)]
             pub partition_epoch: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicData {
@@ -1697,6 +2060,9 @@ pub mod request {
             pub name: krost::primitive::String,
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod update_features {
@@ -1712,6 +2078,9 @@ pub mod request {
             ///True if we should validate the request, but not perform the upgrade or downgrade.
             #[kafka(added = 1i16, default = false)]
             pub validate_only: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct FeatureUpdateKey {
@@ -1727,6 +2096,9 @@ pub mod request {
             ///Determine which type of upgrade will be performed: 1 will perform an upgrade only (default), 2 is safe downgrades only (lossless), 3 is unsafe downgrades (lossy).
             #[kafka(added = 1i16, default = 1f64)]
             pub upgrade_type: krost::primitive::Int8,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod envelope {
@@ -1742,6 +2114,9 @@ pub mod request {
             ///The original client's address in bytes.
             #[kafka(added = 0i16)]
             pub client_host_address: Vec<u8>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod fetch_snapshot {
@@ -1760,6 +2135,9 @@ pub mod request {
             ///The topics to fetch
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicSnapshot>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct SnapshotId {
@@ -1767,6 +2145,9 @@ pub mod request {
             pub end_offset: krost::primitive::Int64,
             #[kafka(added = 0i16)]
             pub epoch: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionSnapshot {
@@ -1782,6 +2163,9 @@ pub mod request {
             ///The byte position within the snapshot to start fetching from
             #[kafka(added = 0i16)]
             pub position: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicSnapshot {
@@ -1791,6 +2175,9 @@ pub mod request {
             ///The partitions to fetch
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionSnapshot>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_cluster {
@@ -1800,6 +2187,9 @@ pub mod request {
             ///Whether to include cluster authorized operations.
             #[kafka(added = 0i16)]
             pub include_cluster_authorized_operations: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_producers {
@@ -1808,6 +2198,9 @@ pub mod request {
         pub struct DescribeProducersRequest {
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicRequest>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicRequest {
@@ -1817,6 +2210,9 @@ pub mod request {
             ///The indexes of the partitions to list producers for.
             #[kafka(added = 0i16)]
             pub partition_indexes: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod broker_registration {
@@ -1841,6 +2237,9 @@ pub mod request {
             ///The rack which this broker is in.
             #[kafka(added = 0i16)]
             pub rack: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct Listener {
@@ -1856,6 +2255,9 @@ pub mod request {
             ///The security protocol.
             #[kafka(added = 0i16)]
             pub security_protocol: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct Feature {
@@ -1868,6 +2270,9 @@ pub mod request {
             ///The maximum supported feature level.
             #[kafka(added = 0i16)]
             pub max_supported_version: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod broker_heartbeat {
@@ -1889,6 +2294,9 @@ pub mod request {
             ///True if the broker wants to be shut down, false otherwise.
             #[kafka(added = 0i16)]
             pub want_shut_down: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod unregister_broker {
@@ -1898,6 +2306,9 @@ pub mod request {
             ///The broker ID to unregister.
             #[kafka(added = 0i16)]
             pub broker_id: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_transactions {
@@ -1907,6 +2318,9 @@ pub mod request {
             ///Array of transactionalIds to include in describe results. If empty, then no results will be returned.
             #[kafka(added = 0i16)]
             pub transactional_ids: Vec<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod list_transactions {
@@ -1919,6 +2333,9 @@ pub mod request {
             ///The producerIds to filter by: if empty, all transactions will be returned; if non-empty, only transactions which match one of the filtered producerIds will be returned
             #[kafka(added = 0i16)]
             pub producer_id_filters: Vec<krost::primitive::Int64>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod allocate_producer_ids {
@@ -1931,6 +2348,9 @@ pub mod request {
             ///The epoch of the requesting broker
             #[kafka(added = 0i16, default = "-1")]
             pub broker_epoch: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     #[allow(dead_code)]
@@ -1959,7 +2379,9 @@ pub mod request {
         DeleteTopicsRequest(delete_topics::DeleteTopicsRequest),
         DeleteRecordsRequest(delete_records::DeleteRecordsRequest),
         InitProducerIdRequest(init_producer_id::InitProducerIdRequest),
-        OffsetForLeaderEpochRequest(offset_for_leader_epoch::OffsetForLeaderEpochRequest),
+        OffsetForLeaderEpochRequest(
+            offset_for_leader_epoch::OffsetForLeaderEpochRequest,
+        ),
         AddPartitionsToTxnRequest(add_partitions_to_txn::AddPartitionsToTxnRequest),
         AddOffsetsToTxnRequest(add_offsets_to_txn::AddOffsetsToTxnRequest),
         EndTxnRequest(end_txn::EndTxnRequest),
@@ -1974,13 +2396,21 @@ pub mod request {
         DescribeLogDirsRequest(describe_log_dirs::DescribeLogDirsRequest),
         SaslAuthenticateRequest(sasl_authenticate::SaslAuthenticateRequest),
         CreatePartitionsRequest(create_partitions::CreatePartitionsRequest),
-        CreateDelegationTokenRequest(create_delegation_token::CreateDelegationTokenRequest),
+        CreateDelegationTokenRequest(
+            create_delegation_token::CreateDelegationTokenRequest,
+        ),
         RenewDelegationTokenRequest(renew_delegation_token::RenewDelegationTokenRequest),
-        ExpireDelegationTokenRequest(expire_delegation_token::ExpireDelegationTokenRequest),
-        DescribeDelegationTokenRequest(describe_delegation_token::DescribeDelegationTokenRequest),
+        ExpireDelegationTokenRequest(
+            expire_delegation_token::ExpireDelegationTokenRequest,
+        ),
+        DescribeDelegationTokenRequest(
+            describe_delegation_token::DescribeDelegationTokenRequest,
+        ),
         DeleteGroupsRequest(delete_groups::DeleteGroupsRequest),
         ElectLeadersRequest(elect_leaders::ElectLeadersRequest),
-        IncrementalAlterConfigsRequest(incremental_alter_configs::IncrementalAlterConfigsRequest),
+        IncrementalAlterConfigsRequest(
+            incremental_alter_configs::IncrementalAlterConfigsRequest,
+        ),
         AlterPartitionReassignmentsRequest(
             alter_partition_reassignments::AlterPartitionReassignmentsRequest,
         ),
@@ -2025,6 +2455,9 @@ pub mod response {
             ///The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota.
             #[kafka(added = 1i16, default = "0")]
             pub throttle_time_ms: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct BatchIndexAndErrorMessage {
@@ -2034,6 +2467,9 @@ pub mod response {
             ///The error message of the record that caused the batch to be dropped
             #[kafka(added = 8i16, default = "null")]
             pub batch_index_error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionProduceResponse {
@@ -2058,6 +2494,9 @@ pub mod response {
             ///The global error message summarizing the common root cause of the records that caused the batch to be dropped
             #[kafka(added = 8i16, default = "null")]
             pub error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicProduceResponse {
@@ -2067,6 +2506,9 @@ pub mod response {
             ///Each partition that we produced to within the topic.
             #[kafka(added = 0i16)]
             pub partition_responses: Vec<PartitionProduceResponse>,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod fetch {
@@ -2085,6 +2527,9 @@ pub mod response {
             ///The response topics.
             #[kafka(added = 0i16)]
             pub responses: Vec<FetchableTopicResponse>,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct EpochEndOffset {
@@ -2092,6 +2537,9 @@ pub mod response {
             pub epoch: krost::primitive::Int32,
             #[kafka(added = 12i16, default = "-1")]
             pub end_offset: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct LeaderIdAndEpoch {
@@ -2101,6 +2549,9 @@ pub mod response {
             ///The latest known leader epoch
             #[kafka(added = 12i16, default = "-1")]
             pub leader_epoch: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct SnapshotId {
@@ -2108,6 +2559,9 @@ pub mod response {
             pub end_offset: krost::primitive::Int64,
             #[kafka(added = 0i16, default = "-1")]
             pub epoch: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AbortedTransaction {
@@ -2117,6 +2571,9 @@ pub mod response {
             ///The first offset in the aborted transaction.
             #[kafka(added = 4i16)]
             pub first_offset: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionData {
@@ -2152,6 +2609,9 @@ pub mod response {
             ///The record data.
             #[kafka(added = 0i16)]
             pub records: Option<krost::record::RecordBatch>,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct FetchableTopicResponse {
@@ -2164,6 +2624,9 @@ pub mod response {
             ///The topic partitions.
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionData>,
+            ///The tagged fields.
+            #[kafka(added = 12i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod list_offsets {
@@ -2176,6 +2639,9 @@ pub mod response {
             ///Each topic in the response.
             #[kafka(added = 0i16)]
             pub topics: Vec<ListOffsetsTopicResponse>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ListOffsetsPartitionResponse {
@@ -2196,6 +2662,9 @@ pub mod response {
             pub offset: krost::primitive::Int64,
             #[kafka(added = 4i16, default = "-1")]
             pub leader_epoch: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ListOffsetsTopicResponse {
@@ -2205,6 +2674,9 @@ pub mod response {
             ///Each partition in the response.
             #[kafka(added = 0i16)]
             pub partitions: Vec<ListOffsetsPartitionResponse>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod metadata {
@@ -2229,6 +2701,9 @@ pub mod response {
             ///32-bit bitfield to represent authorized operations for this cluster.
             #[kafka(added = 8i16, removed = 10i16, default = "-2147483648")]
             pub cluster_authorized_operations: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct MetadataResponseBroker {
@@ -2244,6 +2719,9 @@ pub mod response {
             ///The rack of the broker, or null if it has not been assigned to a rack.
             #[kafka(added = 1i16, default = "null")]
             pub rack: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct MetadataResponsePartition {
@@ -2268,6 +2746,9 @@ pub mod response {
             ///The set of offline replicas of this partition.
             #[kafka(added = 5i16)]
             pub offline_replicas: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct MetadataResponseTopic {
@@ -2289,6 +2770,9 @@ pub mod response {
             ///32-bit bitfield to represent authorized operations for this topic.
             #[kafka(added = 8i16, default = "-2147483648")]
             pub topic_authorized_operations: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 9i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod leader_and_isr {
@@ -2304,6 +2788,9 @@ pub mod response {
             ///Each topic
             #[kafka(added = 5i16)]
             pub topics: Vec<LeaderAndIsrTopicError>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct LeaderAndIsrTopicError {
@@ -2313,6 +2800,9 @@ pub mod response {
             ///Each partition.
             #[kafka(added = 5i16)]
             pub partition_errors: Vec<LeaderAndIsrPartitionError>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod stop_replica {
@@ -2325,6 +2815,9 @@ pub mod response {
             ///The responses for each partition.
             #[kafka(added = 0i16)]
             pub partition_errors: Vec<StopReplicaPartitionError>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct StopReplicaPartitionError {
@@ -2337,6 +2830,9 @@ pub mod response {
             ///The partition error code, or 0 if there was no partition error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod update_metadata {
@@ -2346,6 +2842,9 @@ pub mod response {
             ///The error code, or 0 if there was no error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod controlled_shutdown {
@@ -2358,6 +2857,9 @@ pub mod response {
             ///The partitions that the broker still leads.
             #[kafka(added = 0i16)]
             pub remaining_partitions: Vec<RemainingPartition>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct RemainingPartition {
@@ -2367,6 +2869,9 @@ pub mod response {
             ///The index of the partition.
             #[kafka(added = 0i16)]
             pub partition_index: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod offset_commit {
@@ -2379,6 +2884,9 @@ pub mod response {
             ///The responses for each topic.
             #[kafka(added = 0i16)]
             pub topics: Vec<OffsetCommitResponseTopic>,
+            ///The tagged fields.
+            #[kafka(added = 8i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetCommitResponsePartition {
@@ -2388,6 +2896,9 @@ pub mod response {
             ///The error code, or 0 if there was no error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 8i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetCommitResponseTopic {
@@ -2397,6 +2908,9 @@ pub mod response {
             ///The responses for each partition in the topic.
             #[kafka(added = 0i16)]
             pub partitions: Vec<OffsetCommitResponsePartition>,
+            ///The tagged fields.
+            #[kafka(added = 8i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod offset_fetch {
@@ -2415,6 +2929,9 @@ pub mod response {
             ///The responses per group id.
             #[kafka(added = 8i16)]
             pub groups: Vec<OffsetFetchResponseGroup>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetFetchResponsePartition {
@@ -2433,6 +2950,9 @@ pub mod response {
             ///The error code, or 0 if there was no error.
             #[kafka(added = 0i16, removed = 7i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetFetchResponseTopic {
@@ -2442,6 +2962,9 @@ pub mod response {
             ///The responses per partition
             #[kafka(added = 0i16, removed = 7i16)]
             pub partitions: Vec<OffsetFetchResponsePartition>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetFetchResponsePartitions {
@@ -2460,6 +2983,9 @@ pub mod response {
             ///The partition-level error code, or 0 if there was no error.
             #[kafka(added = 8i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetFetchResponseTopics {
@@ -2469,6 +2995,9 @@ pub mod response {
             ///The responses per partition
             #[kafka(added = 8i16)]
             pub partitions: Vec<OffsetFetchResponsePartitions>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetFetchResponseGroup {
@@ -2481,6 +3010,9 @@ pub mod response {
             ///The group-level error code, or 0 if there was no error.
             #[kafka(added = 8i16, default = "0")]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod find_coordinator {
@@ -2508,6 +3040,9 @@ pub mod response {
             ///Each coordinator result in the response
             #[kafka(added = 4i16)]
             pub coordinators: Vec<Coordinator>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct Coordinator {
@@ -2529,6 +3064,9 @@ pub mod response {
             ///The error message, or null if there was no error.
             #[kafka(added = 4i16)]
             pub error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod join_group {
@@ -2561,6 +3099,9 @@ pub mod response {
             pub member_id: krost::primitive::String,
             #[kafka(added = 0i16)]
             pub members: Vec<JoinGroupResponseMember>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct JoinGroupResponseMember {
@@ -2573,6 +3114,9 @@ pub mod response {
             ///The group member metadata.
             #[kafka(added = 0i16)]
             pub metadata: Vec<u8>,
+            ///The tagged fields.
+            #[kafka(added = 6i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod heartbeat {
@@ -2585,6 +3129,9 @@ pub mod response {
             ///The error code, or 0 if there was no error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod leave_group {
@@ -2600,6 +3147,9 @@ pub mod response {
             ///List of leaving member responses.
             #[kafka(added = 3i16)]
             pub members: Vec<MemberResponse>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct MemberResponse {
@@ -2612,6 +3162,9 @@ pub mod response {
             ///The error code, or 0 if there was no error.
             #[kafka(added = 3i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod sync_group {
@@ -2633,6 +3186,9 @@ pub mod response {
             ///The member assignment.
             #[kafka(added = 0i16)]
             pub assignment: Vec<u8>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_groups {
@@ -2645,6 +3201,9 @@ pub mod response {
             ///Each described group.
             #[kafka(added = 0i16)]
             pub groups: Vec<DescribedGroup>,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribedGroupMember {
@@ -2666,6 +3225,9 @@ pub mod response {
             ///The current assignment provided by the group leader.
             #[kafka(added = 0i16)]
             pub member_assignment: Vec<u8>,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribedGroup {
@@ -2690,6 +3252,9 @@ pub mod response {
             ///32-bit bitfield to represent authorized operations for this group.
             #[kafka(added = 3i16, default = "-2147483648")]
             pub authorized_operations: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod list_groups {
@@ -2705,6 +3270,9 @@ pub mod response {
             ///Each group in the response.
             #[kafka(added = 0i16)]
             pub groups: Vec<ListedGroup>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ListedGroup {
@@ -2717,6 +3285,9 @@ pub mod response {
             ///The group state name.
             #[kafka(added = 4i16)]
             pub group_state: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod sasl_handshake {
@@ -2753,6 +3324,9 @@ pub mod response {
             ///List of cluster-wide finalized features. The information is valid only if FinalizedFeaturesEpoch >= 0.
             #[kafka(added = 3i16)]
             pub finalized_features: Vec<FinalizedFeatureKey>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ApiVersion {
@@ -2765,6 +3339,9 @@ pub mod response {
             ///The maximum supported version, inclusive.
             #[kafka(added = 0i16)]
             pub max_version: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct SupportedFeatureKey {
@@ -2777,6 +3354,9 @@ pub mod response {
             ///The maximum supported version for the feature.
             #[kafka(added = 3i16)]
             pub max_version: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct FinalizedFeatureKey {
@@ -2789,6 +3369,9 @@ pub mod response {
             ///The cluster-wide finalized min version level for the feature.
             #[kafka(added = 3i16)]
             pub min_version_level: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod create_topics {
@@ -2801,6 +3384,9 @@ pub mod response {
             ///Results for each topic we tried to create.
             #[kafka(added = 0i16)]
             pub topics: Vec<CreatableTopicResult>,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct CreatableTopicConfigs {
@@ -2819,6 +3405,9 @@ pub mod response {
             ///True if this configuration is sensitive.
             #[kafka(added = 5i16)]
             pub is_sensitive: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct CreatableTopicResult {
@@ -2846,6 +3435,9 @@ pub mod response {
             ///Configuration of the topic.
             #[kafka(added = 5i16)]
             pub configs: Option<Vec<CreatableTopicConfigs>>,
+            ///The tagged fields.
+            #[kafka(added = 5i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod delete_topics {
@@ -2858,6 +3450,9 @@ pub mod response {
             ///The results for each topic we tried to delete.
             #[kafka(added = 0i16)]
             pub responses: Vec<DeletableTopicResult>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DeletableTopicResult {
@@ -2873,6 +3468,9 @@ pub mod response {
             ///The error message, or null if there was no error.
             #[kafka(added = 5i16, default = "null")]
             pub error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod delete_records {
@@ -2885,6 +3483,9 @@ pub mod response {
             ///Each topic that we wanted to delete records from.
             #[kafka(added = 0i16)]
             pub topics: Vec<DeleteRecordsTopicResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DeleteRecordsPartitionResult {
@@ -2897,6 +3498,9 @@ pub mod response {
             ///The deletion error code, or 0 if the deletion succeeded.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DeleteRecordsTopicResult {
@@ -2906,6 +3510,9 @@ pub mod response {
             ///Each partition that we wanted to delete records from.
             #[kafka(added = 0i16)]
             pub partitions: Vec<DeleteRecordsPartitionResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod init_producer_id {
@@ -2924,6 +3531,9 @@ pub mod response {
             ///The current epoch associated with the producer id.
             #[kafka(added = 0i16)]
             pub producer_epoch: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod offset_for_leader_epoch {
@@ -2936,6 +3546,9 @@ pub mod response {
             ///Each topic we fetched offsets for.
             #[kafka(added = 0i16)]
             pub topics: Vec<OffsetForLeaderTopicResult>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct EpochEndOffset {
@@ -2951,6 +3564,9 @@ pub mod response {
             ///The end offset of the epoch.
             #[kafka(added = 0i16, default = "-1")]
             pub end_offset: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OffsetForLeaderTopicResult {
@@ -2960,6 +3576,9 @@ pub mod response {
             ///Each partition in the topic we fetched offsets for.
             #[kafka(added = 0i16)]
             pub partitions: Vec<EpochEndOffset>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod add_partitions_to_txn {
@@ -2972,6 +3591,9 @@ pub mod response {
             ///The results for each topic.
             #[kafka(added = 0i16)]
             pub results: Vec<AddPartitionsToTxnTopicResult>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AddPartitionsToTxnPartitionResult {
@@ -2981,6 +3603,9 @@ pub mod response {
             ///The response error code.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AddPartitionsToTxnTopicResult {
@@ -2990,6 +3615,9 @@ pub mod response {
             ///The results for each partition
             #[kafka(added = 0i16)]
             pub results: Vec<AddPartitionsToTxnPartitionResult>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod add_offsets_to_txn {
@@ -3002,6 +3630,9 @@ pub mod response {
             ///The response error code, or 0 if there was no error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod end_txn {
@@ -3014,6 +3645,9 @@ pub mod response {
             ///The error code, or 0 if there was no error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod write_txn_markers {
@@ -3023,6 +3657,9 @@ pub mod response {
             ///The results for writing makers.
             #[kafka(added = 0i16)]
             pub markers: Vec<WritableTxnMarkerResult>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct WritableTxnMarkerPartitionResult {
@@ -3032,6 +3669,9 @@ pub mod response {
             ///The error code, or 0 if there was no error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct WritableTxnMarkerTopicResult {
@@ -3041,6 +3681,9 @@ pub mod response {
             ///The results by partition.
             #[kafka(added = 0i16)]
             pub partitions: Vec<WritableTxnMarkerPartitionResult>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct WritableTxnMarkerResult {
@@ -3050,6 +3693,9 @@ pub mod response {
             ///The results by topic.
             #[kafka(added = 0i16)]
             pub topics: Vec<WritableTxnMarkerTopicResult>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod txn_offset_commit {
@@ -3062,6 +3708,9 @@ pub mod response {
             ///The responses for each topic.
             #[kafka(added = 0i16)]
             pub topics: Vec<TxnOffsetCommitResponseTopic>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TxnOffsetCommitResponsePartition {
@@ -3071,6 +3720,9 @@ pub mod response {
             ///The error code, or 0 if there was no error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TxnOffsetCommitResponseTopic {
@@ -3080,6 +3732,9 @@ pub mod response {
             ///The responses for each partition in the topic.
             #[kafka(added = 0i16)]
             pub partitions: Vec<TxnOffsetCommitResponsePartition>,
+            ///The tagged fields.
+            #[kafka(added = 3i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_acls {
@@ -3098,6 +3753,9 @@ pub mod response {
             ///Each Resource that is referenced in an ACL.
             #[kafka(added = 0i16)]
             pub resources: Vec<DescribeAclsResource>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AclDescription {
@@ -3113,6 +3771,9 @@ pub mod response {
             ///The ACL permission type.
             #[kafka(added = 0i16)]
             pub permission_type: krost::primitive::Int8,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeAclsResource {
@@ -3128,6 +3789,9 @@ pub mod response {
             ///The ACLs.
             #[kafka(added = 0i16)]
             pub acls: Vec<AclDescription>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod create_acls {
@@ -3140,6 +3804,9 @@ pub mod response {
             ///The results for each ACL creation.
             #[kafka(added = 0i16)]
             pub results: Vec<AclCreationResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AclCreationResult {
@@ -3149,6 +3816,9 @@ pub mod response {
             ///The result message, or null if there was no error.
             #[kafka(added = 0i16)]
             pub error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod delete_acls {
@@ -3161,6 +3831,9 @@ pub mod response {
             ///The results for each filter.
             #[kafka(added = 0i16)]
             pub filter_results: Vec<DeleteAclsFilterResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DeleteAclsMatchingAcl {
@@ -3191,6 +3864,9 @@ pub mod response {
             ///The ACL permission type.
             #[kafka(added = 0i16)]
             pub permission_type: krost::primitive::Int8,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DeleteAclsFilterResult {
@@ -3203,6 +3879,9 @@ pub mod response {
             ///The ACLs which matched this filter.
             #[kafka(added = 0i16)]
             pub matching_acls: Vec<DeleteAclsMatchingAcl>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_configs {
@@ -3215,6 +3894,9 @@ pub mod response {
             ///The results for each resource.
             #[kafka(added = 0i16)]
             pub results: Vec<DescribeConfigsResult>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeConfigsSynonym {
@@ -3227,6 +3909,9 @@ pub mod response {
             ///The synonym source.
             #[kafka(added = 1i16)]
             pub source: krost::primitive::Int8,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeConfigsResourceResult {
@@ -3257,6 +3942,9 @@ pub mod response {
             ///The configuration documentation.
             #[kafka(added = 3i16)]
             pub documentation: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeConfigsResult {
@@ -3275,6 +3963,9 @@ pub mod response {
             ///Each listed configuration.
             #[kafka(added = 0i16)]
             pub configs: Vec<DescribeConfigsResourceResult>,
+            ///The tagged fields.
+            #[kafka(added = 4i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_configs {
@@ -3287,6 +3978,9 @@ pub mod response {
             ///The responses for each resource.
             #[kafka(added = 0i16)]
             pub responses: Vec<AlterConfigsResourceResponse>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterConfigsResourceResponse {
@@ -3302,6 +3996,9 @@ pub mod response {
             ///The resource name.
             #[kafka(added = 0i16)]
             pub resource_name: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_replica_log_dirs {
@@ -3314,6 +4011,9 @@ pub mod response {
             ///The results for each topic.
             #[kafka(added = 0i16)]
             pub results: Vec<AlterReplicaLogDirTopicResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterReplicaLogDirPartitionResult {
@@ -3323,6 +4023,9 @@ pub mod response {
             ///The error code, or 0 if there was no error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterReplicaLogDirTopicResult {
@@ -3332,6 +4035,9 @@ pub mod response {
             ///The results for each partition.
             #[kafka(added = 0i16)]
             pub partitions: Vec<AlterReplicaLogDirPartitionResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_log_dirs {
@@ -3347,6 +4053,9 @@ pub mod response {
             ///The log directories.
             #[kafka(added = 0i16)]
             pub results: Vec<DescribeLogDirsResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeLogDirsPartition {
@@ -3362,6 +4071,9 @@ pub mod response {
             ///True if this log is created by AlterReplicaLogDirsRequest and will replace the current log of the replica in the future.
             #[kafka(added = 0i16)]
             pub is_future_key: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeLogDirsTopic {
@@ -3370,6 +4082,9 @@ pub mod response {
             pub name: krost::primitive::String,
             #[kafka(added = 0i16)]
             pub partitions: Vec<DescribeLogDirsPartition>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeLogDirsResult {
@@ -3382,6 +4097,9 @@ pub mod response {
             ///Each topic.
             #[kafka(added = 0i16)]
             pub topics: Vec<DescribeLogDirsTopic>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod sasl_authenticate {
@@ -3400,6 +4118,9 @@ pub mod response {
             ///The SASL authentication bytes from the server, as defined by the SASL mechanism.
             #[kafka(added = 1i16, default = "0")]
             pub session_lifetime_ms: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod create_partitions {
@@ -3412,6 +4133,9 @@ pub mod response {
             ///The partition creation results for each topic.
             #[kafka(added = 0i16)]
             pub results: Vec<CreatePartitionsTopicResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct CreatePartitionsTopicResult {
@@ -3424,6 +4148,9 @@ pub mod response {
             ///The result message, or null if there was no error.
             #[kafka(added = 0i16, default = "null")]
             pub error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod create_delegation_token {
@@ -3457,6 +4184,9 @@ pub mod response {
             ///The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota.
             #[kafka(added = 0i16)]
             pub throttle_time_ms: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod renew_delegation_token {
@@ -3472,6 +4202,9 @@ pub mod response {
             ///The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota.
             #[kafka(added = 0i16)]
             pub throttle_time_ms: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod expire_delegation_token {
@@ -3487,6 +4220,9 @@ pub mod response {
             ///The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota.
             #[kafka(added = 0i16)]
             pub throttle_time_ms: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_delegation_token {
@@ -3502,6 +4238,9 @@ pub mod response {
             ///The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota.
             #[kafka(added = 0i16)]
             pub throttle_time_ms: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribedDelegationTokenRenewer {
@@ -3511,6 +4250,9 @@ pub mod response {
             ///The renewer principal name
             #[kafka(added = 0i16)]
             pub principal_name: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribedDelegationToken {
@@ -3538,6 +4280,9 @@ pub mod response {
             ///Those who are able to renew this token before it expires.
             #[kafka(added = 0i16)]
             pub renewers: Vec<DescribedDelegationTokenRenewer>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod delete_groups {
@@ -3550,6 +4295,9 @@ pub mod response {
             ///The deletion results
             #[kafka(added = 0i16)]
             pub results: Vec<DeletableGroupResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DeletableGroupResult {
@@ -3559,6 +4307,9 @@ pub mod response {
             ///The deletion error, or 0 if the deletion succeeded.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod elect_leaders {
@@ -3574,6 +4325,9 @@ pub mod response {
             ///The election results, or an empty array if the requester did not have permission and the request asks for all partitions.
             #[kafka(added = 0i16)]
             pub replica_election_results: Vec<ReplicaElectionResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionResult {
@@ -3586,6 +4340,9 @@ pub mod response {
             ///The result message, or null if there was no error.
             #[kafka(added = 0i16)]
             pub error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ReplicaElectionResult {
@@ -3595,6 +4352,9 @@ pub mod response {
             ///The results for each partition
             #[kafka(added = 0i16)]
             pub partition_result: Vec<PartitionResult>,
+            ///The tagged fields.
+            #[kafka(added = 2i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod incremental_alter_configs {
@@ -3607,6 +4367,9 @@ pub mod response {
             ///The responses for each resource.
             #[kafka(added = 0i16)]
             pub responses: Vec<AlterConfigsResourceResponse>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterConfigsResourceResponse {
@@ -3622,6 +4385,9 @@ pub mod response {
             ///The resource name.
             #[kafka(added = 0i16)]
             pub resource_name: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_partition_reassignments {
@@ -3640,6 +4406,9 @@ pub mod response {
             ///The responses to topics to reassign.
             #[kafka(added = 0i16)]
             pub responses: Vec<ReassignableTopicResponse>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ReassignablePartitionResponse {
@@ -3652,6 +4421,9 @@ pub mod response {
             ///The error message for this partition, or null if there was no error.
             #[kafka(added = 0i16)]
             pub error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ReassignableTopicResponse {
@@ -3661,6 +4433,9 @@ pub mod response {
             ///The responses to partitions to reassign
             #[kafka(added = 0i16)]
             pub partitions: Vec<ReassignablePartitionResponse>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod list_partition_reassignments {
@@ -3679,6 +4454,9 @@ pub mod response {
             ///The ongoing reassignments for each topic.
             #[kafka(added = 0i16)]
             pub topics: Vec<OngoingTopicReassignment>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OngoingPartitionReassignment {
@@ -3694,6 +4472,9 @@ pub mod response {
             ///The set of replicas we are currently removing.
             #[kafka(added = 0i16)]
             pub removing_replicas: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct OngoingTopicReassignment {
@@ -3703,6 +4484,9 @@ pub mod response {
             ///The ongoing reassignments for each partition.
             #[kafka(added = 0i16)]
             pub partitions: Vec<OngoingPartitionReassignment>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod offset_delete {
@@ -3754,6 +4538,9 @@ pub mod response {
             ///A result entry.
             #[kafka(added = 0i16)]
             pub entries: Option<Vec<EntryData>>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct EntityData {
@@ -3763,6 +4550,9 @@ pub mod response {
             ///The entity name, or null if the default.
             #[kafka(added = 0i16)]
             pub entity_name: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ValueData {
@@ -3772,6 +4562,9 @@ pub mod response {
             ///The quota configuration value.
             #[kafka(added = 0i16)]
             pub value: float64,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct EntryData {
@@ -3781,6 +4574,9 @@ pub mod response {
             ///The quota values for the entity.
             #[kafka(added = 0i16)]
             pub values: Vec<ValueData>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_client_quotas {
@@ -3793,6 +4589,9 @@ pub mod response {
             ///The quota configuration entries to alter.
             #[kafka(added = 0i16)]
             pub entries: Vec<EntryData>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct EntityData {
@@ -3802,6 +4601,9 @@ pub mod response {
             ///The name of the entity, or null if the default.
             #[kafka(added = 0i16)]
             pub entity_name: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct EntryData {
@@ -3814,6 +4616,9 @@ pub mod response {
             ///The quota entity to alter.
             #[kafka(added = 0i16)]
             pub entity: Vec<EntityData>,
+            ///The tagged fields.
+            #[kafka(added = 1i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_user_scram_credentials {
@@ -3832,6 +4637,9 @@ pub mod response {
             ///The results for descriptions, one per user.
             #[kafka(added = 0i16)]
             pub results: Vec<DescribeUserScramCredentialsResult>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct CredentialInfo {
@@ -3841,6 +4649,9 @@ pub mod response {
             ///The number of iterations used in the SCRAM credential.
             #[kafka(added = 0i16)]
             pub iterations: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeUserScramCredentialsResult {
@@ -3856,6 +4667,9 @@ pub mod response {
             ///The mechanism and related information associated with the user's SCRAM credentials.
             #[kafka(added = 0i16)]
             pub credential_infos: Vec<CredentialInfo>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_user_scram_credentials {
@@ -3868,6 +4682,9 @@ pub mod response {
             ///The results for deletions and alterations, one per affected user.
             #[kafka(added = 0i16)]
             pub results: Vec<AlterUserScramCredentialsResult>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct AlterUserScramCredentialsResult {
@@ -3880,6 +4697,9 @@ pub mod response {
             ///The error message, if any.
             #[kafka(added = 0i16)]
             pub error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod vote {
@@ -3891,6 +4711,9 @@ pub mod response {
             pub error_code: krost::primitive::Int16,
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionData {
@@ -3908,6 +4731,9 @@ pub mod response {
             ///True if the vote was granted and false otherwise
             #[kafka(added = 0i16)]
             pub vote_granted: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicData {
@@ -3916,6 +4742,9 @@ pub mod response {
             pub topic_name: krost::primitive::String,
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod begin_quorum_epoch {
@@ -3993,6 +4822,9 @@ pub mod response {
             pub error_code: krost::primitive::Int16,
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionData {
@@ -4013,6 +4845,9 @@ pub mod response {
             pub current_voters: Vec<ReplicaState>,
             #[kafka(added = 0i16)]
             pub observers: Vec<ReplicaState>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicData {
@@ -4021,6 +4856,9 @@ pub mod response {
             pub topic_name: krost::primitive::String,
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod alter_partition {
@@ -4035,6 +4873,9 @@ pub mod response {
             pub error_code: krost::primitive::Int16,
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionData {
@@ -4059,6 +4900,9 @@ pub mod response {
             ///The current epoch for the partition for KRaft controllers. The current ZK version for the legacy controllers.
             #[kafka(added = 0i16)]
             pub partition_epoch: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicData {
@@ -4067,6 +4911,9 @@ pub mod response {
             pub name: krost::primitive::String,
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod update_features {
@@ -4085,6 +4932,9 @@ pub mod response {
             ///Results for each feature update.
             #[kafka(added = 0i16)]
             pub results: Vec<UpdatableFeatureResult>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct UpdatableFeatureResult {
@@ -4097,6 +4947,9 @@ pub mod response {
             ///The feature update error, or `null` if the feature update succeeded.
             #[kafka(added = 0i16)]
             pub error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod envelope {
@@ -4109,6 +4962,9 @@ pub mod response {
             ///The error code, or 0 if there was no error.
             #[kafka(added = 0i16)]
             pub error_code: krost::primitive::Int16,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod fetch_snapshot {
@@ -4124,6 +4980,9 @@ pub mod response {
             ///The topics to fetch.
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicSnapshot>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct SnapshotId {
@@ -4131,6 +4990,9 @@ pub mod response {
             pub end_offset: krost::primitive::Int64,
             #[kafka(added = 0i16)]
             pub epoch: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct LeaderIdAndEpoch {
@@ -4140,6 +5002,9 @@ pub mod response {
             ///The latest known leader epoch
             #[kafka(added = 0i16)]
             pub leader_epoch: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionSnapshot {
@@ -4163,6 +5028,9 @@ pub mod response {
             ///Snapshot data in records format which may not be aligned on an offset boundary
             #[kafka(added = 0i16)]
             pub unaligned_records: krost::record::RecordBatch,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicSnapshot {
@@ -4172,6 +5040,9 @@ pub mod response {
             ///The partitions to fetch.
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionSnapshot>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_cluster {
@@ -4199,6 +5070,9 @@ pub mod response {
             ///32-bit bitfield to represent authorized operations for this cluster.
             #[kafka(added = 0i16, default = "-2147483648")]
             pub cluster_authorized_operations: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct DescribeClusterBroker {
@@ -4214,6 +5088,9 @@ pub mod response {
             ///The rack of the broker, or null if it has not been assigned to a rack.
             #[kafka(added = 0i16, default = "null")]
             pub rack: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_producers {
@@ -4226,6 +5103,9 @@ pub mod response {
             ///Each topic in the response.
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicResponse>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct ProducerState {
@@ -4241,6 +5121,9 @@ pub mod response {
             pub coordinator_epoch: krost::primitive::Int32,
             #[kafka(added = 0i16, default = "-1")]
             pub current_txn_start_offset: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct PartitionResponse {
@@ -4255,6 +5138,9 @@ pub mod response {
             pub error_message: Option<krost::primitive::String>,
             #[kafka(added = 0i16)]
             pub active_producers: Vec<ProducerState>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicResponse {
@@ -4264,6 +5150,9 @@ pub mod response {
             ///Each partition in the response.
             #[kafka(added = 0i16)]
             pub partitions: Vec<PartitionResponse>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod broker_registration {
@@ -4279,6 +5168,9 @@ pub mod response {
             ///The broker's assigned epoch, or -1 if none was assigned.
             #[kafka(added = 0i16, default = "-1")]
             pub broker_epoch: krost::primitive::Int64,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod broker_heartbeat {
@@ -4300,6 +5192,9 @@ pub mod response {
             ///True if the broker should proceed with its shutdown.
             #[kafka(added = 0i16)]
             pub should_shut_down: krost::primitive::Bool,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod unregister_broker {
@@ -4315,6 +5210,9 @@ pub mod response {
             ///The top-level error message, or `null` if there was no top-level error.
             #[kafka(added = 0i16)]
             pub error_message: Option<krost::primitive::String>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod describe_transactions {
@@ -4326,6 +5224,9 @@ pub mod response {
             pub throttle_time_ms: krost::primitive::Int32,
             #[kafka(added = 0i16)]
             pub transaction_states: Vec<TransactionState>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TopicData {
@@ -4333,6 +5234,9 @@ pub mod response {
             pub topic: krost::primitive::String,
             #[kafka(added = 0i16)]
             pub partitions: Vec<krost::primitive::Int32>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TransactionState {
@@ -4353,6 +5257,9 @@ pub mod response {
             ///The set of partitions included in the current transaction (if active). When a transaction is preparing to commit or abort, this will include only partitions which do not have markers.
             #[kafka(added = 0i16)]
             pub topics: Vec<TopicData>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod list_transactions {
@@ -4369,6 +5276,9 @@ pub mod response {
             pub unknown_state_filters: Vec<krost::primitive::String>,
             #[kafka(added = 0i16)]
             pub transaction_states: Vec<TransactionState>,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
         #[derive(Debug, PartialEq, Krost, Clone)]
         pub struct TransactionState {
@@ -4379,6 +5289,9 @@ pub mod response {
             ///The current transaction state of the producer
             #[kafka(added = 0i16)]
             pub transaction_state: krost::primitive::String,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     pub mod allocate_producer_ids {
@@ -4397,6 +5310,9 @@ pub mod response {
             ///The number of producer IDs in this range
             #[kafka(added = 0i16)]
             pub producer_id_len: krost::primitive::Int32,
+            ///The tagged fields.
+            #[kafka(added = 0i16)]
+            pub _tagged_fields: krost::primitive::TaggedFields,
         }
     }
     #[allow(dead_code)]
@@ -4425,7 +5341,9 @@ pub mod response {
         DeleteTopicsResponse(delete_topics::DeleteTopicsResponse),
         DeleteRecordsResponse(delete_records::DeleteRecordsResponse),
         InitProducerIdResponse(init_producer_id::InitProducerIdResponse),
-        OffsetForLeaderEpochResponse(offset_for_leader_epoch::OffsetForLeaderEpochResponse),
+        OffsetForLeaderEpochResponse(
+            offset_for_leader_epoch::OffsetForLeaderEpochResponse,
+        ),
         AddPartitionsToTxnResponse(add_partitions_to_txn::AddPartitionsToTxnResponse),
         AddOffsetsToTxnResponse(add_offsets_to_txn::AddOffsetsToTxnResponse),
         EndTxnResponse(end_txn::EndTxnResponse),
@@ -4440,13 +5358,23 @@ pub mod response {
         DescribeLogDirsResponse(describe_log_dirs::DescribeLogDirsResponse),
         SaslAuthenticateResponse(sasl_authenticate::SaslAuthenticateResponse),
         CreatePartitionsResponse(create_partitions::CreatePartitionsResponse),
-        CreateDelegationTokenResponse(create_delegation_token::CreateDelegationTokenResponse),
-        RenewDelegationTokenResponse(renew_delegation_token::RenewDelegationTokenResponse),
-        ExpireDelegationTokenResponse(expire_delegation_token::ExpireDelegationTokenResponse),
-        DescribeDelegationTokenResponse(describe_delegation_token::DescribeDelegationTokenResponse),
+        CreateDelegationTokenResponse(
+            create_delegation_token::CreateDelegationTokenResponse,
+        ),
+        RenewDelegationTokenResponse(
+            renew_delegation_token::RenewDelegationTokenResponse,
+        ),
+        ExpireDelegationTokenResponse(
+            expire_delegation_token::ExpireDelegationTokenResponse,
+        ),
+        DescribeDelegationTokenResponse(
+            describe_delegation_token::DescribeDelegationTokenResponse,
+        ),
         DeleteGroupsResponse(delete_groups::DeleteGroupsResponse),
         ElectLeadersResponse(elect_leaders::ElectLeadersResponse),
-        IncrementalAlterConfigsResponse(incremental_alter_configs::IncrementalAlterConfigsResponse),
+        IncrementalAlterConfigsResponse(
+            incremental_alter_configs::IncrementalAlterConfigsResponse,
+        ),
         AlterPartitionReassignmentsResponse(
             alter_partition_reassignments::AlterPartitionReassignmentsResponse,
         ),
@@ -4454,7 +5382,9 @@ pub mod response {
             list_partition_reassignments::ListPartitionReassignmentsResponse,
         ),
         OffsetDeleteResponse(offset_delete::OffsetDeleteResponse),
-        DescribeClientQuotasResponse(describe_client_quotas::DescribeClientQuotasResponse),
+        DescribeClientQuotasResponse(
+            describe_client_quotas::DescribeClientQuotasResponse,
+        ),
         AlterClientQuotasResponse(alter_client_quotas::AlterClientQuotasResponse),
         DescribeUserScramCredentialsResponse(
             describe_user_scram_credentials::DescribeUserScramCredentialsResponse,
@@ -4475,7 +5405,9 @@ pub mod response {
         BrokerRegistrationResponse(broker_registration::BrokerRegistrationResponse),
         BrokerHeartbeatResponse(broker_heartbeat::BrokerHeartbeatResponse),
         UnregisterBrokerResponse(unregister_broker::UnregisterBrokerResponse),
-        DescribeTransactionsResponse(describe_transactions::DescribeTransactionsResponse),
+        DescribeTransactionsResponse(
+            describe_transactions::DescribeTransactionsResponse,
+        ),
         ListTransactionsResponse(list_transactions::ListTransactionsResponse),
         AllocateProducerIdsResponse(allocate_producer_ids::AllocateProducerIdsResponse),
     }

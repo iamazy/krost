@@ -1,5 +1,5 @@
 use crate::primitive::{Int16, Int32, Int64, Int8, VarInt, VarLong};
-use crate::{KrostError, Serializable};
+use crate::{KrostError, KrostType};
 use std::io::{Cursor, Read, Write};
 
 #[derive(Debug, PartialEq, Eq)]
@@ -8,7 +8,7 @@ pub struct RecordHeader {
     pub value: Vec<u8>,
 }
 
-impl Serializable for RecordHeader {
+impl KrostType for RecordHeader {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         // key
         let len = VarInt::decode(buf)?;
@@ -51,7 +51,7 @@ pub struct Record {
     pub headers: Vec<RecordHeader>,
 }
 
-impl Serializable for Record {
+impl KrostType for Record {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         // length
         let len = VarInt::decode(buf)?;
@@ -176,7 +176,7 @@ pub enum ControlBatchRecord {
     Commit,
 }
 
-impl Serializable for ControlBatchRecord {
+impl KrostType for ControlBatchRecord {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         // version
         let version = Int16::decode(buf)?.0;
@@ -293,7 +293,7 @@ impl RecordBatch {
     }
 }
 
-impl Serializable for RecordBatch {
+impl KrostType for RecordBatch {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let base_offset = Int64::decode(buf)?.0;
 

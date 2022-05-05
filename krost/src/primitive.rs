@@ -1,11 +1,11 @@
-use crate::{KrostError, Serializable};
+use crate::{KrostError, KrostType};
 use integer_encoding::{VarIntReader, VarIntWriter};
 use std::io::{Read, Write};
 use std::string::String as StdString;
 
 macro_rules! impl_num_type {
     ($ty:ty, $inner:ty, $sz:expr) => {
-        impl Serializable for $ty {
+        impl KrostType for $ty {
             fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
                 let mut buffer = [0u8; $sz];
                 buf.read_exact(&mut buffer)?;
@@ -24,7 +24,7 @@ macro_rules! impl_num_type {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 pub struct Bool(pub bool);
 
-impl Serializable for Bool {
+impl KrostType for Bool {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let mut buffer = [0u8; 1];
         buf.read_exact(&mut buffer)?;
@@ -63,7 +63,7 @@ impl_num_type!(Int64, i64, 8);
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 pub struct VarInt(pub i32);
 
-impl Serializable for VarInt {
+impl KrostType for VarInt {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let i: i64 = buf.read_varint()?;
         Ok(Self(i32::try_from(i)?))
@@ -77,7 +77,7 @@ impl Serializable for VarInt {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 pub struct VarLong(pub i64);
 
-impl Serializable for VarLong {
+impl KrostType for VarLong {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         Ok(Self(buf.read_varint()?))
     }
@@ -90,7 +90,7 @@ impl Serializable for VarLong {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 pub struct UnsignedVarInt(pub u64);
 
-impl Serializable for UnsignedVarInt {
+impl KrostType for UnsignedVarInt {
     fn decode<D: Read>(buffer: &mut D) -> Result<Self, KrostError> {
         let mut buf = [0u8; 1];
         let mut res: u64 = 0;
@@ -137,7 +137,7 @@ impl Serializable for UnsignedVarInt {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct NullableString(pub Option<StdString>);
 
-impl Serializable for NullableString {
+impl KrostType for NullableString {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let len = Int16::decode(buf)?;
         match len.0 {
@@ -172,7 +172,7 @@ impl Serializable for NullableString {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct String(pub StdString);
 
-impl Serializable for String {
+impl KrostType for String {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let len = Int16::decode(buf)?;
         let len = usize::try_from(len.0).map_err(|e| KrostError::Malformed(Box::new(e)))?;
@@ -193,7 +193,7 @@ impl Serializable for String {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct CompactString(pub StdString);
 
-impl Serializable for CompactString {
+impl KrostType for CompactString {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let len = UnsignedVarInt::decode(buf)?;
         match len.0 {
@@ -224,7 +224,7 @@ impl Serializable for CompactString {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CompactNullableString(pub Option<StdString>);
 
-impl Serializable for CompactNullableString {
+impl KrostType for CompactNullableString {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let len = UnsignedVarInt::decode(buf)?;
         match len.0 {
@@ -258,7 +258,7 @@ impl Serializable for CompactNullableString {
 #[derive(Debug, PartialEq, Eq)]
 pub struct NullableBytes(pub Option<Vec<u8>>);
 
-impl Serializable for NullableBytes {
+impl KrostType for NullableBytes {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let len = Int32::decode(buf)?;
         match len.0 {
@@ -291,7 +291,7 @@ impl Serializable for NullableBytes {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct TaggedFields(pub Vec<(UnsignedVarInt, Vec<u8>)>);
 
-impl Serializable for TaggedFields {
+impl KrostType for TaggedFields {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let len = UnsignedVarInt::decode(buf)?;
         let len = usize::try_from(len.0).map_err(KrostError::Overflow)?;
@@ -326,7 +326,7 @@ impl Serializable for TaggedFields {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Array<T>(pub Option<Vec<T>>);
 
-impl<T: Serializable> Serializable for Array<T> {
+impl<T: KrostType> KrostType for Array<T> {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let len = Int32::decode(buf)?;
         if len.0 == -1 {
@@ -359,7 +359,7 @@ impl<T: Serializable> Serializable for Array<T> {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Uuid(pub uuid::Uuid);
 
-impl Serializable for Uuid {
+impl KrostType for Uuid {
     fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
         let mut bytes = [0; 16];
         buf.read_exact(&mut bytes)?;
@@ -369,5 +369,34 @@ impl Serializable for Uuid {
     fn encode<E: Write>(&self, buf: &mut E) -> Result<usize, KrostError> {
         buf.write_all(&self.0.as_bytes()[..])?;
         Ok(16)
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+pub struct CompactBytes(pub Vec<u8>);
+
+impl KrostType for CompactBytes {
+    fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
+        let len = UnsignedVarInt::decode(buf)?;
+        match len.0 {
+            0 => Err(KrostError::Malformed(
+                "CompactBytes must have non-zero length".into(),
+            )),
+            len => {
+                let len = usize::try_from(len)?;
+                let len = len - 1;
+
+                let mut buffer = Vec::with_capacity(len);
+                buf.read_exact(&mut buffer)?;
+                Ok(Self(buffer))
+            }
+        }
+    }
+
+    fn encode<E: Write>(&self, buf: &mut E) -> Result<usize, KrostError> {
+        let len = u64::try_from(self.0.len() + 1).map_err(KrostError::Overflow)?;
+        let len = UnsignedVarInt(len).encode(buf)?;
+        buf.write_all(self.0.as_slice())?;
+        Ok(len + self.0.len())
     }
 }

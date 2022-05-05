@@ -5,14 +5,14 @@ pub mod schema;
 pub mod util;
 
 use crate::render::{KrostField, KrostSchema, KrostStruct};
-use crate::schema::SchemaType;
+use crate::schema::{SchemaType, Versions};
 use std::io::BufRead;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::{fs, io};
 use thiserror::Error;
 
-pub trait Krost: Serializable {
+pub trait Krost: KrostType {
     fn version_added() -> i16;
     fn version_removed() -> Option<i16>;
     fn apikey() -> i16;
@@ -37,7 +37,7 @@ pub enum KrostError {
     },
 }
 
-pub trait Serializable: Sized {
+pub trait KrostType: Sized {
     fn decode<D: io::Read>(buf: &mut D) -> Result<Self, KrostError>;
     fn encode<E: io::Write>(&self, buf: &mut E) -> Result<usize, KrostError>;
 }
@@ -47,10 +47,11 @@ fn expand_fields(
     schema_type: SchemaType,
     structs: &mut Vec<KrostStruct>,
     fields: &[schema::Field],
+    flexible_versions: Option<i16>,
 ) -> Vec<KrostField> {
     let mut converted_fields = vec![];
     for field in fields {
-        let field_spec = KrostField::from_schema(field);
+        let field_spec = KrostField::from_schema(field, flexible_versions);
         match &field.fields {
             None => {
                 // This is a leaf field, we don't need to do anything besides add it to the vec
@@ -59,7 +60,10 @@ fn expand_fields(
             Some(subfields) => {
                 // There are subfields for this schema, creating a new struct is necessary.
                 let substruct_name = field_spec.type_name.clone();
-                let substruct_fields = expand_fields(api_key, schema_type, structs, subfields);
+                let mut substruct_fields = expand_fields(api_key, schema_type, structs, subfields, flexible_versions);
+                if let Some(start) = flexible_versions {
+                    substruct_fields.push(KrostField::tagged_fields(start));
+                }
                 let substruct = KrostStruct {
                     struct_name: substruct_name,
                     schema_type,
@@ -67,7 +71,7 @@ fn expand_fields(
                     fields: substruct_fields,
                 };
                 structs.push(substruct);
-                converted_fields.push(field_spec)
+                converted_fields.push(field_spec);
             }
         }
     }
@@ -78,7 +82,16 @@ fn expand_schema(schema: schema::Schema) -> KrostSchema {
     let name = schema.name;
     let mut structs = vec![];
 
-    let root_fields = expand_fields(schema.api_key, schema.r#type, &mut structs, &schema.fields);
+    let flexible_versions = if let Some(Versions::Since(start) | Versions::Exact(start) | Versions::Range(start, _)) = schema.flexible_versions {
+        Some(start)
+    } else {
+        None
+    };
+
+    let mut root_fields = expand_fields(schema.api_key, schema.r#type, &mut structs, &schema.fields, flexible_versions);
+    if let Some(start) = flexible_versions {
+        root_fields.push(KrostField::tagged_fields(start));
+    }
     KrostSchema {
         name,
         r#type: schema.r#type,
