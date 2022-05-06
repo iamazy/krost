@@ -38,8 +38,8 @@ pub enum KrostError {
 }
 
 pub trait KrostType: Sized {
-    fn decode<D: io::Read>(buf: &mut D) -> Result<Self, KrostError>;
-    fn encode<E: io::Write>(&self, buf: &mut E) -> Result<usize, KrostError>;
+    fn decode<D: io::Read>(buf: &mut D, version: i16) -> Result<Self, KrostError>;
+    fn encode<E: io::Write>(&self, buf: &mut E, version: i16) -> Result<usize, KrostError>;
 }
 
 fn expand_fields(
@@ -60,7 +60,8 @@ fn expand_fields(
             Some(subfields) => {
                 // There are subfields for this schema, creating a new struct is necessary.
                 let substruct_name = field_spec.type_name.clone();
-                let mut substruct_fields = expand_fields(api_key, schema_type, structs, subfields, flexible_versions);
+                let mut substruct_fields =
+                    expand_fields(api_key, schema_type, structs, subfields, flexible_versions);
                 if let Some(start) = flexible_versions {
                     substruct_fields.push(KrostField::tagged_fields(start));
                 }
@@ -82,13 +83,22 @@ fn expand_schema(schema: schema::Schema) -> KrostSchema {
     let name = schema.name;
     let mut structs = vec![];
 
-    let flexible_versions = if let Some(Versions::Since(start) | Versions::Exact(start) | Versions::Range(start, _)) = schema.flexible_versions {
-        Some(start)
-    } else {
-        None
-    };
+    let flexible_versions =
+        if let Some(Versions::Since(start) | Versions::Exact(start) | Versions::Range(start, _)) =
+            schema.flexible_versions
+        {
+            Some(start)
+        } else {
+            None
+        };
 
-    let mut root_fields = expand_fields(schema.api_key, schema.r#type, &mut structs, &schema.fields, flexible_versions);
+    let mut root_fields = expand_fields(
+        schema.api_key,
+        schema.r#type,
+        &mut structs,
+        &schema.fields,
+        flexible_versions,
+    );
     if let Some(start) = flexible_versions {
         root_fields.push(KrostField::tagged_fields(start));
     }

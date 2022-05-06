@@ -19,5 +19,5 @@ pub fn version_check_read<T: Krost, D: std::io::Read>(
     buf: &mut D,
 ) -> Result<T, KrostError> {
     version_check::<T>(version)?;
-    T::decode(buf)
+    T::decode(buf, version)
 }

@@ -9,16 +9,16 @@ pub struct RecordHeader {
 }
 
 impl KrostType for RecordHeader {
-    fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
+    fn decode<D: Read>(buf: &mut D, version: i16) -> Result<Self, KrostError> {
         // key
-        let len = VarInt::decode(buf)?;
+        let len = VarInt::decode(buf, version)?;
         let len = usize::try_from(len.0).map_err(|e| KrostError::Malformed(Box::new(e)))?;
         let mut key = Vec::with_capacity(len);
         let _ = buf.read_exact(&mut key);
         let key = String::from_utf8(key).map_err(|e| KrostError::Malformed(Box::new(e)))?;
 
         // value
-        let len = VarInt::decode(buf)?;
+        let len = VarInt::decode(buf, version)?;
         let len = usize::try_from(len.0).map_err(|e| KrostError::Malformed(Box::new(e)))?;
         let mut value = Vec::with_capacity(len);
         let _ = buf.read_exact(&mut value);
@@ -26,15 +26,15 @@ impl KrostType for RecordHeader {
         Ok(Self { key, value })
     }
 
-    fn encode<E: Write>(&self, buf: &mut E) -> Result<usize, KrostError> {
+    fn encode<E: Write>(&self, buf: &mut E, version: i16) -> Result<usize, KrostError> {
         let l = i32::try_from(self.key.len()).map_err(|e| KrostError::Malformed(Box::new(e)))?;
-        let mut len = VarInt(l).encode(buf)?;
+        let mut len = VarInt(l).encode(buf, version)?;
         buf.write_all(self.key.as_bytes())?;
         len += self.key.len();
 
         // value
         let l = i32::try_from(self.value.len()).map_err(|e| KrostError::Malformed(Box::new(e)))?;
-        len += VarInt(l).encode(buf)?;
+        len += VarInt(l).encode(buf, version)?;
         buf.write_all(&self.value)?;
         len += self.value.len();
 
@@ -52,23 +52,23 @@ pub struct Record {
 }
 
 impl KrostType for Record {
-    fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
+    fn decode<D: Read>(buf: &mut D, version: i16) -> Result<Self, KrostError> {
         // length
-        let len = VarInt::decode(buf)?;
+        let len = VarInt::decode(buf, version)?;
         let len = u64::try_from(len.0).map_err(|e| KrostError::Malformed(Box::new(e)))?;
         let reader = &mut buf.take(len);
 
         // attributes
-        Int8::decode(reader)?;
+        Int8::decode(reader, version)?;
 
         // timestampDelta
-        let timestamp_delta = VarLong::decode(reader)?.0;
+        let timestamp_delta = VarLong::decode(reader, version)?.0;
 
         // offsetDelta
-        let offset_delta = VarInt::decode(reader)?.0;
+        let offset_delta = VarInt::decode(reader, version)?.0;
 
         // key
-        let len = VarInt::decode(reader)?.0;
+        let len = VarInt::decode(reader, version)?.0;
         let key = if len == -1 {
             None
         } else {
@@ -79,7 +79,7 @@ impl KrostType for Record {
         };
 
         // value
-        let len = VarInt::decode(reader)?.0;
+        let len = VarInt::decode(reader, version)?.0;
         let value = if len == -1 {
             None
         } else {
@@ -91,12 +91,12 @@ impl KrostType for Record {
 
         // headers
         // Note: This is NOT a normal array but uses a Varint instead.
-        let n_headers = VarInt::decode(reader)?;
+        let n_headers = VarInt::decode(reader, version)?;
         let n_headers =
             usize::try_from(n_headers.0).map_err(|e| KrostError::Malformed(Box::new(e)))?;
         let mut headers = Vec::with_capacity(n_headers);
         for _ in 0..n_headers {
-            headers.push(RecordHeader::decode(reader)?);
+            headers.push(RecordHeader::decode(reader, version)?);
         }
 
         // check if there is any trailing data because this is likely a bug
@@ -115,27 +115,27 @@ impl KrostType for Record {
         })
     }
 
-    fn encode<E: Write>(&self, buf: &mut E) -> Result<usize, KrostError> {
+    fn encode<E: Write>(&self, buf: &mut E, version: i16) -> Result<usize, KrostError> {
         let mut data = vec![];
 
         // attributes
-        Int8(0).encode(&mut data)?;
+        Int8(0).encode(&mut data, version)?;
 
         // timestampDelta
-        VarLong(self.timestamp_delta).encode(&mut data)?;
+        VarLong(self.timestamp_delta).encode(&mut data, version)?;
 
         // offsetDelta
-        VarInt(self.offset_delta).encode(&mut data)?;
+        VarInt(self.offset_delta).encode(&mut data, version)?;
 
         // key
         match &self.key {
             Some(key) => {
                 let l = i32::try_from(key.len()).map_err(|e| KrostError::Malformed(Box::new(e)))?;
-                VarInt(l).encode(&mut data)?;
+                VarInt(l).encode(&mut data, version)?;
                 data.write_all(key)?;
             }
             None => {
-                VarInt(-1).encode(&mut data)?;
+                VarInt(-1).encode(&mut data, version)?;
             }
         }
 
@@ -144,11 +144,11 @@ impl KrostType for Record {
             Some(value) => {
                 let l =
                     i32::try_from(value.len()).map_err(|e| KrostError::Malformed(Box::new(e)))?;
-                VarInt(l).encode(&mut data)?;
+                VarInt(l).encode(&mut data, version)?;
                 data.write_all(value)?;
             }
             None => {
-                VarInt(-1).encode(&mut data)?;
+                VarInt(-1).encode(&mut data, version)?;
             }
         }
 
@@ -156,14 +156,14 @@ impl KrostType for Record {
         // Note: This is NOT a normal array but uses a VarInt instead.
         let l =
             i32::try_from(self.headers.len()).map_err(|e| KrostError::Malformed(Box::new(e)))?;
-        VarInt(l).encode(&mut data)?;
+        VarInt(l).encode(&mut data, version)?;
         for header in &self.headers {
-            header.encode(&mut data)?;
+            header.encode(&mut data, version)?;
         }
 
         // now write accumulated data
         let l = i32::try_from(data.len()).map_err(|e| KrostError::Malformed(Box::new(e)))?;
-        VarInt(l).encode(buf)?;
+        VarInt(l).encode(buf, version)?;
         buf.write_all(&data)?;
 
         Ok(4 + data.len())
@@ -177,9 +177,9 @@ pub enum ControlBatchRecord {
 }
 
 impl KrostType for ControlBatchRecord {
-    fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
+    fn decode<D: Read>(buf: &mut D, version: i16) -> Result<Self, KrostError> {
         // version
-        let version = Int16::decode(buf)?.0;
+        let version = Int16::decode(buf, version)?.0;
         if version != 0 {
             return Err(KrostError::Malformed(
                 format!("Unknown control batch record version: {}", version).into(),
@@ -187,7 +187,7 @@ impl KrostType for ControlBatchRecord {
         }
 
         // type
-        let t = Int16::decode(buf)?.0;
+        let t = Int16::decode(buf, version)?.0;
         match t {
             0 => Ok(Self::Abort),
             1 => Ok(Self::Commit),
@@ -197,16 +197,16 @@ impl KrostType for ControlBatchRecord {
         }
     }
 
-    fn encode<E: Write>(&self, buf: &mut E) -> Result<usize, KrostError> {
+    fn encode<E: Write>(&self, buf: &mut E, version: i16) -> Result<usize, KrostError> {
         // version
-        let mut len = Int16(0).encode(buf)?;
+        let mut len = Int16(0).encode(buf, version)?;
 
         // type
         let t = match self {
             Self::Abort => 0,
             Self::Commit => 1,
         };
-        len += Int16(t).encode(buf)?;
+        len += Int16(t).encode(buf, version)?;
 
         Ok(len)
     }
@@ -254,6 +254,7 @@ impl RecordBatch {
         buf: &mut D,
         is_control: bool,
         n_records: usize,
+        version: i16,
     ) -> Result<ControlBatchOrRecords, KrostError>
     where
         D: Read,
@@ -265,27 +266,33 @@ impl RecordBatch {
                 ));
             }
 
-            let record = ControlBatchRecord::decode(buf)?;
+            let record = ControlBatchRecord::decode(buf, version)?;
             Ok(ControlBatchOrRecords::ControlBatch(record))
         } else {
             let mut records = Vec::with_capacity(n_records);
             for _ in 0..n_records {
-                records.push(Record::decode(buf)?);
+                records.push(Record::decode(buf, version)?);
             }
             Ok(ControlBatchOrRecords::Records(records))
         }
     }
 
-    fn encode_records<E>(buf: &mut E, records: &ControlBatchOrRecords) -> Result<usize, KrostError>
+    fn encode_records<E>(
+        buf: &mut E,
+        records: &ControlBatchOrRecords,
+        version: i16,
+    ) -> Result<usize, KrostError>
     where
         E: Write,
     {
         match records {
-            ControlBatchOrRecords::ControlBatch(control_batch) => control_batch.encode(buf),
+            ControlBatchOrRecords::ControlBatch(control_batch) => {
+                control_batch.encode(buf, version)
+            }
             ControlBatchOrRecords::Records(records) => {
                 let mut len = 0;
                 for record in records {
-                    len += record.encode(buf)?;
+                    len += record.encode(buf, version)?;
                 }
                 Ok(len)
             }
@@ -294,14 +301,14 @@ impl RecordBatch {
 }
 
 impl KrostType for RecordBatch {
-    fn decode<D: Read>(buf: &mut D) -> Result<Self, KrostError> {
-        let base_offset = Int64::decode(buf)?.0;
+    fn decode<D: Read>(buf: &mut D, version: i16) -> Result<Self, KrostError> {
+        let base_offset = Int64::decode(buf, version)?.0;
 
         // batchLength
         //
         // Contains all fields AFTER the length field (so excluding `baseOffset` and `batchLength`). To determine the
         // size of the CRC-checked part we must substract all sized from this field to and including the CRC field.
-        let len = Int32::decode(buf)?;
+        let len = Int32::decode(buf, version)?;
         let len = usize::try_from(len.0).map_err(|e| KrostError::Malformed(Box::new(e)))?;
         let len = len
             .checked_sub(
@@ -314,10 +321,10 @@ impl KrostType for RecordBatch {
             })?;
 
         // partitionLeaderEpoch
-        let partition_leader_epoch = Int32::decode(buf)?.0;
+        let partition_leader_epoch = Int32::decode(buf, version)?.0;
 
         // magic
-        let magic = Int8::decode(buf)?.0;
+        let magic = Int8::decode(buf, version)?.0;
         if magic != 2 {
             return Err(KrostError::Malformed(
                 format!("Invalid magic number in record batch: {}", magic).into(),
@@ -325,7 +332,7 @@ impl KrostType for RecordBatch {
         }
 
         // crc
-        let crc = Int32::decode(buf)?.0;
+        let crc = Int32::decode(buf, version)?.0;
         let crc = u32::from_be_bytes(crc.to_be_bytes());
 
         // data
@@ -344,7 +351,7 @@ impl KrostType for RecordBatch {
         // let body = RecordBatchBody::decode(&mut data)?;
 
         // attributes
-        let attributes = Int16::decode(buf)?.0;
+        let attributes = Int16::decode(buf, version)?.0;
         let compression = match attributes & 0x7 {
             0 => RecordBatchCompression::NoCompression,
             1 => RecordBatchCompression::Gzip,
@@ -366,38 +373,38 @@ impl KrostType for RecordBatch {
         let is_control = ((attributes >> 5) & 0x1) == 1;
 
         // lastOffsetDelta
-        let last_offset_delta = Int32::decode(buf)?.0;
+        let last_offset_delta = Int32::decode(buf, version)?.0;
 
         // firstTimestamp
-        let first_timestamp = Int64::decode(buf)?.0;
+        let first_timestamp = Int64::decode(buf, version)?.0;
 
         // maxTimestamp
-        let max_timestamp = Int64::decode(buf)?.0;
+        let max_timestamp = Int64::decode(buf, version)?.0;
 
         // producerId
-        let producer_id = Int64::decode(buf)?.0;
+        let producer_id = Int64::decode(buf, version)?.0;
 
         // producerEpoch
-        let producer_epoch = Int16::decode(buf)?.0;
+        let producer_epoch = Int16::decode(buf, version)?.0;
 
         // baseSequence
-        let base_sequence = Int32::decode(buf)?.0;
+        let base_sequence = Int32::decode(buf, version)?.0;
 
         // records
-        let n_records = match Int32::decode(buf)?.0 {
+        let n_records = match Int32::decode(buf, version)?.0 {
             -1 => 0,
             n => usize::try_from(n)?,
         };
         let records = match compression {
             RecordBatchCompression::NoCompression => {
-                Self::decode_records(buf, is_control, n_records)?
+                Self::decode_records(buf, is_control, n_records, version)?
             }
             #[cfg(feature = "compression-gzip")]
             RecordBatchCompression::Gzip => {
                 use flate2::read::GzDecoder;
 
                 let mut decoder = GzDecoder::new(buf);
-                let records = Self::decode_records(&mut decoder, is_control, n_records)?;
+                let records = Self::decode_records(&mut decoder, is_control, n_records, version)?;
 
                 ensure_eof(&mut decoder, "Data left in gzip block")?;
 
@@ -408,7 +415,7 @@ impl KrostType for RecordBatch {
                 use lz4::Decoder;
 
                 let mut decoder = Decoder::new(buf)?;
-                let records = Self::decode_records(&mut decoder, is_control, n_records)?;
+                let records = Self::decode_records(&mut decoder, is_control, n_records, version)?;
 
                 // the lz4 decoder requires us to consume the whole inner stream until we reach EOF
                 ensure_eof(&mut decoder, "Data left in LZ4 block")?;
@@ -467,7 +474,7 @@ impl KrostType for RecordBatch {
 
                 // Read uncompressed records.
                 let mut decoder = Cursor::new(output);
-                let records = Self::decode_records(&mut decoder, is_control, n_records)?;
+                let records = Self::decode_records(&mut decoder, is_control, n_records, version)?;
 
                 // Check that there's no data left within the uncompressed block.
                 ensure_eof(&mut decoder, "Data left in Snappy block")?;
@@ -479,7 +486,7 @@ impl KrostType for RecordBatch {
                 use zstd::Decoder;
 
                 let mut decoder = Decoder::new(buf)?;
-                let records = Self::decode_records(&mut decoder, is_control, n_records)?;
+                let records = Self::decode_records(&mut decoder, is_control, n_records, version)?;
 
                 ensure_eof(&mut decoder, "Data left in zstd block")?;
 
@@ -519,7 +526,7 @@ impl KrostType for RecordBatch {
         })
     }
 
-    fn encode<E: Write>(&self, buf: &mut E) -> Result<usize, KrostError> {
+    fn encode<E: Write>(&self, buf: &mut E, version: i16) -> Result<usize, KrostError> {
         // collect everything that should be part of the CRC calculation
         let mut data = vec![];
 
@@ -543,42 +550,42 @@ impl KrostType for RecordBatch {
         if matches!(self.records, ControlBatchOrRecords::ControlBatch(_)) {
             attributes |= 1 << 5;
         }
-        Int16(attributes).encode(&mut data)?;
+        Int16(attributes).encode(&mut data, version)?;
 
         // lastOffsetDelta
-        Int32(self.last_offset_delta).encode(&mut data)?;
+        Int32(self.last_offset_delta).encode(&mut data, version)?;
 
         // firstTimestamp
-        Int64(self.first_timestamp).encode(&mut data)?;
+        Int64(self.first_timestamp).encode(&mut data, version)?;
 
         // maxTimestamp
-        Int64(self.max_timestamp).encode(&mut data)?;
+        Int64(self.max_timestamp).encode(&mut data, version)?;
 
         // producerId
-        Int64(self.producer_id).encode(&mut data)?;
+        Int64(self.producer_id).encode(&mut data, version)?;
 
         // producerEpoch
-        Int16(self.producer_epoch).encode(&mut data)?;
+        Int16(self.producer_epoch).encode(&mut data, version)?;
 
         // baseSequence
-        Int32(self.base_sequence).encode(&mut data)?;
+        Int32(self.base_sequence).encode(&mut data, version)?;
 
         // records
         let n_records = match &self.records {
             ControlBatchOrRecords::ControlBatch(_) => 1,
             ControlBatchOrRecords::Records(records) => records.len(),
         };
-        Int32(i32::try_from(n_records)?).encode(&mut data)?;
+        Int32(i32::try_from(n_records)?).encode(&mut data, version)?;
         match self.compression {
             RecordBatchCompression::NoCompression => {
-                Self::encode_records(&mut data, &self.records)?;
+                Self::encode_records(&mut data, &self.records, version)?;
             }
             #[cfg(feature = "compression-gzip")]
             RecordBatchCompression::Gzip => {
                 use flate2::{write::GzEncoder, Compression};
 
                 let mut encoder = GzEncoder::new(&mut data, Compression::default());
-                Self::encode_records(&mut encoder, &self.records)?;
+                Self::encode_records(&mut encoder, &self.records, version)?;
                 encoder.finish()?;
             }
             #[cfg(feature = "compression-lz4")]
@@ -591,7 +598,7 @@ impl KrostType for RecordBatch {
                         BlockMode::Independent,
                     )
                     .build(&mut data)?;
-                Self::encode_records(&mut encoder, &self.records)?;
+                Self::encode_records(&mut encoder, &self.records, version)?;
                 let (_writer, res) = encoder.finish();
                 res?;
             }
@@ -600,7 +607,7 @@ impl KrostType for RecordBatch {
                 use snap::raw::{max_compress_len, Encoder};
 
                 let mut input = vec![];
-                Self::encode_records(&mut input, &self.records)?;
+                Self::encode_records(&mut input, &self.records, version)?;
 
                 let mut encoder = Encoder::new();
                 let mut output = vec![0; max_compress_len(input.len())];
@@ -615,7 +622,7 @@ impl KrostType for RecordBatch {
                 use zstd::Encoder;
 
                 let mut encoder = Encoder::new(&mut data, 0)?;
-                Self::encode_records(&mut encoder, &self.records)?;
+                Self::encode_records(&mut encoder, &self.records, version)?;
                 encoder.finish()?;
             }
             #[allow(unreachable_patterns)]
@@ -630,7 +637,7 @@ impl KrostType for RecordBatch {
         // ==========================================================================================
 
         // baseOffset
-        let mut len = Int64(self.base_offset).encode(buf)?;
+        let mut len = Int64(self.base_offset).encode(buf, version)?;
 
         // batchLength
         //
@@ -646,13 +653,13 @@ impl KrostType for RecordBatch {
                 + 4, // crc
         )
         .map_err(|e| KrostError::Malformed(Box::new(e)))?;
-        len += Int32(l).encode(buf)?;
+        len += Int32(l).encode(buf, version)?;
 
         // partitionLeaderEpoch
-        len += Int32(self.partition_leader_epoch).encode(buf)?;
+        len += Int32(self.partition_leader_epoch).encode(buf, version)?;
 
         // magic
-        len += Int8(2).encode(buf)?;
+        len += Int8(2).encode(buf, version)?;
 
         // crc
         // See
@@ -660,7 +667,7 @@ impl KrostType for RecordBatch {
         // WARNING: the range in the code linked above is correct but the polynomial is wrong!
         let crc = crc32c::crc32c(&data);
         let crc = i32::from_be_bytes(crc.to_be_bytes());
-        len += Int32(crc).encode(buf)?;
+        len += Int32(crc).encode(buf, version)?;
 
         // the actual CRC-checked data
         buf.write_all(&data)?;
