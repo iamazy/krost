@@ -295,6 +295,16 @@ fn gen_header_imports(file_contents: &mut TokenStream) {
     file_contents.extend(quote! { use from_variants::FromVariants; });
 }
 
+pub(crate) fn gen_header_contents(headers: Vec<KrostSchema>) -> TokenStream {
+    let mut header_contents = TokenStream::new();
+    let header_module_ident = to_ident("header");
+
+    header_contents.extend(quote! { pub mod #header_module_ident {
+        #(#headers)*
+    }});
+    header_contents
+}
+
 pub(crate) fn gen_api_file_contents(
     grouped_specs: &BTreeMap<i16, (KrostSchema, KrostSchema)>,
 ) -> TokenStream {

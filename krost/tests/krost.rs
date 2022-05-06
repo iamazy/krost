@@ -1,7 +1,7 @@
 #![allow(dead_code)]
-use krost_derive::Krost;
-use krost::KrostType;
 use from_variants::FromVariants;
+use krost::KrostType;
+use krost_derive::Krost;
 pub mod request {
     pub mod produce {
         #[derive(Debug, PartialEq, Krost, Clone)]
@@ -2379,9 +2379,7 @@ pub mod request {
         DeleteTopicsRequest(delete_topics::DeleteTopicsRequest),
         DeleteRecordsRequest(delete_records::DeleteRecordsRequest),
         InitProducerIdRequest(init_producer_id::InitProducerIdRequest),
-        OffsetForLeaderEpochRequest(
-            offset_for_leader_epoch::OffsetForLeaderEpochRequest,
-        ),
+        OffsetForLeaderEpochRequest(offset_for_leader_epoch::OffsetForLeaderEpochRequest),
         AddPartitionsToTxnRequest(add_partitions_to_txn::AddPartitionsToTxnRequest),
         AddOffsetsToTxnRequest(add_offsets_to_txn::AddOffsetsToTxnRequest),
         EndTxnRequest(end_txn::EndTxnRequest),
@@ -2396,21 +2394,13 @@ pub mod request {
         DescribeLogDirsRequest(describe_log_dirs::DescribeLogDirsRequest),
         SaslAuthenticateRequest(sasl_authenticate::SaslAuthenticateRequest),
         CreatePartitionsRequest(create_partitions::CreatePartitionsRequest),
-        CreateDelegationTokenRequest(
-            create_delegation_token::CreateDelegationTokenRequest,
-        ),
+        CreateDelegationTokenRequest(create_delegation_token::CreateDelegationTokenRequest),
         RenewDelegationTokenRequest(renew_delegation_token::RenewDelegationTokenRequest),
-        ExpireDelegationTokenRequest(
-            expire_delegation_token::ExpireDelegationTokenRequest,
-        ),
-        DescribeDelegationTokenRequest(
-            describe_delegation_token::DescribeDelegationTokenRequest,
-        ),
+        ExpireDelegationTokenRequest(expire_delegation_token::ExpireDelegationTokenRequest),
+        DescribeDelegationTokenRequest(describe_delegation_token::DescribeDelegationTokenRequest),
         DeleteGroupsRequest(delete_groups::DeleteGroupsRequest),
         ElectLeadersRequest(elect_leaders::ElectLeadersRequest),
-        IncrementalAlterConfigsRequest(
-            incremental_alter_configs::IncrementalAlterConfigsRequest,
-        ),
+        IncrementalAlterConfigsRequest(incremental_alter_configs::IncrementalAlterConfigsRequest),
         AlterPartitionReassignmentsRequest(
             alter_partition_reassignments::AlterPartitionReassignmentsRequest,
         ),
@@ -5341,9 +5331,7 @@ pub mod response {
         DeleteTopicsResponse(delete_topics::DeleteTopicsResponse),
         DeleteRecordsResponse(delete_records::DeleteRecordsResponse),
         InitProducerIdResponse(init_producer_id::InitProducerIdResponse),
-        OffsetForLeaderEpochResponse(
-            offset_for_leader_epoch::OffsetForLeaderEpochResponse,
-        ),
+        OffsetForLeaderEpochResponse(offset_for_leader_epoch::OffsetForLeaderEpochResponse),
         AddPartitionsToTxnResponse(add_partitions_to_txn::AddPartitionsToTxnResponse),
         AddOffsetsToTxnResponse(add_offsets_to_txn::AddOffsetsToTxnResponse),
         EndTxnResponse(end_txn::EndTxnResponse),
@@ -5358,23 +5346,13 @@ pub mod response {
         DescribeLogDirsResponse(describe_log_dirs::DescribeLogDirsResponse),
         SaslAuthenticateResponse(sasl_authenticate::SaslAuthenticateResponse),
         CreatePartitionsResponse(create_partitions::CreatePartitionsResponse),
-        CreateDelegationTokenResponse(
-            create_delegation_token::CreateDelegationTokenResponse,
-        ),
-        RenewDelegationTokenResponse(
-            renew_delegation_token::RenewDelegationTokenResponse,
-        ),
-        ExpireDelegationTokenResponse(
-            expire_delegation_token::ExpireDelegationTokenResponse,
-        ),
-        DescribeDelegationTokenResponse(
-            describe_delegation_token::DescribeDelegationTokenResponse,
-        ),
+        CreateDelegationTokenResponse(create_delegation_token::CreateDelegationTokenResponse),
+        RenewDelegationTokenResponse(renew_delegation_token::RenewDelegationTokenResponse),
+        ExpireDelegationTokenResponse(expire_delegation_token::ExpireDelegationTokenResponse),
+        DescribeDelegationTokenResponse(describe_delegation_token::DescribeDelegationTokenResponse),
         DeleteGroupsResponse(delete_groups::DeleteGroupsResponse),
         ElectLeadersResponse(elect_leaders::ElectLeadersResponse),
-        IncrementalAlterConfigsResponse(
-            incremental_alter_configs::IncrementalAlterConfigsResponse,
-        ),
+        IncrementalAlterConfigsResponse(incremental_alter_configs::IncrementalAlterConfigsResponse),
         AlterPartitionReassignmentsResponse(
             alter_partition_reassignments::AlterPartitionReassignmentsResponse,
         ),
@@ -5382,9 +5360,7 @@ pub mod response {
             list_partition_reassignments::ListPartitionReassignmentsResponse,
         ),
         OffsetDeleteResponse(offset_delete::OffsetDeleteResponse),
-        DescribeClientQuotasResponse(
-            describe_client_quotas::DescribeClientQuotasResponse,
-        ),
+        DescribeClientQuotasResponse(describe_client_quotas::DescribeClientQuotasResponse),
         AlterClientQuotasResponse(alter_client_quotas::AlterClientQuotasResponse),
         DescribeUserScramCredentialsResponse(
             describe_user_scram_credentials::DescribeUserScramCredentialsResponse,
@@ -5405,10 +5381,39 @@ pub mod response {
         BrokerRegistrationResponse(broker_registration::BrokerRegistrationResponse),
         BrokerHeartbeatResponse(broker_heartbeat::BrokerHeartbeatResponse),
         UnregisterBrokerResponse(unregister_broker::UnregisterBrokerResponse),
-        DescribeTransactionsResponse(
-            describe_transactions::DescribeTransactionsResponse,
-        ),
+        DescribeTransactionsResponse(describe_transactions::DescribeTransactionsResponse),
         ListTransactionsResponse(list_transactions::ListTransactionsResponse),
         AllocateProducerIdsResponse(allocate_producer_ids::AllocateProducerIdsResponse),
+    }
+}
+pub mod header {
+    #[derive(Debug, PartialEq, Krost, Clone)]
+    #[kafka(apikey = , added = 0i16, removed = 1i16)]
+    pub struct ResponseHeader {
+        ///The correlation ID of this response.
+        #[kafka(added = 0i16)]
+        pub correlation_id: krost::primitive::Int32,
+        ///The tagged fields.
+        #[kafka(added = 1i16)]
+        pub _tagged_fields: krost::primitive::TaggedFields,
+    }
+    #[derive(Debug, PartialEq, Krost, Clone)]
+    #[kafka(apikey = , added = 0i16, removed = 2i16)]
+    pub struct RequestHeader {
+        ///The API key of this request.
+        #[kafka(added = 0i16)]
+        pub request_api_key: krost::primitive::Int16,
+        ///The API version of this request.
+        #[kafka(added = 0i16)]
+        pub request_api_version: krost::primitive::Int16,
+        ///The correlation ID of this request.
+        #[kafka(added = 0i16)]
+        pub correlation_id: krost::primitive::Int32,
+        ///The client ID string.
+        #[kafka(added = 1i16)]
+        pub client_id: Option<krost::primitive::String>,
+        ///The tagged fields.
+        #[kafka(added = 2i16)]
+        pub _tagged_fields: krost::primitive::TaggedFields,
     }
 }

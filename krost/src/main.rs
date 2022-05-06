@@ -8,7 +8,6 @@ use crate::render::{KrostField, KrostSchema, KrostStruct};
 use crate::schema::{SchemaType, Versions};
 use std::io::BufRead;
 use std::path::{Path, PathBuf};
-use std::str::FromStr;
 use std::{fs, io};
 use thiserror::Error;
 
@@ -143,8 +142,6 @@ fn collect_paths(path: &Path) -> Vec<PathBuf> {
             p.file_name().to_str().unwrap().contains("Request")
                 | p.file_name().to_str().unwrap().contains("Response")
         })
-        .filter(|p| !p.file_name().to_str().unwrap().contains("RequestHeader"))
-        .filter(|p| !p.file_name().to_str().unwrap().contains("ResponseHeader"))
         .map(|p| p.path())
         .collect()
 }
@@ -153,15 +150,22 @@ fn main() {
     let path = Path::new("message");
     let paths = collect_paths(path);
     let mut root_specs = vec![];
+    let mut header_specs = vec![];
     for path in &paths[..] {
         let schema = parse_schema_file(path)
             .unwrap_or_else(|e| panic!("could not parse schema file {:?}, e: {:?}", path, e));
         let root_rpc_spec = expand_schema(schema);
-        root_specs.push(root_rpc_spec);
+        if root_rpc_spec.r#type == schema::SchemaType::Header {
+            header_specs.push(root_rpc_spec);
+        } else {
+            root_specs.push(root_rpc_spec);
+        }
     }
 
+    let headers_specs = render::gen_header_contents(header_specs);
     let grouped_specs = render::group_schema_specs(root_specs);
-    let api_file_contents = render::gen_api_file_contents(&grouped_specs);
+    let mut api_file_contents = render::gen_api_file_contents(&grouped_specs);
+    api_file_contents.extend(headers_specs);
 
     if let Ok(file) = syn::parse_file(&api_file_contents.to_string()) {
         let pretty = prettyplease::unparse(&file);
