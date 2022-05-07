@@ -1,5 +1,5 @@
-use crate::schema;
 use crate::schema::SchemaType;
+use crate::{schema, Versions};
 use heck::ToSnakeCase;
 use itertools::Itertools;
 use proc_macro2::TokenStream;
@@ -14,15 +14,15 @@ pub(crate) struct KrostField {
     pub(crate) nullable: bool,
     pub(crate) field_name: String,
     pub(crate) type_name: String,
-    pub(crate) version_added: Option<i16>,
-    pub(crate) version_removed: Option<i16>,
-    pub(crate) flexible_versions: Option<i16>,
+    pub(crate) versions: String,
+    pub(crate) tagged_versions: Option<String>,
+    pub(crate) tag: Option<i32>,
     pub(crate) default: Option<KrostValue>,
     pub(crate) doc: Option<String>,
 }
 
 impl KrostField {
-    pub(crate) fn from_schema(field: &schema::Field, flexible_versions: Option<i16>) -> Self {
+    pub(crate) fn from_schema(field: &schema::Field) -> Self {
         let collection = field.r#type.is_array();
         let nullable = field.nullable_versions.is_some();
         let field_name = field.name.to_snake_case();
@@ -31,8 +31,8 @@ impl KrostField {
             .to_string()
             .trim_start_matches("[]")
             .to_string();
-        let version_added = field.versions.version_start();
-        let version_removed = field.versions.version_end();
+        let versions = field.versions.to_string();
+        let tagged_versions = Option::map(field.tagged_versions, |v| v.to_string());
         let default = match &field.default {
             Some(Value::Bool(b)) => Some(KrostValue::Bool(*b)),
             Some(Value::Number(n)) => Some(KrostValue::Number(n.as_f64().unwrap())),
@@ -45,23 +45,23 @@ impl KrostField {
             nullable,
             field_name,
             type_name,
-            version_added,
-            version_removed,
-            flexible_versions,
+            versions,
+            tagged_versions,
+            tag: field.tag,
             default,
             doc,
         }
     }
 
-    pub(crate) fn tagged_fields(version_added: i16) -> Self {
+    pub(crate) fn tagged_fields(flexible_versions: String) -> Self {
         Self {
             collection: false,
             nullable: false,
             field_name: "_tagged_fields".to_string(),
             type_name: "tagged_fields".to_string(),
-            version_added: Some(version_added),
-            version_removed: None,
-            flexible_versions: None,
+            tagged_versions: None,
+            versions: flexible_versions,
+            tag: None,
             default: None,
             doc: Some("The tagged fields.".to_string()),
         }
@@ -97,17 +97,20 @@ impl KrostField {
 
 impl ToTokens for KrostField {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let field_name = self.field_name.clone();
-        let version_added = self.version_added;
-        let field_name_ident = to_ident(&field_name);
+        let field_name_ident = to_ident(&self.field_name);
         let field_type_ident = self.field_type();
-        let version_added_ident = quote! { added = #version_added };
-        let version_removed_ident = self.version_removed.map(|v| quote! {,removed = #v});
-        let default_ident = self.default.clone().map(|v| quote! {,default = #v});
+        let versions = self.versions.clone();
+        let versions_ident = quote! { versions = #versions, };
+        let tagged_versions_ident = self
+            .tagged_versions
+            .as_ref()
+            .map(|v| quote! {tagged = #v, });
+        let tag_ident = self.tag.map(|v| quote! {tag = #v, });
+        let default_ident = self.default.clone().map(|v| quote! {default = #v, });
         let doc_ident = self.doc.clone().map(|v| quote! { #[doc = #v] });
         tokens.extend(quote! {
           #doc_ident
-          #[kafka(#version_added_ident #version_removed_ident #default_ident)]
+          #[kafka(#versions_ident #tagged_versions_ident #tag_ident #default_ident)]
           pub #field_name_ident: #field_type_ident
         })
     }
@@ -159,8 +162,8 @@ pub(crate) struct KrostSchema {
     pub(crate) api_key: Option<i16>,
     pub(crate) fields: Vec<KrostField>,
     pub(crate) structs: Vec<KrostStruct>,
-    pub(crate) version_added: Option<i16>,
-    pub(crate) version_removed: Option<i16>,
+    pub(crate) versions: String,
+    pub(crate) flexible_versions: Option<String>,
 }
 
 impl ToTokens for KrostSchema {
@@ -169,9 +172,12 @@ impl ToTokens for KrostSchema {
         let struct_name_ident = to_ident(&full_struct_name);
         let struct_fields = &self.fields;
         let substructs = &self.structs;
-        let version_added = self.version_added;
-        let version_added_ident = quote! {added = #version_added, };
-        let version_removed_ident = self.version_removed.map(|v| quote! { removed = #v});
+        let versions = self.versions.clone();
+        let versions_ident = quote! { versions = #versions, };
+        let flexible_versions = self
+            .flexible_versions
+            .clone()
+            .map(|v| quote! { flexible = #v});
 
         let api_key = self.api_key;
         let api_key_ident = if api_key.is_some() {
@@ -182,7 +188,7 @@ impl ToTokens for KrostSchema {
 
         tokens.extend(quote! {
             #[derive(Debug, PartialEq, Krost, Clone)]
-            #[kafka(#api_key_ident #version_added_ident #version_removed_ident)]
+            #[kafka(#api_key_ident #versions_ident #flexible_versions)]
             pub struct #struct_name_ident {
                #(#struct_fields),*
             }
@@ -209,17 +215,6 @@ fn to_ident(s: &str) -> syn::Ident {
         }
         _ => ident,
     }
-}
-
-pub(crate) fn render_module(
-    tokens: &mut TokenStream,
-    request: &KrostSchema,
-    response: &KrostSchema,
-) {
-    tokens.extend(quote! {
-        #request
-        #response
-    });
 }
 
 pub(crate) fn group_schema_specs(
@@ -258,38 +253,6 @@ pub(crate) fn group_schema_specs(
             (api_key, (specs.remove(0), specs.remove(0)))
         })
         .collect::<BTreeMap<i16, (KrostSchema, KrostSchema)>>()
-}
-
-pub(crate) fn gen_api_key_file_contents(
-    grouped_specs: &BTreeMap<i16, (KrostSchema, KrostSchema)>,
-) -> TokenStream {
-    let mut file_contents = TokenStream::new();
-    let mut api_key_pairs: Vec<(String, i16)> = vec![];
-    for (api_key, (request_spec, _response_spec)) in grouped_specs {
-        api_key_pairs.push((request_spec.name.clone(), *api_key));
-    }
-    render_api_keys(&mut file_contents, api_key_pairs);
-    file_contents
-}
-
-pub(crate) fn render_api_keys(tokens: &mut TokenStream, pairs: Vec<(String, i16)>) {
-    let variants = pairs
-        .into_iter()
-        .map(|(name_string, key)| (to_ident(&name_string), key))
-        .map(|(name, key)| quote! { #name = #key })
-        .collect::<Vec<_>>();
-    tokens.extend(quote! {
-            #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-            #[repr(i16)]
-            pub enum ApiKey {
-                #(#variants),*
-            }
-            impl Into<i16> for ApiKey {
-                fn into(self) -> i16 {
-                    self as i16
-                }
-            }
-    });
 }
 
 fn gen_header_imports(file_contents: &mut TokenStream) {

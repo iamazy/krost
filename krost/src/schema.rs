@@ -24,10 +24,8 @@ pub struct Field {
     pub entity_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub about: Option<String>,
-    #[serde(default, skip_serializing_if = "Versions::is_none")]
-    pub tagged_versions: Versions,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flexible_versions: Option<Versions>,
+    pub tagged_versions: Option<Versions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -174,23 +172,6 @@ impl Versions {
 
     pub fn is_some(&self) -> bool {
         !self.is_none()
-    }
-
-    pub(crate) fn version_start(&self) -> Option<i16> {
-        match self {
-            Versions::None => None,
-            Versions::Exact(start) => Some(*start),
-            Versions::Since(since) => Some(*since),
-            Versions::Range(start, _) => Some(*start),
-        }
-    }
-    pub(crate) fn version_end(&self) -> Option<i16> {
-        match self {
-            Versions::None => None,
-            Versions::Exact(_) => None,
-            Versions::Since(_) => None,
-            Versions::Range(_, end) => Some(*end),
-        }
     }
 }
 
