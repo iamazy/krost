@@ -46,7 +46,7 @@ fn expand_fields(
     schema_type: SchemaType,
     structs: &mut Vec<KrostStruct>,
     fields: &[schema::Field],
-    flexible_versions: Option<String>,
+    flexible_versions: Option<Versions>,
 ) -> Vec<KrostField> {
     let mut converted_fields = vec![];
     for field in fields {
@@ -64,9 +64,9 @@ fn expand_fields(
                     schema_type,
                     structs,
                     subfields,
-                    flexible_versions.clone(),
+                    flexible_versions,
                 );
-                if let Some(start) = flexible_versions.clone() {
+                if let Some(start) = flexible_versions {
                     substruct_fields.push(KrostField::tagged_fields(start));
                 }
                 let substruct = KrostStruct {
@@ -87,17 +87,15 @@ fn expand_schema(schema: schema::Schema) -> KrostSchema {
     let name = schema.name;
     let mut structs = vec![];
 
-    let flexible_versions = schema.flexible_versions.map(|s| s.to_string());
-
     let mut root_fields = expand_fields(
         schema.api_key,
         schema.r#type,
         &mut structs,
         &schema.fields,
-        flexible_versions.clone(),
+        schema.flexible_versions,
     );
 
-    if let Some(start) = flexible_versions.clone() {
+    if let Some(start) = schema.flexible_versions {
         root_fields.push(KrostField::tagged_fields(start));
     }
     KrostSchema {
@@ -105,9 +103,9 @@ fn expand_schema(schema: schema::Schema) -> KrostSchema {
         r#type: schema.r#type,
         api_key: schema.api_key,
         fields: root_fields,
-        versions: schema.valid_versions.to_string(),
+        versions: schema.valid_versions,
         structs,
-        flexible_versions,
+        flexible_versions: schema.flexible_versions,
     }
 }
 

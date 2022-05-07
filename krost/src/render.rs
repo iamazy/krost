@@ -9,13 +9,77 @@ use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap};
 
 #[derive(Debug, Clone)]
+pub(crate) struct KrostSchema {
+    pub(crate) name: String,
+    pub(crate) r#type: schema::SchemaType,
+    pub(crate) api_key: Option<i16>,
+    pub(crate) fields: Vec<KrostField>,
+    pub(crate) structs: Vec<KrostStruct>,
+    pub(crate) versions: Versions,
+    pub(crate) flexible_versions: Option<Versions>,
+}
+
+impl ToTokens for KrostSchema {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let full_struct_name = self.name.clone();
+        let struct_name_ident = to_ident(&full_struct_name);
+        let struct_fields = &self.fields;
+        let substructs = &self.structs;
+        let versions = self.versions.to_string();
+        let versions_ident = quote! { versions = #versions, };
+        let flexible_versions = self.flexible_versions.map(|v| {
+            let v = v.to_string();
+            quote! { flexible = #v}
+        });
+
+        let api_key = self.api_key;
+        let api_key_ident = if api_key.is_some() {
+            quote! {apikey = #api_key, }
+        } else {
+            TokenStream::new()
+        };
+
+        tokens.extend(quote! {
+            #[derive(Debug, PartialEq, Krost, Clone)]
+            #[kafka(#api_key_ident #versions_ident #flexible_versions)]
+            pub struct #struct_name_ident {
+               #(#struct_fields),*
+            }
+            #(#substructs)*
+        })
+    }
+}
+
+#[derive(Debug, Clone)]
+pub(crate) struct KrostStruct {
+    pub(crate) struct_name: String,
+    pub(crate) schema_type: SchemaType,
+    pub(crate) api_key: Option<i16>,
+    pub(crate) fields: Vec<KrostField>,
+}
+
+impl ToTokens for KrostStruct {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let full_struct_name = self.struct_name.to_owned();
+        let struct_name_ident = to_ident(&full_struct_name);
+        let struct_fields = &self.fields;
+        tokens.extend(quote! {
+            #[derive(Debug, PartialEq, Krost, Clone)]
+            pub struct #struct_name_ident {
+               #(#struct_fields),*
+            }
+        })
+    }
+}
+
+#[derive(Debug, Clone)]
 pub(crate) struct KrostField {
     pub(crate) collection: bool,
     pub(crate) nullable: bool,
     pub(crate) field_name: String,
     pub(crate) type_name: String,
-    pub(crate) versions: String,
-    pub(crate) tagged_versions: Option<String>,
+    pub(crate) versions: Versions,
+    pub(crate) tagged_versions: Option<Versions>,
     pub(crate) tag: Option<i32>,
     pub(crate) default: Option<KrostValue>,
     pub(crate) doc: Option<String>,
@@ -31,8 +95,6 @@ impl KrostField {
             .to_string()
             .trim_start_matches("[]")
             .to_string();
-        let versions = field.versions.to_string();
-        let tagged_versions = Option::map(field.tagged_versions, |v| v.to_string());
         let default = match &field.default {
             Some(Value::Bool(b)) => Some(KrostValue::Bool(*b)),
             Some(Value::Number(n)) => Some(KrostValue::Number(n.as_f64().unwrap())),
@@ -45,15 +107,15 @@ impl KrostField {
             nullable,
             field_name,
             type_name,
-            versions,
-            tagged_versions,
+            versions: field.versions,
+            tagged_versions: field.tagged_versions,
             tag: field.tag,
             default,
             doc,
         }
     }
 
-    pub(crate) fn tagged_fields(flexible_versions: String) -> Self {
+    pub(crate) fn tagged_fields(flexible_versions: Versions) -> Self {
         Self {
             collection: false,
             nullable: false,
@@ -99,12 +161,12 @@ impl ToTokens for KrostField {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let field_name_ident = to_ident(&self.field_name);
         let field_type_ident = self.field_type();
-        let versions = self.versions.clone();
+        let versions = self.versions.to_string();
         let versions_ident = quote! { versions = #versions, };
-        let tagged_versions_ident = self
-            .tagged_versions
-            .as_ref()
-            .map(|v| quote! {tagged = #v, });
+        let tagged_versions_ident = self.tagged_versions.as_ref().map(|v| {
+            let v = v.to_string();
+            quote! {tagged = #v, }
+        });
         let tag_ident = self.tag.map(|v| quote! {tag = #v, });
         let default_ident = self.default.clone().map(|v| quote! {default = #v, });
         let doc_ident = self.doc.clone().map(|v| quote! { #[doc = #v] });
@@ -130,70 +192,6 @@ impl ToTokens for KrostValue {
             KrostValue::Number(n) => tokens.extend(quote! { #n }),
             KrostValue::String(s) => tokens.extend(quote! { #s }),
         }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub(crate) struct KrostStruct {
-    pub(crate) struct_name: String,
-    pub(crate) schema_type: SchemaType,
-    pub(crate) api_key: Option<i16>,
-    pub(crate) fields: Vec<KrostField>,
-}
-
-impl ToTokens for KrostStruct {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        let full_struct_name = self.struct_name.to_owned();
-        let struct_name_ident = to_ident(&full_struct_name);
-        let struct_fields = &self.fields;
-        tokens.extend(quote! {
-            #[derive(Debug, PartialEq, Krost, Clone)]
-            pub struct #struct_name_ident {
-               #(#struct_fields),*
-            }
-        })
-    }
-}
-
-#[derive(Debug, Clone)]
-pub(crate) struct KrostSchema {
-    pub(crate) name: String,
-    pub(crate) r#type: schema::SchemaType,
-    pub(crate) api_key: Option<i16>,
-    pub(crate) fields: Vec<KrostField>,
-    pub(crate) structs: Vec<KrostStruct>,
-    pub(crate) versions: String,
-    pub(crate) flexible_versions: Option<String>,
-}
-
-impl ToTokens for KrostSchema {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        let full_struct_name = self.name.clone();
-        let struct_name_ident = to_ident(&full_struct_name);
-        let struct_fields = &self.fields;
-        let substructs = &self.structs;
-        let versions = self.versions.clone();
-        let versions_ident = quote! { versions = #versions, };
-        let flexible_versions = self
-            .flexible_versions
-            .clone()
-            .map(|v| quote! { flexible = #v});
-
-        let api_key = self.api_key;
-        let api_key_ident = if api_key.is_some() {
-            quote! {apikey = #api_key, }
-        } else {
-            TokenStream::new()
-        };
-
-        tokens.extend(quote! {
-            #[derive(Debug, PartialEq, Krost, Clone)]
-            #[kafka(#api_key_ident #versions_ident #flexible_versions)]
-            pub struct #struct_name_ident {
-               #(#struct_fields),*
-            }
-            #(#substructs)*
-        })
     }
 }
 
