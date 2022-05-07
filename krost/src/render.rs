@@ -170,11 +170,15 @@ impl ToTokens for KrostSchema {
         let struct_fields = &self.fields;
         let substructs = &self.structs;
         let version_added = self.version_added;
-        let version_added_ident = quote! {,added = #version_added };
-        let version_removed_ident = self.version_removed.map(|v| quote! {,removed = #v});
+        let version_added_ident = quote! {added = #version_added, };
+        let version_removed_ident = self.version_removed.map(|v| quote! { removed = #v});
 
         let api_key = self.api_key;
-        let api_key_ident = quote! {apikey = #api_key};
+        let api_key_ident = if api_key.is_some() {
+            quote! {apikey = #api_key, }
+        } else {
+            TokenStream::new()
+        };
 
         tokens.extend(quote! {
             #[derive(Debug, PartialEq, Krost, Clone)]
