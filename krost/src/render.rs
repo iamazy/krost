@@ -1,10 +1,8 @@
-use crate::schema::SchemaType;
 use crate::{schema, Versions};
 use heck::ToSnakeCase;
 use itertools::Itertools;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
-use serde_json::Value;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap};
 
@@ -55,8 +53,6 @@ impl ToTokens for KrostSchema {
 #[derive(Debug, Clone)]
 pub(crate) struct KrostStruct {
     pub(crate) struct_name: String,
-    pub(crate) schema_type: SchemaType,
-    pub(crate) api_key: Option<i16>,
     pub(crate) fields: Vec<KrostField>,
 }
 
@@ -83,7 +79,7 @@ pub(crate) struct KrostField {
     pub(crate) versions: Versions,
     pub(crate) tagged_versions: Option<Versions>,
     pub(crate) tag: Option<i32>,
-    pub(crate) default: Option<KrostValue>,
+    pub(crate) default: Option<String>,
     pub(crate) doc: Option<String>,
 }
 
@@ -96,12 +92,11 @@ impl KrostField {
             .to_string()
             .trim_start_matches("[]")
             .to_string();
-        let default = match &field.default {
-            Some(Value::Bool(b)) => Some(KrostValue::Bool(*b)),
-            Some(Value::Number(n)) => Some(KrostValue::Number(n.as_f64().unwrap())),
-            Some(Value::String(s)) => Some(KrostValue::String(s.clone())),
-            _ => None,
+        let default = match field.default.clone() {
+            Some(default) => default.as_str().map(|s| s.to_string()),
+            None => None,
         };
+
         let doc = field.about.clone();
         Self {
             collection,
@@ -138,6 +133,7 @@ impl KrostField {
             "int16" => quote! { i16 },
             "int32" => quote! { i32 },
             "int64" => quote! { i64 },
+            "float64" => quote! { f64 },
             "bytes" => quote! { Vec<u8> },
             "string" => quote! { String },
             "uuid" => quote! { krost::types::Uuid },
@@ -180,23 +176,6 @@ impl ToTokens for KrostField {
           #[kafka(#versions_ident #tagged_versions_ident #tag_ident #nullable_versions_ident #default_ident)]
           pub #field_name_ident: #field_type_ident
         })
-    }
-}
-
-#[derive(Debug, Clone)]
-pub enum KrostValue {
-    Bool(bool),
-    Number(f64),
-    String(String),
-}
-
-impl ToTokens for KrostValue {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        match self {
-            KrostValue::Bool(b) => tokens.extend(quote! { #b }),
-            KrostValue::Number(n) => tokens.extend(quote! { #n }),
-            KrostValue::String(s) => tokens.extend(quote! { #s }),
-        }
     }
 }
 

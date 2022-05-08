@@ -1,6 +1,6 @@
 #![allow(dead_code)]
-use krost::KrostType;
 use from_variants::FromVariants;
+use krost::KrostType;
 pub mod request {
     pub mod produce {
         #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
@@ -57,7 +57,7 @@ pub mod request {
                 tagged = "12+",
                 tag = 0i32,
                 nullable = "12+",
-                default = "null",
+                default = "null"
             )]
             pub cluster_id: Option<String>,
             ///The broker ID of the follower, of -1 if this request is from a consumer.
@@ -260,6 +260,48 @@ pub mod request {
             pub _tagged_fields: krost::types::TaggedFields,
         }
         #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
+        pub struct LeaderAndIsrPartitionState {
+            ///The topic name.  This is only present in v0 or v1.
+            #[kafka(versions = "0-1")]
+            pub topic_name: String,
+            ///The partition index.
+            #[kafka(versions = "0+")]
+            pub partition_index: i32,
+            ///The controller epoch.
+            #[kafka(versions = "0+")]
+            pub controller_epoch: i32,
+            ///The broker ID of the leader.
+            #[kafka(versions = "0+")]
+            pub leader: i32,
+            ///The leader epoch.
+            #[kafka(versions = "0+")]
+            pub leader_epoch: i32,
+            ///The in-sync replica IDs.
+            #[kafka(versions = "0+")]
+            pub isr: Vec<i32>,
+            ///The current epoch for the partition. The epoch is a monotonically increasing value which is incremented after every partition change. (Since the LeaderAndIsr request is only used by the legacy controller, this corresponds to the zkVersion)
+            #[kafka(versions = "0+")]
+            pub partition_epoch: i32,
+            ///The replica IDs.
+            #[kafka(versions = "0+")]
+            pub replicas: Vec<i32>,
+            ///The replica IDs that we are adding this partition to, or null if no replicas are being added.
+            #[kafka(versions = "3+")]
+            pub adding_replicas: Vec<i32>,
+            ///The replica IDs that we are removing this partition from, or null if no replicas are being removed.
+            #[kafka(versions = "3+")]
+            pub removing_replicas: Vec<i32>,
+            ///Whether the replica should have existed on the broker or not.
+            #[kafka(versions = "1+", default = "false")]
+            pub is_new: bool,
+            ///1 if the partition is recovering from an unclean leader election; 0 otherwise.
+            #[kafka(versions = "6+", default = "0")]
+            pub leader_recovery_state: i8,
+            ///The tagged fields.
+            #[kafka(versions = "4+")]
+            pub _tagged_fields: krost::types::TaggedFields,
+        }
+        #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         pub struct LeaderAndIsrTopicState {
             ///The topic name.
             #[kafka(versions = "2+")]
@@ -392,6 +434,39 @@ pub mod request {
             pub topic_states: Vec<UpdateMetadataTopicState>,
             #[kafka(versions = "0+")]
             pub live_brokers: Vec<UpdateMetadataBroker>,
+            ///The tagged fields.
+            #[kafka(versions = "6+")]
+            pub _tagged_fields: krost::types::TaggedFields,
+        }
+        #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
+        pub struct UpdateMetadataPartitionState {
+            ///In older versions of this RPC, the topic name.
+            #[kafka(versions = "0-4")]
+            pub topic_name: String,
+            ///The partition index.
+            #[kafka(versions = "0+")]
+            pub partition_index: i32,
+            ///The controller epoch.
+            #[kafka(versions = "0+")]
+            pub controller_epoch: i32,
+            ///The ID of the broker which is the current partition leader.
+            #[kafka(versions = "0+")]
+            pub leader: i32,
+            ///The leader epoch of this partition.
+            #[kafka(versions = "0+")]
+            pub leader_epoch: i32,
+            ///The brokers which are in the ISR for this partition.
+            #[kafka(versions = "0+")]
+            pub isr: Vec<i32>,
+            ///The Zookeeper version.
+            #[kafka(versions = "0+")]
+            pub zk_version: i32,
+            ///All the replicas of this partition.
+            #[kafka(versions = "0+")]
+            pub replicas: Vec<i32>,
+            ///The replicas of this partition which are offline.
+            #[kafka(versions = "4+")]
+            pub offline_replicas: Vec<i32>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -951,7 +1026,7 @@ pub mod request {
         #[kafka(apikey = 23i16, versions = "0-4", flexible = "4+")]
         pub struct OffsetForLeaderEpochRequest {
             ///The broker ID of the follower, of -1 if this request is from a consumer.
-            #[kafka(versions = "3+", default = -2f64)]
+            #[kafka(versions = "3+")]
             pub replica_id: i32,
             ///Each topic to get offsets for.
             #[kafka(versions = "0+")]
@@ -1792,7 +1867,7 @@ pub mod request {
             pub key: String,
             ///The value to set, otherwise ignored if the value is to be removed.
             #[kafka(versions = "0+")]
-            pub value: float64,
+            pub value: f64,
             ///Whether the quota configuration value should be removed, otherwise set.
             #[kafka(versions = "0+")]
             pub remove: bool,
@@ -2081,7 +2156,7 @@ pub mod request {
             #[kafka(versions = "0+")]
             pub feature_updates: Vec<FeatureUpdateKey>,
             ///True if we should validate the request, but not perform the upgrade or downgrade.
-            #[kafka(versions = "1+", default = false)]
+            #[kafka(versions = "1+")]
             pub validate_only: bool,
             ///The tagged fields.
             #[kafka(versions = "0+")]
@@ -2099,7 +2174,7 @@ pub mod request {
             #[kafka(versions = "0")]
             pub allow_downgrade: bool,
             ///Determine which type of upgrade will be performed: 1 will perform an upgrade only (default), 2 is safe downgrades only (lossless), 3 is unsafe downgrades (lossy).
-            #[kafka(versions = "1+", default = 1f64)]
+            #[kafka(versions = "1+")]
             pub upgrade_type: i8,
             ///The tagged fields.
             #[kafka(versions = "0+")]
@@ -2134,7 +2209,7 @@ pub mod request {
                 tagged = "0+",
                 tag = 0i32,
                 nullable = "0+",
-                default = "null",
+                default = "null"
             )]
             pub cluster_id: Option<String>,
             ///The broker ID of the follower
@@ -2390,9 +2465,7 @@ pub mod request {
         DeleteTopicsRequest(delete_topics::DeleteTopicsRequest),
         DeleteRecordsRequest(delete_records::DeleteRecordsRequest),
         InitProducerIdRequest(init_producer_id::InitProducerIdRequest),
-        OffsetForLeaderEpochRequest(
-            offset_for_leader_epoch::OffsetForLeaderEpochRequest,
-        ),
+        OffsetForLeaderEpochRequest(offset_for_leader_epoch::OffsetForLeaderEpochRequest),
         AddPartitionsToTxnRequest(add_partitions_to_txn::AddPartitionsToTxnRequest),
         AddOffsetsToTxnRequest(add_offsets_to_txn::AddOffsetsToTxnRequest),
         EndTxnRequest(end_txn::EndTxnRequest),
@@ -2407,21 +2480,13 @@ pub mod request {
         DescribeLogDirsRequest(describe_log_dirs::DescribeLogDirsRequest),
         SaslAuthenticateRequest(sasl_authenticate::SaslAuthenticateRequest),
         CreatePartitionsRequest(create_partitions::CreatePartitionsRequest),
-        CreateDelegationTokenRequest(
-            create_delegation_token::CreateDelegationTokenRequest,
-        ),
+        CreateDelegationTokenRequest(create_delegation_token::CreateDelegationTokenRequest),
         RenewDelegationTokenRequest(renew_delegation_token::RenewDelegationTokenRequest),
-        ExpireDelegationTokenRequest(
-            expire_delegation_token::ExpireDelegationTokenRequest,
-        ),
-        DescribeDelegationTokenRequest(
-            describe_delegation_token::DescribeDelegationTokenRequest,
-        ),
+        ExpireDelegationTokenRequest(expire_delegation_token::ExpireDelegationTokenRequest),
+        DescribeDelegationTokenRequest(describe_delegation_token::DescribeDelegationTokenRequest),
         DeleteGroupsRequest(delete_groups::DeleteGroupsRequest),
         ElectLeadersRequest(elect_leaders::ElectLeadersRequest),
-        IncrementalAlterConfigsRequest(
-            incremental_alter_configs::IncrementalAlterConfigsRequest,
-        ),
+        IncrementalAlterConfigsRequest(incremental_alter_configs::IncrementalAlterConfigsRequest),
         AlterPartitionReassignmentsRequest(
             alter_partition_reassignments::AlterPartitionReassignmentsRequest,
         ),
@@ -2799,6 +2864,21 @@ pub mod response {
             ///Each topic
             #[kafka(versions = "5+")]
             pub topics: Vec<LeaderAndIsrTopicError>,
+            ///The tagged fields.
+            #[kafka(versions = "4+")]
+            pub _tagged_fields: krost::types::TaggedFields,
+        }
+        #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
+        pub struct LeaderAndIsrPartitionError {
+            ///The topic name.
+            #[kafka(versions = "0-4")]
+            pub topic_name: String,
+            ///The partition index.
+            #[kafka(versions = "0+")]
+            pub partition_index: i32,
+            ///The partition error code, or 0 if there was no error.
+            #[kafka(versions = "0+")]
+            pub error_code: i16,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3537,7 +3617,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub error_code: i16,
             ///The current producer id.
-            #[kafka(versions = "0+", default = -1f64)]
+            #[kafka(versions = "0+")]
             pub producer_id: i64,
             ///The current epoch associated with the producer id.
             #[kafka(versions = "0+")]
@@ -4572,7 +4652,7 @@ pub mod response {
             pub key: String,
             ///The quota configuration value.
             #[kafka(versions = "0+")]
-            pub value: float64,
+            pub value: f64,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4833,6 +4913,17 @@ pub mod response {
             pub error_code: i16,
             #[kafka(versions = "0+")]
             pub topics: Vec<TopicData>,
+            ///The tagged fields.
+            #[kafka(versions = "0+")]
+            pub _tagged_fields: krost::types::TaggedFields,
+        }
+        #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
+        pub struct ReplicaState {
+            #[kafka(versions = "0+")]
+            pub replica_id: i32,
+            ///The last known log end offset of the follower or -1 if it is unknown
+            #[kafka(versions = "0+")]
+            pub log_end_offset: i64,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5352,9 +5443,7 @@ pub mod response {
         DeleteTopicsResponse(delete_topics::DeleteTopicsResponse),
         DeleteRecordsResponse(delete_records::DeleteRecordsResponse),
         InitProducerIdResponse(init_producer_id::InitProducerIdResponse),
-        OffsetForLeaderEpochResponse(
-            offset_for_leader_epoch::OffsetForLeaderEpochResponse,
-        ),
+        OffsetForLeaderEpochResponse(offset_for_leader_epoch::OffsetForLeaderEpochResponse),
         AddPartitionsToTxnResponse(add_partitions_to_txn::AddPartitionsToTxnResponse),
         AddOffsetsToTxnResponse(add_offsets_to_txn::AddOffsetsToTxnResponse),
         EndTxnResponse(end_txn::EndTxnResponse),
@@ -5369,23 +5458,13 @@ pub mod response {
         DescribeLogDirsResponse(describe_log_dirs::DescribeLogDirsResponse),
         SaslAuthenticateResponse(sasl_authenticate::SaslAuthenticateResponse),
         CreatePartitionsResponse(create_partitions::CreatePartitionsResponse),
-        CreateDelegationTokenResponse(
-            create_delegation_token::CreateDelegationTokenResponse,
-        ),
-        RenewDelegationTokenResponse(
-            renew_delegation_token::RenewDelegationTokenResponse,
-        ),
-        ExpireDelegationTokenResponse(
-            expire_delegation_token::ExpireDelegationTokenResponse,
-        ),
-        DescribeDelegationTokenResponse(
-            describe_delegation_token::DescribeDelegationTokenResponse,
-        ),
+        CreateDelegationTokenResponse(create_delegation_token::CreateDelegationTokenResponse),
+        RenewDelegationTokenResponse(renew_delegation_token::RenewDelegationTokenResponse),
+        ExpireDelegationTokenResponse(expire_delegation_token::ExpireDelegationTokenResponse),
+        DescribeDelegationTokenResponse(describe_delegation_token::DescribeDelegationTokenResponse),
         DeleteGroupsResponse(delete_groups::DeleteGroupsResponse),
         ElectLeadersResponse(elect_leaders::ElectLeadersResponse),
-        IncrementalAlterConfigsResponse(
-            incremental_alter_configs::IncrementalAlterConfigsResponse,
-        ),
+        IncrementalAlterConfigsResponse(incremental_alter_configs::IncrementalAlterConfigsResponse),
         AlterPartitionReassignmentsResponse(
             alter_partition_reassignments::AlterPartitionReassignmentsResponse,
         ),
@@ -5393,9 +5472,7 @@ pub mod response {
             list_partition_reassignments::ListPartitionReassignmentsResponse,
         ),
         OffsetDeleteResponse(offset_delete::OffsetDeleteResponse),
-        DescribeClientQuotasResponse(
-            describe_client_quotas::DescribeClientQuotasResponse,
-        ),
+        DescribeClientQuotasResponse(describe_client_quotas::DescribeClientQuotasResponse),
         AlterClientQuotasResponse(alter_client_quotas::AlterClientQuotasResponse),
         DescribeUserScramCredentialsResponse(
             describe_user_scram_credentials::DescribeUserScramCredentialsResponse,
@@ -5416,9 +5493,7 @@ pub mod response {
         BrokerRegistrationResponse(broker_registration::BrokerRegistrationResponse),
         BrokerHeartbeatResponse(broker_heartbeat::BrokerHeartbeatResponse),
         UnregisterBrokerResponse(unregister_broker::UnregisterBrokerResponse),
-        DescribeTransactionsResponse(
-            describe_transactions::DescribeTransactionsResponse,
-        ),
+        DescribeTransactionsResponse(describe_transactions::DescribeTransactionsResponse),
         ListTransactionsResponse(list_transactions::ListTransactionsResponse),
         AllocateProducerIdsResponse(allocate_producer_ids::AllocateProducerIdsResponse),
     }

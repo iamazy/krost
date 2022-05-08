@@ -44,6 +44,7 @@ impl_num_type!(i8, 1);
 impl_num_type!(i16, 2);
 impl_num_type!(i32, 4);
 impl_num_type!(i64, 8);
+impl_num_type!(f64, 8);
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 pub struct VarInt(pub i32);
