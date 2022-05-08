@@ -132,22 +132,14 @@ impl KrostField {
 
     fn field_type(&self) -> proc_macro2::TokenStream {
         let mut tokens = match self.type_name.as_str() {
-            "bool" => quote! { krost::types::Bool },
-            "byte" => quote! { krost::types::Int8 },
-            "int8" => quote! { krost::types::Int8 },
-            "int16" => quote! { krost::types::Int16 },
-            "int32" => quote! { krost::types::Int32 },
-            "int64" => quote! { krost::types::Int64 },
-            "bytes" => if self.nullable_versions.is_some() {
-                quote! { krost::types::NullableBytes }
-            } else {
-                quote! { krost::types::Bytes }
-            },
-            "string" => if self.nullable_versions.is_some() {
-                quote! { krost::types::NullableString }
-            } else {
-                quote! { krost::types::String }
-            },
+            "bool" => quote! { bool },
+            "byte" => quote! { i8 },
+            "int8" => quote! { i8 },
+            "int16" => quote! { i16 },
+            "int32" => quote! { i32 },
+            "int64" => quote! { i64 },
+            "bytes" => quote! { Vec<u8> },
+            "string" => quote! { String },
             "uuid" => quote! { krost::types::Uuid },
             "records" => quote! { krost::record::RecordBatch },
             "tagged_fields" => quote! { krost::types::TaggedFields },
@@ -157,7 +149,7 @@ impl KrostField {
             }
         };
         if self.collection {
-            tokens = quote! { krost::types::Array<#tokens> };
+            tokens = quote! { Vec<#tokens> };
         }
         tokens
     }

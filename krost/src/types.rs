@@ -4,16 +4,16 @@ use std::io::{Read, Write};
 use std::string::String as StdString;
 
 macro_rules! impl_num_type {
-    ($ty:ty, $inner:ty, $sz:expr) => {
+    ($ty:ty, $sz:expr) => {
         impl KrostType for $ty {
             fn decode<D: Read>(buf: &mut D, _version: i16) -> Result<Self, KrostError> {
                 let mut buffer = [0u8; $sz];
                 buf.read_exact(&mut buffer)?;
-                Ok(Self(<$inner>::from_be_bytes(buffer)))
+                Ok(<$ty>::from_be_bytes(buffer))
             }
 
             fn encode<E: Write>(&self, buf: &mut E, _version: i16) -> Result<usize, KrostError> {
-                let buffer = self.0.to_be_bytes();
+                let buffer = self.to_be_bytes();
                 buf.write_all(&buffer)?;
                 Ok($sz)
             }
@@ -21,21 +21,18 @@ macro_rules! impl_num_type {
     };
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
-pub struct Bool(pub bool);
-
-impl KrostType for Bool {
+impl KrostType for bool {
     fn decode<D: Read>(buf: &mut D, _version: i16) -> Result<Self, KrostError> {
         let mut buffer = [0u8; 1];
         buf.read_exact(&mut buffer)?;
         match buffer[0] {
-            0 => Ok(Self(false)),
-            _ => Ok(Self(true)),
+            0 => Ok(false),
+            _ => Ok(true),
         }
     }
 
     fn encode<E: Write>(&self, buf: &mut E, _version: i16) -> Result<usize, KrostError> {
-        match self.0 {
+        match self {
             true => buf.write_all(&[1])?,
             false => buf.write_all(&[0])?,
         };
@@ -43,22 +40,10 @@ impl KrostType for Bool {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
-pub struct Int8(pub i8);
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
-pub struct Int16(pub i16);
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
-pub struct Int32(pub i32);
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
-pub struct Int64(pub i64);
-
-impl_num_type!(Int8, i8, 1);
-impl_num_type!(Int16, i16, 2);
-impl_num_type!(Int32, i32, 4);
-impl_num_type!(Int64, i64, 8);
+impl_num_type!(i8, 1);
+impl_num_type!(i16, 2);
+impl_num_type!(i32, 4);
+impl_num_type!(i64, 8);
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 pub struct VarInt(pub i32);
@@ -139,8 +124,8 @@ pub struct String(pub StdString);
 
 impl KrostType for String {
     fn decode<D: Read>(buf: &mut D, version: i16) -> Result<Self, KrostError> {
-        let len = Int16::decode(buf, version)?;
-        let len = usize::try_from(len.0).map_err(|e| KrostError::Malformed(Box::new(e)))?;
+        let len = i16::decode(buf, version)?;
+        let len = usize::try_from(len).map_err(|e| KrostError::Malformed(Box::new(e)))?;
         let mut buffer = Vec::with_capacity(len);
         buf.read_exact(&mut buffer)?;
         let s = StdString::from_utf8(buffer).map_err(|e| KrostError::Malformed(Box::new(e)))?;
@@ -149,7 +134,7 @@ impl KrostType for String {
 
     fn encode<E: Write>(&self, buf: &mut E, version: i16) -> Result<usize, KrostError> {
         let len = i16::try_from(self.0.len()).map_err(KrostError::Overflow)?;
-        let len = Int16(len).encode(buf, version)?;
+        let len = len.encode(buf, version)?;
         buf.write_all(self.0.as_bytes())?;
         Ok(len + self.0.len())
     }
@@ -160,8 +145,8 @@ pub struct NullableString(pub Option<StdString>);
 
 impl KrostType for NullableString {
     fn decode<D: Read>(buf: &mut D, version: i16) -> Result<Self, KrostError> {
-        let len = Int16::decode(buf, version)?;
-        match len.0 {
+        let len = i16::decode(buf, version)?;
+        match len {
             l if l < -1 => Err(KrostError::Malformed(
                 format!("Invalid negative length for nullable string: {}", l).into(),
             )),
@@ -181,11 +166,11 @@ impl KrostType for NullableString {
         match &self.0 {
             Some(s) => {
                 let len = i16::try_from(s.len()).map_err(|e| KrostError::Malformed(Box::new(e)))?;
-                let len = Int16(len).encode(buf, version)?;
+                let len = len.encode(buf, version)?;
                 buf.write_all(s.as_bytes())?;
                 Ok(len + s.len())
             }
-            None => Int16(-1).encode(buf, version),
+            None => (-1i16).encode(buf, version),
         }
     }
 }
@@ -260,8 +245,8 @@ pub struct Bytes(pub Vec<u8>);
 
 impl KrostType for Bytes {
     fn decode<D: Read>(buf: &mut D, version: i16) -> Result<Self, KrostError> {
-        let len = Int16::decode(buf, version)?;
-        let len = usize::try_from(len.0).map_err(|e| KrostError::Malformed(Box::new(e)))?;
+        let len = i16::decode(buf, version)?;
+        let len = usize::try_from(len).map_err(|e| KrostError::Malformed(Box::new(e)))?;
         let mut buffer = Vec::with_capacity(len);
         buf.read_exact(&mut buffer)?;
         Ok(Self(buffer))
@@ -269,7 +254,7 @@ impl KrostType for Bytes {
 
     fn encode<E: Write>(&self, buf: &mut E, version: i16) -> Result<usize, KrostError> {
         let len = i16::try_from(self.0.len()).map_err(KrostError::Overflow)?;
-        let len = Int16(len).encode(buf, version)?;
+        let len = len.encode(buf, version)?;
         buf.write_all(self.0.as_slice())?;
         Ok(len + self.0.len())
     }
@@ -280,8 +265,8 @@ pub struct NullableBytes(pub Option<Vec<u8>>);
 
 impl KrostType for NullableBytes {
     fn decode<D: Read>(buf: &mut D, version: i16) -> Result<Self, KrostError> {
-        let len = Int32::decode(buf, version)?;
-        match len.0 {
+        let len = i32::decode(buf, version)?;
+        match len {
             l if l < -1 => Err(KrostError::Malformed(
                 format!("Invalid negative length for nullable bytes: {}", l).into(),
             )),
@@ -299,11 +284,11 @@ impl KrostType for NullableBytes {
         match &self.0 {
             Some(s) => {
                 let len = i32::try_from(s.len()).map_err(|e| KrostError::Malformed(Box::new(e)))?;
-                let len = Int32(len).encode(buf, version)?;
+                let len = len.encode(buf, version)?;
                 buf.write_all(s)?;
                 Ok(len + s.len())
             }
-            None => Int32(-1).encode(buf, version),
+            None => (-1).encode(buf, version),
         }
     }
 }
@@ -377,11 +362,11 @@ pub struct Array<T>(pub Option<Vec<T>>);
 
 impl<T: KrostType> KrostType for Array<T> {
     fn decode<D: Read>(buf: &mut D, version: i16) -> Result<Self, KrostError> {
-        let len = Int32::decode(buf, version)?;
-        if len.0 == -1 {
+        let len = i32::decode(buf, version)?;
+        if len == -1 {
             Ok(Self(None))
         } else {
-            let len = usize::try_from(len.0)?;
+            let len = usize::try_from(len)?;
             let mut res = Vec::with_capacity(len);
             for _ in 0..len {
                 res.push(T::decode(buf, version)?);
@@ -392,10 +377,13 @@ impl<T: KrostType> KrostType for Array<T> {
 
     fn encode<E: Write>(&self, buf: &mut E, version: i16) -> Result<usize, KrostError> {
         match &self.0 {
-            None => Int32(-1).encode(buf, version),
+            None => {
+                let len = -1;
+                len.encode(buf, version)
+            }
             Some(inner) => {
                 let len = i32::try_from(inner.len())?;
-                let mut len = Int32(len).encode(buf, version)?;
+                let mut len = len.encode(buf, version)?;
                 for element in inner {
                     len += element.encode(buf, version)?;
                 }

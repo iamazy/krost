@@ -1,7 +1,7 @@
-pub mod types;
 pub mod record;
 pub mod render;
 pub mod schema;
+pub mod types;
 pub mod util;
 
 use crate::render::{KrostField, KrostSchema, KrostStruct};
@@ -59,13 +59,8 @@ fn expand_fields(
             Some(subfields) => {
                 // There are subfields for this schema, creating a new struct is necessary.
                 let substruct_name = field_spec.type_name.clone();
-                let mut substruct_fields = expand_fields(
-                    api_key,
-                    schema_type,
-                    structs,
-                    subfields,
-                    flexible_versions,
-                );
+                let mut substruct_fields =
+                    expand_fields(api_key, schema_type, structs, subfields, flexible_versions);
                 if !matches!(flexible_versions, Versions::None) {
                     substruct_fields.push(KrostField::tagged_fields(flexible_versions));
                 }
