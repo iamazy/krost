@@ -42,6 +42,7 @@ impl KrostType for bool {
 
 impl_num_type!(i8, 1);
 impl_num_type!(i16, 2);
+impl_num_type!(u16, 2);
 impl_num_type!(i32, 4);
 impl_num_type!(i64, 8);
 impl_num_type!(f64, 8);

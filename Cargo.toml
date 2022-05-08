@@ -1,2 +1,6 @@
 [workspace]
-members = ["krost"]
+members = [
+    "krost",
+    "krost-derive",
+    "krost-build",
+]

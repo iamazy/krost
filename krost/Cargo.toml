@@ -39,3 +39,5 @@ compression-gzip = ["flate2"]
 compression-lz4 = ["lz4"]
 compression-snappy = ["snap"]
 compression-zstd = ["zstd"]
+
+[build-dependencies]
