@@ -1,0 +1,19 @@
+[package]
+name = "krost-derive"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+proc-macro = true
+
+[dependencies]
+darling = "0.14"
+proc-macro2 = "1"
+quote = "1"
+nom = "7"
+
+[dependencies.syn]
+version = "1"
+features = ["full", "extra-traits"]
