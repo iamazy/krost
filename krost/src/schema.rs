@@ -14,8 +14,8 @@ pub struct Field {
     pub r#type: FieldType,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub map_key: bool,
-    #[serde(default, skip_serializing_if = "Versions::is_none")]
-    pub nullable_versions: Versions,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nullable_versions: Option<Versions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -51,8 +51,8 @@ pub(crate) struct Schema {
     pub r#type: SchemaType,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub common_structs: Vec<Struct>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flexible_versions: Option<Versions>,
+    #[serde(default, skip_serializing_if = "Versions::is_none")]
+    pub flexible_versions: Versions,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listeners: Option<Vec<Listener>>,
 }

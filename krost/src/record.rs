@@ -1,4 +1,4 @@
-use crate::primitive::{Int16, Int32, Int64, Int8, VarInt, VarLong};
+use crate::types::{Int16, Int32, Int64, Int8, VarInt, VarLong};
 use crate::{KrostError, KrostType};
 use std::io::{Cursor, Read, Write};
 

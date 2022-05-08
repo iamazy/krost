@@ -16,7 +16,7 @@ pub(crate) struct KrostSchema {
     pub(crate) fields: Vec<KrostField>,
     pub(crate) structs: Vec<KrostStruct>,
     pub(crate) versions: Versions,
-    pub(crate) flexible_versions: Option<Versions>,
+    pub(crate) flexible_versions: Versions,
 }
 
 impl ToTokens for KrostSchema {
@@ -27,11 +27,13 @@ impl ToTokens for KrostSchema {
         let substructs = &self.structs;
         let versions = self.versions.to_string();
         let versions_ident = quote! { versions = #versions, };
-        let flexible_versions = self.flexible_versions.map(|v| {
-            let v = v.to_string();
-            quote! { flexible = #v}
-        });
-
+        let flexible_versions = match self.flexible_versions {
+            Versions::None => None,
+            versions => {
+                let v = versions.to_string();
+                Some(quote! { flexible = #v})
+            }
+        };
         let api_key = self.api_key;
         let api_key_ident = if api_key.is_some() {
             quote! {apikey = #api_key, }
@@ -40,7 +42,7 @@ impl ToTokens for KrostSchema {
         };
 
         tokens.extend(quote! {
-            #[derive(Debug, PartialEq, Krost, Clone)]
+            #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
             #[kafka(#api_key_ident #versions_ident #flexible_versions)]
             pub struct #struct_name_ident {
                #(#struct_fields),*
@@ -64,7 +66,7 @@ impl ToTokens for KrostStruct {
         let struct_name_ident = to_ident(&full_struct_name);
         let struct_fields = &self.fields;
         tokens.extend(quote! {
-            #[derive(Debug, PartialEq, Krost, Clone)]
+            #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
             pub struct #struct_name_ident {
                #(#struct_fields),*
             }
@@ -75,7 +77,7 @@ impl ToTokens for KrostStruct {
 #[derive(Debug, Clone)]
 pub(crate) struct KrostField {
     pub(crate) collection: bool,
-    pub(crate) nullable: bool,
+    pub(crate) nullable_versions: Option<Versions>,
     pub(crate) field_name: String,
     pub(crate) type_name: String,
     pub(crate) versions: Versions,
@@ -88,7 +90,6 @@ pub(crate) struct KrostField {
 impl KrostField {
     pub(crate) fn from_schema(field: &schema::Field) -> Self {
         let collection = field.r#type.is_array();
-        let nullable = field.nullable_versions.is_some();
         let field_name = field.name.to_snake_case();
         let type_name = field
             .r#type
@@ -104,7 +105,7 @@ impl KrostField {
         let doc = field.about.clone();
         Self {
             collection,
-            nullable,
+            nullable_versions: field.nullable_versions,
             field_name,
             type_name,
             versions: field.versions,
@@ -118,7 +119,7 @@ impl KrostField {
     pub(crate) fn tagged_fields(flexible_versions: Versions) -> Self {
         Self {
             collection: false,
-            nullable: false,
+            nullable_versions: None,
             field_name: "_tagged_fields".to_string(),
             type_name: "tagged_fields".to_string(),
             tagged_versions: None,
@@ -131,27 +132,32 @@ impl KrostField {
 
     fn field_type(&self) -> proc_macro2::TokenStream {
         let mut tokens = match self.type_name.as_str() {
-            "bool" => quote! { krost::primitive::Bool },
-            "byte" => quote! { krost::primitive::Int8 },
-            "int8" => quote! { krost::primitive::Int8 },
-            "int16" => quote! { krost::primitive::Int16 },
-            "int32" => quote! { krost::primitive::Int32 },
-            "int64" => quote! { krost::primitive::Int64 },
-            "bytes" => quote! { Vec<u8> },
-            "string" => quote! { krost::primitive::String },
-            "uuid" => quote! { krost::primitive::Uuid },
+            "bool" => quote! { krost::types::Bool },
+            "byte" => quote! { krost::types::Int8 },
+            "int8" => quote! { krost::types::Int8 },
+            "int16" => quote! { krost::types::Int16 },
+            "int32" => quote! { krost::types::Int32 },
+            "int64" => quote! { krost::types::Int64 },
+            "bytes" => if self.nullable_versions.is_some() {
+                quote! { krost::types::NullableBytes }
+            } else {
+                quote! { krost::types::Bytes }
+            },
+            "string" => if self.nullable_versions.is_some() {
+                quote! { krost::types::NullableString }
+            } else {
+                quote! { krost::types::String }
+            },
+            "uuid" => quote! { krost::types::Uuid },
             "records" => quote! { krost::record::RecordBatch },
-            "tagged_fields" => quote! { krost::primitive::TaggedFields },
+            "tagged_fields" => quote! { krost::types::TaggedFields },
             v => {
                 let type_ident = to_ident(v);
                 quote! { #type_ident }
             }
         };
         if self.collection {
-            tokens = quote! { Vec<#tokens> };
-        }
-        if self.nullable {
-            tokens = quote! { Option<#tokens> };
+            tokens = quote! { krost::primitive::Array<#tokens> };
         }
         tokens
     }
@@ -167,12 +173,16 @@ impl ToTokens for KrostField {
             let v = v.to_string();
             quote! {tagged = #v, }
         });
+        let nullable_versions_ident = self.nullable_versions.as_ref().map(|v| {
+            let v = v.to_string();
+            quote! {nullable = #v, }
+        });
         let tag_ident = self.tag.map(|v| quote! {tag = #v, });
         let default_ident = self.default.clone().map(|v| quote! {default = #v, });
         let doc_ident = self.doc.clone().map(|v| quote! { #[doc = #v] });
         tokens.extend(quote! {
           #doc_ident
-          #[kafka(#versions_ident #tagged_versions_ident #tag_ident #default_ident)]
+          #[kafka(#versions_ident #tagged_versions_ident #tag_ident #nullable_versions_ident #default_ident)]
           pub #field_name_ident: #field_type_ident
         })
     }
@@ -255,7 +265,6 @@ pub(crate) fn group_schema_specs(
 
 fn gen_header_imports(file_contents: &mut TokenStream) {
     file_contents.extend(quote! { #![allow(dead_code)] });
-    file_contents.extend(quote! { use krost_derive::Krost; });
     file_contents.extend(quote! { use krost::KrostType; });
     file_contents.extend(quote! { use from_variants::FromVariants; });
 }

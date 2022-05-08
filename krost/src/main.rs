@@ -1,4 +1,4 @@
-pub mod primitive;
+pub mod types;
 pub mod record;
 pub mod render;
 pub mod schema;
@@ -46,7 +46,7 @@ fn expand_fields(
     schema_type: SchemaType,
     structs: &mut Vec<KrostStruct>,
     fields: &[schema::Field],
-    flexible_versions: Option<Versions>,
+    flexible_versions: Versions,
 ) -> Vec<KrostField> {
     let mut converted_fields = vec![];
     for field in fields {
@@ -66,8 +66,8 @@ fn expand_fields(
                     subfields,
                     flexible_versions,
                 );
-                if let Some(start) = flexible_versions {
-                    substruct_fields.push(KrostField::tagged_fields(start));
+                if !matches!(flexible_versions, Versions::None) {
+                    substruct_fields.push(KrostField::tagged_fields(flexible_versions));
                 }
                 let substruct = KrostStruct {
                     struct_name: substruct_name,
@@ -94,9 +94,8 @@ fn expand_schema(schema: schema::Schema) -> KrostSchema {
         &schema.fields,
         schema.flexible_versions,
     );
-
-    if let Some(start) = schema.flexible_versions {
-        root_fields.push(KrostField::tagged_fields(start));
+    if !matches!(schema.flexible_versions, Versions::None) {
+        root_fields.push(KrostField::tagged_fields(schema.flexible_versions));
     }
     KrostSchema {
         name,
