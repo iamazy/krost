@@ -157,7 +157,7 @@ impl KrostField {
             }
         };
         if self.collection {
-            tokens = quote! { krost::primitive::Array<#tokens> };
+            tokens = quote! { krost::types::Array<#tokens> };
         }
         tokens
     }

@@ -17,7 +17,7 @@ pub mod request {
             pub timeout_ms: krost::types::Int32,
             ///Each topic to produce to.
             #[kafka(versions = "0+")]
-            pub topic_data: krost::primitive::Array<TopicProduceData>,
+            pub topic_data: krost::types::Array<TopicProduceData>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -41,7 +41,7 @@ pub mod request {
             pub name: krost::types::String,
             ///Each partition to produce to.
             #[kafka(versions = "0+")]
-            pub partition_data: krost::primitive::Array<PartitionProduceData>,
+            pub partition_data: krost::types::Array<PartitionProduceData>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -83,10 +83,10 @@ pub mod request {
             pub session_epoch: krost::types::Int32,
             ///The topics to fetch.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<FetchTopic>,
+            pub topics: krost::types::Array<FetchTopic>,
             ///In an incremental fetch request, the partitions to remove.
             #[kafka(versions = "7+")]
-            pub forgotten_topics_data: krost::primitive::Array<ForgottenTopic>,
+            pub forgotten_topics_data: krost::types::Array<ForgottenTopic>,
             ///Rack ID of the consumer making this request
             #[kafka(versions = "11+", default = "")]
             pub rack_id: krost::types::String,
@@ -128,7 +128,7 @@ pub mod request {
             pub topic_id: krost::types::Uuid,
             ///The partitions to fetch.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<FetchPartition>,
+            pub partitions: krost::types::Array<FetchPartition>,
             ///The tagged fields.
             #[kafka(versions = "12+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -143,7 +143,7 @@ pub mod request {
             pub topic_id: krost::types::Uuid,
             ///The partitions indexes to forget.
             #[kafka(versions = "7+")]
-            pub partitions: krost::primitive::Array<krost::types::Int32>,
+            pub partitions: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "12+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -161,7 +161,7 @@ pub mod request {
             pub isolation_level: krost::types::Int8,
             ///Each topic in the request.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<ListOffsetsTopic>,
+            pub topics: krost::types::Array<ListOffsetsTopic>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -191,7 +191,7 @@ pub mod request {
             pub name: krost::types::String,
             ///Each partition in the request.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<ListOffsetsPartition>,
+            pub partitions: krost::types::Array<ListOffsetsPartition>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -203,7 +203,7 @@ pub mod request {
         pub struct MetadataRequest {
             ///The topics to fetch metadata for.
             #[kafka(versions = "0+", nullable = "1+")]
-            pub topics: krost::primitive::Array<MetadataRequestTopic>,
+            pub topics: krost::types::Array<MetadataRequestTopic>,
             ///If this is true, the broker may auto-create topics that we requested which do not already exist, if it is configured to do so.
             #[kafka(versions = "4+", default = "true")]
             pub allow_auto_topic_creation: krost::types::Bool,
@@ -248,15 +248,15 @@ pub mod request {
             pub r#type: krost::types::Int8,
             ///The state of each partition, in a v0 or v1 message.
             #[kafka(versions = "0-1")]
-            pub ungrouped_partition_states: krost::primitive::Array<
+            pub ungrouped_partition_states: krost::types::Array<
                 LeaderAndIsrPartitionState,
             >,
             ///Each topic.
             #[kafka(versions = "2+")]
-            pub topic_states: krost::primitive::Array<LeaderAndIsrTopicState>,
+            pub topic_states: krost::types::Array<LeaderAndIsrTopicState>,
             ///The current live leaders.
             #[kafka(versions = "0+")]
-            pub live_leaders: krost::primitive::Array<LeaderAndIsrLiveLeader>,
+            pub live_leaders: krost::types::Array<LeaderAndIsrLiveLeader>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -271,7 +271,7 @@ pub mod request {
             pub topic_id: krost::types::Uuid,
             ///The state of each partition
             #[kafka(versions = "2+")]
-            pub partition_states: krost::primitive::Array<LeaderAndIsrPartitionState>,
+            pub partition_states: krost::types::Array<LeaderAndIsrPartitionState>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -310,13 +310,13 @@ pub mod request {
             pub delete_partitions: krost::types::Bool,
             ///The partitions to stop.
             #[kafka(versions = "0")]
-            pub ungrouped_partitions: krost::primitive::Array<StopReplicaPartitionV0>,
+            pub ungrouped_partitions: krost::types::Array<StopReplicaPartitionV0>,
             ///The topics to stop.
             #[kafka(versions = "1-2")]
-            pub topics: krost::primitive::Array<StopReplicaTopicV1>,
+            pub topics: krost::types::Array<StopReplicaTopicV1>,
             ///Each topic.
             #[kafka(versions = "3+")]
-            pub topic_states: krost::primitive::Array<StopReplicaTopicState>,
+            pub topic_states: krost::types::Array<StopReplicaTopicState>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -340,7 +340,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The partition indexes.
             #[kafka(versions = "1-2")]
-            pub partition_indexes: krost::primitive::Array<krost::types::Int32>,
+            pub partition_indexes: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -367,7 +367,7 @@ pub mod request {
             pub topic_name: krost::types::String,
             ///The state of each partition
             #[kafka(versions = "3+")]
-            pub partition_states: krost::primitive::Array<StopReplicaPartitionState>,
+            pub partition_states: krost::types::Array<StopReplicaPartitionState>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -388,14 +388,14 @@ pub mod request {
             pub broker_epoch: krost::types::Int64,
             ///In older versions of this RPC, each partition that we would like to update.
             #[kafka(versions = "0-4")]
-            pub ungrouped_partition_states: krost::primitive::Array<
+            pub ungrouped_partition_states: krost::types::Array<
                 UpdateMetadataPartitionState,
             >,
             ///In newer versions of this RPC, each topic that we would like to update.
             #[kafka(versions = "5+")]
-            pub topic_states: krost::primitive::Array<UpdateMetadataTopicState>,
+            pub topic_states: krost::types::Array<UpdateMetadataTopicState>,
             #[kafka(versions = "0+")]
-            pub live_brokers: krost::primitive::Array<UpdateMetadataBroker>,
+            pub live_brokers: krost::types::Array<UpdateMetadataBroker>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -410,7 +410,7 @@ pub mod request {
             pub topic_id: krost::types::Uuid,
             ///The partition that we would like to update.
             #[kafka(versions = "5+")]
-            pub partition_states: krost::primitive::Array<UpdateMetadataPartitionState>,
+            pub partition_states: krost::types::Array<UpdateMetadataPartitionState>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -446,7 +446,7 @@ pub mod request {
             pub v0_port: krost::types::Int32,
             ///The broker endpoints.
             #[kafka(versions = "1+")]
-            pub endpoints: krost::primitive::Array<UpdateMetadataEndpoint>,
+            pub endpoints: krost::types::Array<UpdateMetadataEndpoint>,
             ///The rack which this broker belongs to.
             #[kafka(versions = "2+", nullable = "0+")]
             pub rack: krost::types::NullableString,
@@ -491,7 +491,7 @@ pub mod request {
             pub retention_time_ms: krost::types::Int64,
             ///The topics to commit offsets for.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<OffsetCommitRequestTopic>,
+            pub topics: krost::types::Array<OffsetCommitRequestTopic>,
             ///The tagged fields.
             #[kafka(versions = "8+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -524,7 +524,7 @@ pub mod request {
             pub name: krost::types::String,
             ///Each partition to commit offsets for.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<OffsetCommitRequestPartition>,
+            pub partitions: krost::types::Array<OffsetCommitRequestPartition>,
             ///The tagged fields.
             #[kafka(versions = "8+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -539,10 +539,10 @@ pub mod request {
             pub group_id: krost::types::String,
             ///Each topic we would like to fetch offsets for, or null to fetch offsets for all topics.
             #[kafka(versions = "0-7", nullable = "2-7")]
-            pub topics: krost::primitive::Array<OffsetFetchRequestTopic>,
+            pub topics: krost::types::Array<OffsetFetchRequestTopic>,
             ///Each group we would like to fetch offsets for
             #[kafka(versions = "8+")]
-            pub groups: krost::primitive::Array<OffsetFetchRequestGroup>,
+            pub groups: krost::types::Array<OffsetFetchRequestGroup>,
             ///Whether broker should hold on returning unstable offsets but set a retriable error code for the partitions.
             #[kafka(versions = "7+", default = "false")]
             pub require_stable: krost::types::Bool,
@@ -557,7 +557,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The partition indexes we would like to fetch offsets for.
             #[kafka(versions = "0-7")]
-            pub partition_indexes: krost::primitive::Array<krost::types::Int32>,
+            pub partition_indexes: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -569,7 +569,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The partition indexes we would like to fetch offsets for.
             #[kafka(versions = "8+")]
-            pub partition_indexes: krost::primitive::Array<krost::types::Int32>,
+            pub partition_indexes: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -581,7 +581,7 @@ pub mod request {
             pub group_id: krost::types::String,
             ///Each topic we would like to fetch offsets for, or null to fetch offsets for all topics.
             #[kafka(versions = "8+", nullable = "8+")]
-            pub topics: krost::primitive::Array<OffsetFetchRequestTopics>,
+            pub topics: krost::types::Array<OffsetFetchRequestTopics>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -599,7 +599,7 @@ pub mod request {
             pub key_type: krost::types::Int8,
             ///The coordinator keys.
             #[kafka(versions = "4+")]
-            pub coordinator_keys: krost::primitive::Array<krost::types::String>,
+            pub coordinator_keys: krost::types::Array<krost::types::String>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -629,7 +629,7 @@ pub mod request {
             pub protocol_type: krost::types::String,
             ///The list of protocols that the member supports.
             #[kafka(versions = "0+")]
-            pub protocols: krost::primitive::Array<JoinGroupRequestProtocol>,
+            pub protocols: krost::types::Array<JoinGroupRequestProtocol>,
             ///The reason why the member (re-)joins the group.
             #[kafka(versions = "8+", nullable = "8+", default = "null")]
             pub reason: krost::types::NullableString,
@@ -683,7 +683,7 @@ pub mod request {
             pub member_id: krost::types::String,
             ///List of leaving member identities.
             #[kafka(versions = "3+")]
-            pub members: krost::primitive::Array<MemberIdentity>,
+            pub members: krost::types::Array<MemberIdentity>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -728,7 +728,7 @@ pub mod request {
             pub protocol_name: krost::types::NullableString,
             ///Each assignment.
             #[kafka(versions = "0+")]
-            pub assignments: krost::primitive::Array<SyncGroupRequestAssignment>,
+            pub assignments: krost::types::Array<SyncGroupRequestAssignment>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -752,7 +752,7 @@ pub mod request {
         pub struct DescribeGroupsRequest {
             ///The names of the groups to describe
             #[kafka(versions = "0+")]
-            pub groups: krost::primitive::Array<krost::types::String>,
+            pub groups: krost::types::Array<krost::types::String>,
             ///Whether to include authorized operations.
             #[kafka(versions = "3+")]
             pub include_authorized_operations: krost::types::Bool,
@@ -767,7 +767,7 @@ pub mod request {
         pub struct ListGroupsRequest {
             ///The states of the groups we want to list. If empty all groups are returned with their state.
             #[kafka(versions = "4+")]
-            pub states_filter: krost::primitive::Array<krost::types::String>,
+            pub states_filter: krost::types::Array<krost::types::String>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -803,7 +803,7 @@ pub mod request {
         pub struct CreateTopicsRequest {
             ///The topics to create.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<CreatableTopic>,
+            pub topics: krost::types::Array<CreatableTopic>,
             ///How long to wait in milliseconds before timing out the request.
             #[kafka(versions = "0+", default = "60000")]
             pub timeout_ms: krost::types::Int32,
@@ -821,7 +821,7 @@ pub mod request {
             pub partition_index: krost::types::Int32,
             ///The brokers to place the partition on.
             #[kafka(versions = "0+")]
-            pub broker_ids: krost::primitive::Array<krost::types::Int32>,
+            pub broker_ids: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "5+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -851,10 +851,10 @@ pub mod request {
             pub replication_factor: krost::types::Int16,
             ///The manual partition assignment, or the empty array if we are using automatic assignment.
             #[kafka(versions = "0+")]
-            pub assignments: krost::primitive::Array<CreatableReplicaAssignment>,
+            pub assignments: krost::types::Array<CreatableReplicaAssignment>,
             ///The custom topic configurations to set.
             #[kafka(versions = "0+")]
-            pub configs: krost::primitive::Array<CreateableTopicConfig>,
+            pub configs: krost::types::Array<CreateableTopicConfig>,
             ///The tagged fields.
             #[kafka(versions = "5+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -866,10 +866,10 @@ pub mod request {
         pub struct DeleteTopicsRequest {
             ///The name or topic ID of the topic
             #[kafka(versions = "6+")]
-            pub topics: krost::primitive::Array<DeleteTopicState>,
+            pub topics: krost::types::Array<DeleteTopicState>,
             ///The names of the topics to delete
             #[kafka(versions = "0-5")]
-            pub topic_names: krost::primitive::Array<krost::types::String>,
+            pub topic_names: krost::types::Array<krost::types::String>,
             ///The length of time in milliseconds to wait for the deletions to complete.
             #[kafka(versions = "0+")]
             pub timeout_ms: krost::types::Int32,
@@ -896,7 +896,7 @@ pub mod request {
         pub struct DeleteRecordsRequest {
             ///Each topic that we want to delete records from.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<DeleteRecordsTopic>,
+            pub topics: krost::types::Array<DeleteRecordsTopic>,
             ///How long to wait for the deletion to complete, in milliseconds.
             #[kafka(versions = "0+")]
             pub timeout_ms: krost::types::Int32,
@@ -923,7 +923,7 @@ pub mod request {
             pub name: krost::types::String,
             ///Each partition that we want to delete records from.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<DeleteRecordsPartition>,
+            pub partitions: krost::types::Array<DeleteRecordsPartition>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -959,7 +959,7 @@ pub mod request {
             pub replica_id: krost::types::Int32,
             ///Each topic to get offsets for.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<OffsetForLeaderTopic>,
+            pub topics: krost::types::Array<OffsetForLeaderTopic>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -986,7 +986,7 @@ pub mod request {
             pub topic: krost::types::String,
             ///Each partition to get offsets for.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<OffsetForLeaderPartition>,
+            pub partitions: krost::types::Array<OffsetForLeaderPartition>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1007,7 +1007,7 @@ pub mod request {
             pub producer_epoch: krost::types::Int16,
             ///The partitions to add to the transaction.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<AddPartitionsToTxnTopic>,
+            pub topics: krost::types::Array<AddPartitionsToTxnTopic>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1019,7 +1019,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The partition indexes to add to the transaction
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<krost::types::Int32>,
+            pub partitions: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1073,7 +1073,7 @@ pub mod request {
         pub struct WriteTxnMarkersRequest {
             ///The transaction markers to be written.
             #[kafka(versions = "0+")]
-            pub markers: krost::primitive::Array<WritableTxnMarker>,
+            pub markers: krost::types::Array<WritableTxnMarker>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1085,7 +1085,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The indexes of the partitions to write transaction markers for.
             #[kafka(versions = "0+")]
-            pub partition_indexes: krost::primitive::Array<krost::types::Int32>,
+            pub partition_indexes: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1103,7 +1103,7 @@ pub mod request {
             pub transaction_result: krost::types::Bool,
             ///Each topic that we want to write transaction marker(s) for.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<WritableTxnMarkerTopic>,
+            pub topics: krost::types::Array<WritableTxnMarkerTopic>,
             ///Epoch associated with the transaction state partition hosted by this transaction coordinator
             #[kafka(versions = "0+")]
             pub coordinator_epoch: krost::types::Int32,
@@ -1139,7 +1139,7 @@ pub mod request {
             pub group_instance_id: krost::types::NullableString,
             ///Each topic that we want to commit offsets for.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TxnOffsetCommitRequestTopic>,
+            pub topics: krost::types::Array<TxnOffsetCommitRequestTopic>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1169,7 +1169,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The partitions inside the topic that we want to committ offsets for.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<TxnOffsetCommitRequestPartition>,
+            pub partitions: krost::types::Array<TxnOffsetCommitRequestPartition>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1211,7 +1211,7 @@ pub mod request {
         pub struct CreateAclsRequest {
             ///The ACLs that we want to create.
             #[kafka(versions = "0+")]
-            pub creations: krost::primitive::Array<AclCreation>,
+            pub creations: krost::types::Array<AclCreation>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1250,7 +1250,7 @@ pub mod request {
         pub struct DeleteAclsRequest {
             ///The filters to use when deleting ACLs.
             #[kafka(versions = "0+")]
-            pub filters: krost::primitive::Array<DeleteAclsFilter>,
+            pub filters: krost::types::Array<DeleteAclsFilter>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1289,7 +1289,7 @@ pub mod request {
         pub struct DescribeConfigsRequest {
             ///The resources whose configurations we want to describe.
             #[kafka(versions = "0+")]
-            pub resources: krost::primitive::Array<DescribeConfigsResource>,
+            pub resources: krost::types::Array<DescribeConfigsResource>,
             ///True if we should include all synonyms.
             #[kafka(versions = "1+", default = "false")]
             pub include_synonyms: krost::types::Bool,
@@ -1310,9 +1310,7 @@ pub mod request {
             pub resource_name: krost::types::String,
             ///The configuration keys to list, or null to list all configuration keys.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub configuration_keys: krost::primitive::Array<
-                krost::types::NullableString,
-            >,
+            pub configuration_keys: krost::types::Array<krost::types::NullableString>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1324,7 +1322,7 @@ pub mod request {
         pub struct AlterConfigsRequest {
             ///The updates for each resource.
             #[kafka(versions = "0+")]
-            pub resources: krost::primitive::Array<AlterConfigsResource>,
+            pub resources: krost::types::Array<AlterConfigsResource>,
             ///True if we should validate the request, but not change the configurations.
             #[kafka(versions = "0+")]
             pub validate_only: krost::types::Bool,
@@ -1354,7 +1352,7 @@ pub mod request {
             pub resource_name: krost::types::String,
             ///The configurations.
             #[kafka(versions = "0+")]
-            pub configs: krost::primitive::Array<AlterableConfig>,
+            pub configs: krost::types::Array<AlterableConfig>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1366,7 +1364,7 @@ pub mod request {
         pub struct AlterReplicaLogDirsRequest {
             ///The alterations to make for each directory.
             #[kafka(versions = "0+")]
-            pub dirs: krost::primitive::Array<AlterReplicaLogDir>,
+            pub dirs: krost::types::Array<AlterReplicaLogDir>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1378,7 +1376,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The partition indexes.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<krost::types::Int32>,
+            pub partitions: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1390,7 +1388,7 @@ pub mod request {
             pub path: krost::types::String,
             ///The topics to add to the directory.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<AlterReplicaLogDirTopic>,
+            pub topics: krost::types::Array<AlterReplicaLogDirTopic>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1402,7 +1400,7 @@ pub mod request {
         pub struct DescribeLogDirsRequest {
             ///Each topic that we want to describe log directories for, or null for all topics.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub topics: krost::primitive::Array<DescribableLogDirTopic>,
+            pub topics: krost::types::Array<DescribableLogDirTopic>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1414,7 +1412,7 @@ pub mod request {
             pub topic: krost::types::String,
             ///The partition indexes.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<krost::types::Int32>,
+            pub partitions: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1438,7 +1436,7 @@ pub mod request {
         pub struct CreatePartitionsRequest {
             ///Each topic that we want to create new partitions inside.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<CreatePartitionsTopic>,
+            pub topics: krost::types::Array<CreatePartitionsTopic>,
             ///The time in ms to wait for the partitions to be created.
             #[kafka(versions = "0+")]
             pub timeout_ms: krost::types::Int32,
@@ -1453,7 +1451,7 @@ pub mod request {
         pub struct CreatePartitionsAssignment {
             ///The assigned broker IDs.
             #[kafka(versions = "0+")]
-            pub broker_ids: krost::primitive::Array<krost::types::Int32>,
+            pub broker_ids: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1468,7 +1466,7 @@ pub mod request {
             pub count: krost::types::Int32,
             ///The new partition assignments.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub assignments: krost::primitive::Array<CreatePartitionsAssignment>,
+            pub assignments: krost::types::Array<CreatePartitionsAssignment>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1480,7 +1478,7 @@ pub mod request {
         pub struct CreateDelegationTokenRequest {
             ///A list of those who are allowed to renew this token before it expires.
             #[kafka(versions = "0+")]
-            pub renewers: krost::primitive::Array<CreatableRenewers>,
+            pub renewers: krost::types::Array<CreatableRenewers>,
             ///The maximum lifetime of the token in milliseconds, or -1 to use the server side default.
             #[kafka(versions = "0+")]
             pub max_lifetime_ms: krost::types::Int64,
@@ -1537,7 +1535,7 @@ pub mod request {
         pub struct DescribeDelegationTokenRequest {
             ///Each owner that we want to describe delegation tokens for, or null to describe all tokens.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub owners: krost::primitive::Array<DescribeDelegationTokenOwner>,
+            pub owners: krost::types::Array<DescribeDelegationTokenOwner>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1561,7 +1559,7 @@ pub mod request {
         pub struct DeleteGroupsRequest {
             ///The group names to delete.
             #[kafka(versions = "0+")]
-            pub groups_names: krost::primitive::Array<krost::types::String>,
+            pub groups_names: krost::types::Array<krost::types::String>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1576,7 +1574,7 @@ pub mod request {
             pub election_type: krost::types::Int8,
             ///The topic partitions to elect leaders.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub topic_partitions: krost::primitive::Array<TopicPartitions>,
+            pub topic_partitions: krost::types::Array<TopicPartitions>,
             ///The time in ms to wait for the election to complete.
             #[kafka(versions = "0+", default = "60000")]
             pub timeout_ms: krost::types::Int32,
@@ -1591,7 +1589,7 @@ pub mod request {
             pub topic: krost::types::String,
             ///The partitions of this topic whose leader should be elected.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<krost::types::Int32>,
+            pub partitions: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1603,7 +1601,7 @@ pub mod request {
         pub struct IncrementalAlterConfigsRequest {
             ///The incremental updates for each resource.
             #[kafka(versions = "0+")]
-            pub resources: krost::primitive::Array<AlterConfigsResource>,
+            pub resources: krost::types::Array<AlterConfigsResource>,
             ///True if we should validate the request, but not change the configurations.
             #[kafka(versions = "0+")]
             pub validate_only: krost::types::Bool,
@@ -1636,7 +1634,7 @@ pub mod request {
             pub resource_name: krost::types::String,
             ///The configurations.
             #[kafka(versions = "0+")]
-            pub configs: krost::primitive::Array<AlterableConfig>,
+            pub configs: krost::types::Array<AlterableConfig>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1651,7 +1649,7 @@ pub mod request {
             pub timeout_ms: krost::types::Int32,
             ///The topics to reassign.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<ReassignableTopic>,
+            pub topics: krost::types::Array<ReassignableTopic>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1663,7 +1661,7 @@ pub mod request {
             pub partition_index: krost::types::Int32,
             ///The replicas to place the partitions on, or null to cancel a pending reassignment for this partition.
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub replicas: krost::primitive::Array<krost::types::Int32>,
+            pub replicas: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1675,7 +1673,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The partitions to reassign.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<ReassignablePartition>,
+            pub partitions: krost::types::Array<ReassignablePartition>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1690,7 +1688,7 @@ pub mod request {
             pub timeout_ms: krost::types::Int32,
             ///The topics to list partition reassignments for, or null to list everything.
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub topics: krost::primitive::Array<ListPartitionReassignmentsTopics>,
+            pub topics: krost::types::Array<ListPartitionReassignmentsTopics>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1702,7 +1700,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The partitions to list partition reassignments for.
             #[kafka(versions = "0+")]
-            pub partition_indexes: krost::primitive::Array<krost::types::Int32>,
+            pub partition_indexes: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1717,7 +1715,7 @@ pub mod request {
             pub group_id: krost::types::String,
             ///The topics to delete offsets for
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<OffsetDeleteRequestTopic>,
+            pub topics: krost::types::Array<OffsetDeleteRequestTopic>,
         }
         #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         pub struct OffsetDeleteRequestPartition {
@@ -1732,7 +1730,7 @@ pub mod request {
             pub name: krost::types::String,
             ///Each partition to delete offsets for.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<OffsetDeleteRequestPartition>,
+            pub partitions: krost::types::Array<OffsetDeleteRequestPartition>,
         }
     }
     pub mod describe_client_quotas {
@@ -1741,7 +1739,7 @@ pub mod request {
         pub struct DescribeClientQuotasRequest {
             ///Filter components to apply to quota entities.
             #[kafka(versions = "0+")]
-            pub components: krost::primitive::Array<ComponentData>,
+            pub components: krost::types::Array<ComponentData>,
             ///Whether the match is strict, i.e. should exclude entities with unspecified entity types.
             #[kafka(versions = "0+")]
             pub strict: krost::types::Bool,
@@ -1771,7 +1769,7 @@ pub mod request {
         pub struct AlterClientQuotasRequest {
             ///The quota configuration entries to alter.
             #[kafka(versions = "0+")]
-            pub entries: krost::primitive::Array<EntryData>,
+            pub entries: krost::types::Array<EntryData>,
             ///Whether the alteration should be validated, but not performed.
             #[kafka(versions = "0+")]
             pub validate_only: krost::types::Bool,
@@ -1810,10 +1808,10 @@ pub mod request {
         pub struct EntryData {
             ///The quota entity to alter.
             #[kafka(versions = "0+")]
-            pub entity: krost::primitive::Array<EntityData>,
+            pub entity: krost::types::Array<EntityData>,
             ///An individual quota configuration entry to alter.
             #[kafka(versions = "0+")]
-            pub ops: krost::primitive::Array<OpData>,
+            pub ops: krost::types::Array<OpData>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1825,7 +1823,7 @@ pub mod request {
         pub struct DescribeUserScramCredentialsRequest {
             ///The users to describe, or null/empty to describe all users.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub users: krost::primitive::Array<UserName>,
+            pub users: krost::types::Array<UserName>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1846,10 +1844,10 @@ pub mod request {
         pub struct AlterUserScramCredentialsRequest {
             ///The SCRAM credentials to remove.
             #[kafka(versions = "0+")]
-            pub deletions: krost::primitive::Array<ScramCredentialDeletion>,
+            pub deletions: krost::types::Array<ScramCredentialDeletion>,
             ///The SCRAM credentials to update/insert.
             #[kafka(versions = "0+")]
-            pub upsertions: krost::primitive::Array<ScramCredentialUpsertion>,
+            pub upsertions: krost::types::Array<ScramCredentialUpsertion>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1895,7 +1893,7 @@ pub mod request {
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
             pub cluster_id: krost::types::NullableString,
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1927,7 +1925,7 @@ pub mod request {
             #[kafka(versions = "0+")]
             pub topic_name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1940,7 +1938,7 @@ pub mod request {
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
             pub cluster_id: krost::types::NullableString,
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
         }
         #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         pub struct PartitionData {
@@ -1960,7 +1958,7 @@ pub mod request {
             #[kafka(versions = "0+")]
             pub topic_name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
         }
     }
     pub mod end_quorum_epoch {
@@ -1970,7 +1968,7 @@ pub mod request {
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
             pub cluster_id: krost::types::NullableString,
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
         }
         #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         pub struct PartitionData {
@@ -1985,7 +1983,7 @@ pub mod request {
             pub leader_epoch: krost::types::Int32,
             ///A sorted list of preferred successors to start the election
             #[kafka(versions = "0+")]
-            pub preferred_successors: krost::primitive::Array<krost::types::Int32>,
+            pub preferred_successors: krost::types::Array<krost::types::Int32>,
         }
         #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         pub struct TopicData {
@@ -1993,7 +1991,7 @@ pub mod request {
             #[kafka(versions = "0+")]
             pub topic_name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
         }
     }
     pub mod describe_quorum {
@@ -2001,7 +1999,7 @@ pub mod request {
         #[kafka(apikey = 55i16, versions = "0", flexible = "0+")]
         pub struct DescribeQuorumRequest {
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2021,7 +2019,7 @@ pub mod request {
             #[kafka(versions = "0+")]
             pub topic_name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2038,7 +2036,7 @@ pub mod request {
             #[kafka(versions = "0+", default = "-1")]
             pub broker_epoch: krost::types::Int64,
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2053,7 +2051,7 @@ pub mod request {
             pub leader_epoch: krost::types::Int32,
             ///The ISR for this partition
             #[kafka(versions = "0+")]
-            pub new_isr: krost::primitive::Array<krost::types::Int32>,
+            pub new_isr: krost::types::Array<krost::types::Int32>,
             ///1 if the partition is recovering from an unclean leader election; 0 otherwise.
             #[kafka(versions = "1+", default = "0")]
             pub leader_recovery_state: krost::types::Int8,
@@ -2070,7 +2068,7 @@ pub mod request {
             #[kafka(versions = "0+")]
             pub name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2085,7 +2083,7 @@ pub mod request {
             pub timeout_ms: krost::types::Int32,
             ///The list of updates to finalized features.
             #[kafka(versions = "0+")]
-            pub feature_updates: krost::primitive::Array<FeatureUpdateKey>,
+            pub feature_updates: krost::types::Array<FeatureUpdateKey>,
             ///True if we should validate the request, but not perform the upgrade or downgrade.
             #[kafka(versions = "1+", default = false)]
             pub validate_only: krost::types::Bool,
@@ -2151,7 +2149,7 @@ pub mod request {
             pub max_bytes: krost::types::Int32,
             ///The topics to fetch
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicSnapshot>,
+            pub topics: krost::types::Array<TopicSnapshot>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2191,7 +2189,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The partitions to fetch
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionSnapshot>,
+            pub partitions: krost::types::Array<PartitionSnapshot>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2214,7 +2212,7 @@ pub mod request {
         #[kafka(apikey = 61i16, versions = "0", flexible = "0+")]
         pub struct DescribeProducersRequest {
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicRequest>,
+            pub topics: krost::types::Array<TopicRequest>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2226,7 +2224,7 @@ pub mod request {
             pub name: krost::types::String,
             ///The indexes of the partitions to list producers for.
             #[kafka(versions = "0+")]
-            pub partition_indexes: krost::primitive::Array<krost::types::Int32>,
+            pub partition_indexes: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2247,10 +2245,10 @@ pub mod request {
             pub incarnation_id: krost::types::Uuid,
             ///The listeners of this broker
             #[kafka(versions = "0+")]
-            pub listeners: krost::primitive::Array<Listener>,
+            pub listeners: krost::types::Array<Listener>,
             ///The features on this broker
             #[kafka(versions = "0+")]
-            pub features: krost::primitive::Array<Feature>,
+            pub features: krost::types::Array<Feature>,
             ///The rack which this broker is in.
             #[kafka(versions = "0+", nullable = "0+")]
             pub rack: krost::types::NullableString,
@@ -2334,7 +2332,7 @@ pub mod request {
         pub struct DescribeTransactionsRequest {
             ///Array of transactionalIds to include in describe results. If empty, then no results will be returned.
             #[kafka(versions = "0+")]
-            pub transactional_ids: krost::primitive::Array<krost::types::String>,
+            pub transactional_ids: krost::types::Array<krost::types::String>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2346,10 +2344,10 @@ pub mod request {
         pub struct ListTransactionsRequest {
             ///The transaction states to filter by: if empty, all transactions are returned; if non-empty, then only transactions matching one of the filtered states will be returned
             #[kafka(versions = "0+")]
-            pub state_filters: krost::primitive::Array<krost::types::String>,
+            pub state_filters: krost::types::Array<krost::types::String>,
             ///The producerIds to filter by: if empty, all transactions will be returned; if non-empty, only transactions which match one of the filtered producerIds will be returned
             #[kafka(versions = "0+")]
-            pub producer_id_filters: krost::primitive::Array<krost::types::Int64>,
+            pub producer_id_filters: krost::types::Array<krost::types::Int64>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2468,7 +2466,7 @@ pub mod response {
         pub struct ProduceResponse {
             ///Each produce response
             #[kafka(versions = "0+")]
-            pub responses: krost::primitive::Array<TopicProduceResponse>,
+            pub responses: krost::types::Array<TopicProduceResponse>,
             ///The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota.
             #[kafka(versions = "1+", default = "0")]
             pub throttle_time_ms: krost::types::Int32,
@@ -2507,7 +2505,7 @@ pub mod response {
             pub log_start_offset: krost::types::Int64,
             ///The batch indices of records that caused the batch to be dropped
             #[kafka(versions = "8+")]
-            pub record_errors: krost::primitive::Array<BatchIndexAndErrorMessage>,
+            pub record_errors: krost::types::Array<BatchIndexAndErrorMessage>,
             ///The global error message summarizing the common root cause of the records that caused the batch to be dropped
             #[kafka(versions = "8+", nullable = "8+", default = "null")]
             pub error_message: krost::types::NullableString,
@@ -2522,7 +2520,7 @@ pub mod response {
             pub name: krost::types::String,
             ///Each partition that we produced to within the topic.
             #[kafka(versions = "0+")]
-            pub partition_responses: krost::primitive::Array<PartitionProduceResponse>,
+            pub partition_responses: krost::types::Array<PartitionProduceResponse>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2543,7 +2541,7 @@ pub mod response {
             pub session_id: krost::types::Int32,
             ///The response topics.
             #[kafka(versions = "0+")]
-            pub responses: krost::primitive::Array<FetchableTopicResponse>,
+            pub responses: krost::types::Array<FetchableTopicResponse>,
             ///The tagged fields.
             #[kafka(versions = "12+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2619,7 +2617,7 @@ pub mod response {
             pub snapshot_id: SnapshotId,
             ///The aborted transactions.
             #[kafka(versions = "4+", nullable = "4+")]
-            pub aborted_transactions: krost::primitive::Array<AbortedTransaction>,
+            pub aborted_transactions: krost::types::Array<AbortedTransaction>,
             ///The preferred read replica for the consumer to use on its next fetch request
             #[kafka(versions = "11+", default = "-1")]
             pub preferred_read_replica: krost::types::Int32,
@@ -2640,7 +2638,7 @@ pub mod response {
             pub topic_id: krost::types::Uuid,
             ///The topic partitions.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
             ///The tagged fields.
             #[kafka(versions = "12+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2655,7 +2653,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///Each topic in the response.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<ListOffsetsTopicResponse>,
+            pub topics: krost::types::Array<ListOffsetsTopicResponse>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2670,7 +2668,7 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///The result offsets.
             #[kafka(versions = "0")]
-            pub old_style_offsets: krost::primitive::Array<krost::types::Int64>,
+            pub old_style_offsets: krost::types::Array<krost::types::Int64>,
             ///The timestamp associated with the returned offset.
             #[kafka(versions = "1+", default = "-1")]
             pub timestamp: krost::types::Int64,
@@ -2690,7 +2688,7 @@ pub mod response {
             pub name: krost::types::String,
             ///Each partition in the response.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<ListOffsetsPartitionResponse>,
+            pub partitions: krost::types::Array<ListOffsetsPartitionResponse>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2705,7 +2703,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///Each broker in the response.
             #[kafka(versions = "0+")]
-            pub brokers: krost::primitive::Array<MetadataResponseBroker>,
+            pub brokers: krost::types::Array<MetadataResponseBroker>,
             ///The cluster ID that responding broker belongs to.
             #[kafka(versions = "2+", nullable = "2+", default = "null")]
             pub cluster_id: krost::types::NullableString,
@@ -2714,7 +2712,7 @@ pub mod response {
             pub controller_id: krost::types::Int32,
             ///Each topic in the response.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<MetadataResponseTopic>,
+            pub topics: krost::types::Array<MetadataResponseTopic>,
             ///32-bit bitfield to represent authorized operations for this cluster.
             #[kafka(versions = "8-10", default = "-2147483648")]
             pub cluster_authorized_operations: krost::types::Int32,
@@ -2756,13 +2754,13 @@ pub mod response {
             pub leader_epoch: krost::types::Int32,
             ///The set of all nodes that host this partition.
             #[kafka(versions = "0+")]
-            pub replica_nodes: krost::primitive::Array<krost::types::Int32>,
+            pub replica_nodes: krost::types::Array<krost::types::Int32>,
             ///The set of nodes that are in sync with the leader for this partition.
             #[kafka(versions = "0+")]
-            pub isr_nodes: krost::primitive::Array<krost::types::Int32>,
+            pub isr_nodes: krost::types::Array<krost::types::Int32>,
             ///The set of offline replicas of this partition.
             #[kafka(versions = "5+")]
-            pub offline_replicas: krost::primitive::Array<krost::types::Int32>,
+            pub offline_replicas: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2783,7 +2781,7 @@ pub mod response {
             pub is_internal: krost::types::Bool,
             ///Each partition in the topic.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<MetadataResponsePartition>,
+            pub partitions: krost::types::Array<MetadataResponsePartition>,
             ///32-bit bitfield to represent authorized operations for this topic.
             #[kafka(versions = "8+", default = "-2147483648")]
             pub topic_authorized_operations: krost::types::Int32,
@@ -2801,10 +2799,10 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///Each partition in v0 to v4 message.
             #[kafka(versions = "0-4")]
-            pub partition_errors: krost::primitive::Array<LeaderAndIsrPartitionError>,
+            pub partition_errors: krost::types::Array<LeaderAndIsrPartitionError>,
             ///Each topic
             #[kafka(versions = "5+")]
-            pub topics: krost::primitive::Array<LeaderAndIsrTopicError>,
+            pub topics: krost::types::Array<LeaderAndIsrTopicError>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2816,7 +2814,7 @@ pub mod response {
             pub topic_id: krost::types::Uuid,
             ///Each partition.
             #[kafka(versions = "5+")]
-            pub partition_errors: krost::primitive::Array<LeaderAndIsrPartitionError>,
+            pub partition_errors: krost::types::Array<LeaderAndIsrPartitionError>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2831,7 +2829,7 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///The responses for each partition.
             #[kafka(versions = "0+")]
-            pub partition_errors: krost::primitive::Array<StopReplicaPartitionError>,
+            pub partition_errors: krost::types::Array<StopReplicaPartitionError>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2873,7 +2871,7 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///The partitions that the broker still leads.
             #[kafka(versions = "0+")]
-            pub remaining_partitions: krost::primitive::Array<RemainingPartition>,
+            pub remaining_partitions: krost::types::Array<RemainingPartition>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2900,7 +2898,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The responses for each topic.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<OffsetCommitResponseTopic>,
+            pub topics: krost::types::Array<OffsetCommitResponseTopic>,
             ///The tagged fields.
             #[kafka(versions = "8+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2924,7 +2922,7 @@ pub mod response {
             pub name: krost::types::String,
             ///The responses for each partition in the topic.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<OffsetCommitResponsePartition>,
+            pub partitions: krost::types::Array<OffsetCommitResponsePartition>,
             ///The tagged fields.
             #[kafka(versions = "8+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2939,13 +2937,13 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The responses per topic.
             #[kafka(versions = "0-7")]
-            pub topics: krost::primitive::Array<OffsetFetchResponseTopic>,
+            pub topics: krost::types::Array<OffsetFetchResponseTopic>,
             ///The top-level error code, or 0 if there was no error.
             #[kafka(versions = "2-7", default = "0")]
             pub error_code: krost::types::Int16,
             ///The responses per group id.
             #[kafka(versions = "8+")]
-            pub groups: krost::primitive::Array<OffsetFetchResponseGroup>,
+            pub groups: krost::types::Array<OffsetFetchResponseGroup>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2978,7 +2976,7 @@ pub mod response {
             pub name: krost::types::String,
             ///The responses per partition
             #[kafka(versions = "0-7")]
-            pub partitions: krost::primitive::Array<OffsetFetchResponsePartition>,
+            pub partitions: krost::types::Array<OffsetFetchResponsePartition>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3011,7 +3009,7 @@ pub mod response {
             pub name: krost::types::String,
             ///The responses per partition
             #[kafka(versions = "8+")]
-            pub partitions: krost::primitive::Array<OffsetFetchResponsePartitions>,
+            pub partitions: krost::types::Array<OffsetFetchResponsePartitions>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3023,7 +3021,7 @@ pub mod response {
             pub group_id: krost::types::String,
             ///The responses per topic.
             #[kafka(versions = "8+")]
-            pub topics: krost::primitive::Array<OffsetFetchResponseTopics>,
+            pub topics: krost::types::Array<OffsetFetchResponseTopics>,
             ///The group-level error code, or 0 if there was no error.
             #[kafka(versions = "8+", default = "0")]
             pub error_code: krost::types::Int16,
@@ -3056,7 +3054,7 @@ pub mod response {
             pub port: krost::types::Int32,
             ///Each coordinator result in the response
             #[kafka(versions = "4+")]
-            pub coordinators: krost::primitive::Array<Coordinator>,
+            pub coordinators: krost::types::Array<Coordinator>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3115,7 +3113,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub member_id: krost::types::String,
             #[kafka(versions = "0+")]
-            pub members: krost::primitive::Array<JoinGroupResponseMember>,
+            pub members: krost::types::Array<JoinGroupResponseMember>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3163,7 +3161,7 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///List of leaving member responses.
             #[kafka(versions = "3+")]
-            pub members: krost::primitive::Array<MemberResponse>,
+            pub members: krost::types::Array<MemberResponse>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3217,7 +3215,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///Each described group.
             #[kafka(versions = "0+")]
-            pub groups: krost::primitive::Array<DescribedGroup>,
+            pub groups: krost::types::Array<DescribedGroup>,
             ///The tagged fields.
             #[kafka(versions = "5+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3265,7 +3263,7 @@ pub mod response {
             pub protocol_data: krost::types::String,
             ///The group members.
             #[kafka(versions = "0+")]
-            pub members: krost::primitive::Array<DescribedGroupMember>,
+            pub members: krost::types::Array<DescribedGroupMember>,
             ///32-bit bitfield to represent authorized operations for this group.
             #[kafka(versions = "3+", default = "-2147483648")]
             pub authorized_operations: krost::types::Int32,
@@ -3286,7 +3284,7 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///Each group in the response.
             #[kafka(versions = "0+")]
-            pub groups: krost::primitive::Array<ListedGroup>,
+            pub groups: krost::types::Array<ListedGroup>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3316,7 +3314,7 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///The mechanisms enabled in the server.
             #[kafka(versions = "0+")]
-            pub mechanisms: krost::primitive::Array<krost::types::String>,
+            pub mechanisms: krost::types::Array<krost::types::String>,
         }
     }
     pub mod api_versions {
@@ -3328,19 +3326,19 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///The APIs supported by the broker.
             #[kafka(versions = "0+")]
-            pub api_keys: krost::primitive::Array<ApiVersion>,
+            pub api_keys: krost::types::Array<ApiVersion>,
             ///The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota.
             #[kafka(versions = "1+")]
             pub throttle_time_ms: krost::types::Int32,
             ///Features supported by the broker.
             #[kafka(versions = "3+", tagged = "3+", tag = 0i32)]
-            pub supported_features: krost::primitive::Array<SupportedFeatureKey>,
+            pub supported_features: krost::types::Array<SupportedFeatureKey>,
             ///The monotonically increasing epoch for the finalized features information. Valid values are >= 0. A value of -1 is special and represents unknown epoch.
             #[kafka(versions = "3+", tagged = "3+", tag = 1i32, default = "-1")]
             pub finalized_features_epoch: krost::types::Int64,
             ///List of cluster-wide finalized features. The information is valid only if FinalizedFeaturesEpoch >= 0.
             #[kafka(versions = "3+", tagged = "3+", tag = 2i32)]
-            pub finalized_features: krost::primitive::Array<FinalizedFeatureKey>,
+            pub finalized_features: krost::types::Array<FinalizedFeatureKey>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3400,7 +3398,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///Results for each topic we tried to create.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<CreatableTopicResult>,
+            pub topics: krost::types::Array<CreatableTopicResult>,
             ///The tagged fields.
             #[kafka(versions = "5+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3451,7 +3449,7 @@ pub mod response {
             pub replication_factor: krost::types::Int16,
             ///Configuration of the topic.
             #[kafka(versions = "5+", nullable = "5+")]
-            pub configs: krost::primitive::Array<CreatableTopicConfigs>,
+            pub configs: krost::types::Array<CreatableTopicConfigs>,
             ///The tagged fields.
             #[kafka(versions = "5+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3466,7 +3464,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The results for each topic we tried to delete.
             #[kafka(versions = "0+")]
-            pub responses: krost::primitive::Array<DeletableTopicResult>,
+            pub responses: krost::types::Array<DeletableTopicResult>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3499,7 +3497,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///Each topic that we wanted to delete records from.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<DeleteRecordsTopicResult>,
+            pub topics: krost::types::Array<DeleteRecordsTopicResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3526,7 +3524,7 @@ pub mod response {
             pub name: krost::types::String,
             ///Each partition that we wanted to delete records from.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<DeleteRecordsPartitionResult>,
+            pub partitions: krost::types::Array<DeleteRecordsPartitionResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3562,7 +3560,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///Each topic we fetched offsets for.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<OffsetForLeaderTopicResult>,
+            pub topics: krost::types::Array<OffsetForLeaderTopicResult>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3592,7 +3590,7 @@ pub mod response {
             pub topic: krost::types::String,
             ///Each partition in the topic we fetched offsets for.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<EpochEndOffset>,
+            pub partitions: krost::types::Array<EpochEndOffset>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3607,7 +3605,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The results for each topic.
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<AddPartitionsToTxnTopicResult>,
+            pub results: krost::types::Array<AddPartitionsToTxnTopicResult>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3631,7 +3629,7 @@ pub mod response {
             pub name: krost::types::String,
             ///The results for each partition
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<AddPartitionsToTxnPartitionResult>,
+            pub results: krost::types::Array<AddPartitionsToTxnPartitionResult>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3673,7 +3671,7 @@ pub mod response {
         pub struct WriteTxnMarkersResponse {
             ///The results for writing makers.
             #[kafka(versions = "0+")]
-            pub markers: krost::primitive::Array<WritableTxnMarkerResult>,
+            pub markers: krost::types::Array<WritableTxnMarkerResult>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3697,7 +3695,7 @@ pub mod response {
             pub name: krost::types::String,
             ///The results by partition.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<WritableTxnMarkerPartitionResult>,
+            pub partitions: krost::types::Array<WritableTxnMarkerPartitionResult>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3709,7 +3707,7 @@ pub mod response {
             pub producer_id: krost::types::Int64,
             ///The results by topic.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<WritableTxnMarkerTopicResult>,
+            pub topics: krost::types::Array<WritableTxnMarkerTopicResult>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3724,7 +3722,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The responses for each topic.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TxnOffsetCommitResponseTopic>,
+            pub topics: krost::types::Array<TxnOffsetCommitResponseTopic>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3748,7 +3746,7 @@ pub mod response {
             pub name: krost::types::String,
             ///The responses for each partition in the topic.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<TxnOffsetCommitResponsePartition>,
+            pub partitions: krost::types::Array<TxnOffsetCommitResponsePartition>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3769,7 +3767,7 @@ pub mod response {
             pub error_message: krost::types::NullableString,
             ///Each Resource that is referenced in an ACL.
             #[kafka(versions = "0+")]
-            pub resources: krost::primitive::Array<DescribeAclsResource>,
+            pub resources: krost::types::Array<DescribeAclsResource>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3805,7 +3803,7 @@ pub mod response {
             pub pattern_type: krost::types::Int8,
             ///The ACLs.
             #[kafka(versions = "0+")]
-            pub acls: krost::primitive::Array<AclDescription>,
+            pub acls: krost::types::Array<AclDescription>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3820,7 +3818,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The results for each ACL creation.
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<AclCreationResult>,
+            pub results: krost::types::Array<AclCreationResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3847,7 +3845,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The results for each filter.
             #[kafka(versions = "0+")]
-            pub filter_results: krost::primitive::Array<DeleteAclsFilterResult>,
+            pub filter_results: krost::types::Array<DeleteAclsFilterResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3895,7 +3893,7 @@ pub mod response {
             pub error_message: krost::types::NullableString,
             ///The ACLs which matched this filter.
             #[kafka(versions = "0+")]
-            pub matching_acls: krost::primitive::Array<DeleteAclsMatchingAcl>,
+            pub matching_acls: krost::types::Array<DeleteAclsMatchingAcl>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3910,7 +3908,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The results for each resource.
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<DescribeConfigsResult>,
+            pub results: krost::types::Array<DescribeConfigsResult>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3952,7 +3950,7 @@ pub mod response {
             pub is_sensitive: krost::types::Bool,
             ///The synonyms for this configuration key.
             #[kafka(versions = "1+")]
-            pub synonyms: krost::primitive::Array<DescribeConfigsSynonym>,
+            pub synonyms: krost::types::Array<DescribeConfigsSynonym>,
             ///The configuration data type. Type can be one of the following values - BOOLEAN, STRING, INT, SHORT, LONG, DOUBLE, LIST, CLASS, PASSWORD
             #[kafka(versions = "3+", default = "0")]
             pub config_type: krost::types::Int8,
@@ -3979,7 +3977,7 @@ pub mod response {
             pub resource_name: krost::types::String,
             ///Each listed configuration.
             #[kafka(versions = "0+")]
-            pub configs: krost::primitive::Array<DescribeConfigsResourceResult>,
+            pub configs: krost::types::Array<DescribeConfigsResourceResult>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3994,7 +3992,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The responses for each resource.
             #[kafka(versions = "0+")]
-            pub responses: krost::primitive::Array<AlterConfigsResourceResponse>,
+            pub responses: krost::types::Array<AlterConfigsResourceResponse>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4027,7 +4025,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The results for each topic.
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<AlterReplicaLogDirTopicResult>,
+            pub results: krost::types::Array<AlterReplicaLogDirTopicResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4051,7 +4049,7 @@ pub mod response {
             pub topic_name: krost::types::String,
             ///The results for each partition.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<AlterReplicaLogDirPartitionResult>,
+            pub partitions: krost::types::Array<AlterReplicaLogDirPartitionResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4069,7 +4067,7 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///The log directories.
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<DescribeLogDirsResult>,
+            pub results: krost::types::Array<DescribeLogDirsResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4098,7 +4096,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<DescribeLogDirsPartition>,
+            pub partitions: krost::types::Array<DescribeLogDirsPartition>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4113,7 +4111,7 @@ pub mod response {
             pub log_dir: krost::types::String,
             ///Each topic.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<DescribeLogDirsTopic>,
+            pub topics: krost::types::Array<DescribeLogDirsTopic>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4149,7 +4147,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The partition creation results for each topic.
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<CreatePartitionsTopicResult>,
+            pub results: krost::types::Array<CreatePartitionsTopicResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4251,7 +4249,7 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///The tokens.
             #[kafka(versions = "0+")]
-            pub tokens: krost::primitive::Array<DescribedDelegationToken>,
+            pub tokens: krost::types::Array<DescribedDelegationToken>,
             ///The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota.
             #[kafka(versions = "0+")]
             pub throttle_time_ms: krost::types::Int32,
@@ -4296,7 +4294,7 @@ pub mod response {
             pub hmac: krost::types::Bytes,
             ///Those who are able to renew this token before it expires.
             #[kafka(versions = "0+")]
-            pub renewers: krost::primitive::Array<DescribedDelegationTokenRenewer>,
+            pub renewers: krost::types::Array<DescribedDelegationTokenRenewer>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4311,7 +4309,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The deletion results
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<DeletableGroupResult>,
+            pub results: krost::types::Array<DeletableGroupResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4341,7 +4339,7 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///The election results, or an empty array if the requester did not have permission and the request asks for all partitions.
             #[kafka(versions = "0+")]
-            pub replica_election_results: krost::primitive::Array<ReplicaElectionResult>,
+            pub replica_election_results: krost::types::Array<ReplicaElectionResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4368,7 +4366,7 @@ pub mod response {
             pub topic: krost::types::String,
             ///The results for each partition
             #[kafka(versions = "0+")]
-            pub partition_result: krost::primitive::Array<PartitionResult>,
+            pub partition_result: krost::types::Array<PartitionResult>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4383,7 +4381,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The responses for each resource.
             #[kafka(versions = "0+")]
-            pub responses: krost::primitive::Array<AlterConfigsResourceResponse>,
+            pub responses: krost::types::Array<AlterConfigsResourceResponse>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4422,7 +4420,7 @@ pub mod response {
             pub error_message: krost::types::NullableString,
             ///The responses to topics to reassign.
             #[kafka(versions = "0+")]
-            pub responses: krost::primitive::Array<ReassignableTopicResponse>,
+            pub responses: krost::types::Array<ReassignableTopicResponse>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4449,7 +4447,7 @@ pub mod response {
             pub name: krost::types::String,
             ///The responses to partitions to reassign
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<ReassignablePartitionResponse>,
+            pub partitions: krost::types::Array<ReassignablePartitionResponse>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4470,7 +4468,7 @@ pub mod response {
             pub error_message: krost::types::NullableString,
             ///The ongoing reassignments for each topic.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<OngoingTopicReassignment>,
+            pub topics: krost::types::Array<OngoingTopicReassignment>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4482,13 +4480,13 @@ pub mod response {
             pub partition_index: krost::types::Int32,
             ///The current replica set.
             #[kafka(versions = "0+")]
-            pub replicas: krost::primitive::Array<krost::types::Int32>,
+            pub replicas: krost::types::Array<krost::types::Int32>,
             ///The set of replicas we are currently adding.
             #[kafka(versions = "0+")]
-            pub adding_replicas: krost::primitive::Array<krost::types::Int32>,
+            pub adding_replicas: krost::types::Array<krost::types::Int32>,
             ///The set of replicas we are currently removing.
             #[kafka(versions = "0+")]
-            pub removing_replicas: krost::primitive::Array<krost::types::Int32>,
+            pub removing_replicas: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4500,7 +4498,7 @@ pub mod response {
             pub name: krost::types::String,
             ///The ongoing reassignments for each partition.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<OngoingPartitionReassignment>,
+            pub partitions: krost::types::Array<OngoingPartitionReassignment>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4518,7 +4516,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The responses for each topic.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<OffsetDeleteResponseTopic>,
+            pub topics: krost::types::Array<OffsetDeleteResponseTopic>,
         }
         #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         pub struct OffsetDeleteResponsePartition {
@@ -4536,7 +4534,7 @@ pub mod response {
             pub name: krost::types::String,
             ///The responses for each partition in the topic.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<OffsetDeleteResponsePartition>,
+            pub partitions: krost::types::Array<OffsetDeleteResponsePartition>,
         }
     }
     pub mod describe_client_quotas {
@@ -4554,7 +4552,7 @@ pub mod response {
             pub error_message: krost::types::NullableString,
             ///A result entry.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub entries: krost::primitive::Array<EntryData>,
+            pub entries: krost::types::Array<EntryData>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4587,10 +4585,10 @@ pub mod response {
         pub struct EntryData {
             ///The quota entity description.
             #[kafka(versions = "0+")]
-            pub entity: krost::primitive::Array<EntityData>,
+            pub entity: krost::types::Array<EntityData>,
             ///The quota values for the entity.
             #[kafka(versions = "0+")]
-            pub values: krost::primitive::Array<ValueData>,
+            pub values: krost::types::Array<ValueData>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4605,7 +4603,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The quota configuration entries to alter.
             #[kafka(versions = "0+")]
-            pub entries: krost::primitive::Array<EntryData>,
+            pub entries: krost::types::Array<EntryData>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4632,7 +4630,7 @@ pub mod response {
             pub error_message: krost::types::NullableString,
             ///The quota entity to alter.
             #[kafka(versions = "0+")]
-            pub entity: krost::primitive::Array<EntityData>,
+            pub entity: krost::types::Array<EntityData>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4653,7 +4651,7 @@ pub mod response {
             pub error_message: krost::types::NullableString,
             ///The results for descriptions, one per user.
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<DescribeUserScramCredentialsResult>,
+            pub results: krost::types::Array<DescribeUserScramCredentialsResult>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4683,7 +4681,7 @@ pub mod response {
             pub error_message: krost::types::NullableString,
             ///The mechanism and related information associated with the user's SCRAM credentials.
             #[kafka(versions = "0+")]
-            pub credential_infos: krost::primitive::Array<CredentialInfo>,
+            pub credential_infos: krost::types::Array<CredentialInfo>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4698,7 +4696,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///The results for deletions and alterations, one per affected user.
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<AlterUserScramCredentialsResult>,
+            pub results: krost::types::Array<AlterUserScramCredentialsResult>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4727,7 +4725,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub error_code: krost::types::Int16,
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4758,7 +4756,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub topic_name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4772,7 +4770,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub error_code: krost::types::Int16,
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
         }
         #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         pub struct PartitionData {
@@ -4794,7 +4792,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub topic_name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
         }
     }
     pub mod end_quorum_epoch {
@@ -4805,7 +4803,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub error_code: krost::types::Int16,
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
         }
         #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         pub struct PartitionData {
@@ -4827,7 +4825,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub topic_name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
         }
     }
     pub mod describe_quorum {
@@ -4838,7 +4836,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub error_code: krost::types::Int16,
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4859,9 +4857,9 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub high_watermark: krost::types::Int64,
             #[kafka(versions = "0+")]
-            pub current_voters: krost::primitive::Array<ReplicaState>,
+            pub current_voters: krost::types::Array<ReplicaState>,
             #[kafka(versions = "0+")]
-            pub observers: krost::primitive::Array<ReplicaState>,
+            pub observers: krost::types::Array<ReplicaState>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4872,7 +4870,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub topic_name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4889,7 +4887,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub error_code: krost::types::Int16,
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4910,7 +4908,7 @@ pub mod response {
             pub leader_epoch: krost::types::Int32,
             ///The in-sync replica IDs.
             #[kafka(versions = "0+")]
-            pub isr: krost::primitive::Array<krost::types::Int32>,
+            pub isr: krost::types::Array<krost::types::Int32>,
             ///1 if the partition is recovering from an unclean leader election; 0 otherwise.
             #[kafka(versions = "1+", default = "0")]
             pub leader_recovery_state: krost::types::Int8,
@@ -4927,7 +4925,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub name: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionData>,
+            pub partitions: krost::types::Array<PartitionData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4948,7 +4946,7 @@ pub mod response {
             pub error_message: krost::types::NullableString,
             ///Results for each feature update.
             #[kafka(versions = "0+")]
-            pub results: krost::primitive::Array<UpdatableFeatureResult>,
+            pub results: krost::types::Array<UpdatableFeatureResult>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4996,7 +4994,7 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///The topics to fetch.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicSnapshot>,
+            pub topics: krost::types::Array<TopicSnapshot>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5056,7 +5054,7 @@ pub mod response {
             pub name: krost::types::String,
             ///The partitions to fetch.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionSnapshot>,
+            pub partitions: krost::types::Array<PartitionSnapshot>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5083,7 +5081,7 @@ pub mod response {
             pub controller_id: krost::types::Int32,
             ///Each broker in the response.
             #[kafka(versions = "0+")]
-            pub brokers: krost::primitive::Array<DescribeClusterBroker>,
+            pub brokers: krost::types::Array<DescribeClusterBroker>,
             ///32-bit bitfield to represent authorized operations for this cluster.
             #[kafka(versions = "0+", default = "-2147483648")]
             pub cluster_authorized_operations: krost::types::Int32,
@@ -5119,7 +5117,7 @@ pub mod response {
             pub throttle_time_ms: krost::types::Int32,
             ///Each topic in the response.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicResponse>,
+            pub topics: krost::types::Array<TopicResponse>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5154,7 +5152,7 @@ pub mod response {
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
             pub error_message: krost::types::NullableString,
             #[kafka(versions = "0+")]
-            pub active_producers: krost::primitive::Array<ProducerState>,
+            pub active_producers: krost::types::Array<ProducerState>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5166,7 +5164,7 @@ pub mod response {
             pub name: krost::types::String,
             ///Each partition in the response.
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<PartitionResponse>,
+            pub partitions: krost::types::Array<PartitionResponse>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5240,7 +5238,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub throttle_time_ms: krost::types::Int32,
             #[kafka(versions = "0+")]
-            pub transaction_states: krost::primitive::Array<TransactionState>,
+            pub transaction_states: krost::types::Array<TransactionState>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5250,7 +5248,7 @@ pub mod response {
             #[kafka(versions = "0+")]
             pub topic: krost::types::String,
             #[kafka(versions = "0+")]
-            pub partitions: krost::primitive::Array<krost::types::Int32>,
+            pub partitions: krost::types::Array<krost::types::Int32>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5273,7 +5271,7 @@ pub mod response {
             pub producer_epoch: krost::types::Int16,
             ///The set of partitions included in the current transaction (if active). When a transaction is preparing to commit or abort, this will include only partitions which do not have markers.
             #[kafka(versions = "0+")]
-            pub topics: krost::primitive::Array<TopicData>,
+            pub topics: krost::types::Array<TopicData>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5290,9 +5288,9 @@ pub mod response {
             pub error_code: krost::types::Int16,
             ///Set of state filters provided in the request which were unknown to the transaction coordinator
             #[kafka(versions = "0+")]
-            pub unknown_state_filters: krost::primitive::Array<krost::types::String>,
+            pub unknown_state_filters: krost::types::Array<krost::types::String>,
             #[kafka(versions = "0+")]
-            pub transaction_states: krost::primitive::Array<TransactionState>,
+            pub transaction_states: krost::types::Array<TransactionState>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
