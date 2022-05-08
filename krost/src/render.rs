@@ -151,6 +151,9 @@ impl KrostField {
         if self.collection {
             tokens = quote! { Vec<#tokens> };
         }
+        if self.nullable_versions.is_some() {
+            tokens = quote! { Option<#tokens> };
+        }
         tokens
     }
 }

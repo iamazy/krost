@@ -1,6 +1,6 @@
 #![allow(dead_code)]
-use from_variants::FromVariants;
 use krost::KrostType;
+use from_variants::FromVariants;
 pub mod request {
     pub mod produce {
         #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
@@ -8,7 +8,7 @@ pub mod request {
         pub struct ProduceRequest {
             ///The transactional ID, or null if the producer is not transactional.
             #[kafka(versions = "3+", nullable = "3+", default = "null")]
-            pub transactional_id: String,
+            pub transactional_id: Option<String>,
             ///The number of acknowledgments the producer requires the leader to have received before considering a request complete. Allowed values: 0 for no acknowledgments, 1 for only the leader and -1 for the full ISR.
             #[kafka(versions = "0+")]
             pub acks: i16,
@@ -29,7 +29,7 @@ pub mod request {
             pub index: i32,
             ///The record data to be produced.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub records: krost::record::RecordBatch,
+            pub records: Option<krost::record::RecordBatch>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -57,9 +57,9 @@ pub mod request {
                 tagged = "12+",
                 tag = 0i32,
                 nullable = "12+",
-                default = "null"
+                default = "null",
             )]
-            pub cluster_id: String,
+            pub cluster_id: Option<String>,
             ///The broker ID of the follower, of -1 if this request is from a consumer.
             #[kafka(versions = "0+")]
             pub replica_id: i32,
@@ -203,7 +203,7 @@ pub mod request {
         pub struct MetadataRequest {
             ///The topics to fetch metadata for.
             #[kafka(versions = "0+", nullable = "1+")]
-            pub topics: Vec<MetadataRequestTopic>,
+            pub topics: Option<Vec<MetadataRequestTopic>>,
             ///If this is true, the broker may auto-create topics that we requested which do not already exist, if it is configured to do so.
             #[kafka(versions = "4+", default = "true")]
             pub allow_auto_topic_creation: bool,
@@ -224,7 +224,7 @@ pub mod request {
             pub topic_id: krost::types::Uuid,
             ///The topic name.
             #[kafka(versions = "0+", nullable = "10+")]
-            pub name: String,
+            pub name: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -445,7 +445,7 @@ pub mod request {
             pub endpoints: Vec<UpdateMetadataEndpoint>,
             ///The rack which this broker belongs to.
             #[kafka(versions = "2+", nullable = "0+")]
-            pub rack: String,
+            pub rack: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -481,7 +481,7 @@ pub mod request {
             pub member_id: String,
             ///The unique identifier of the consumer instance provided by end user.
             #[kafka(versions = "7+", nullable = "7+", default = "null")]
-            pub group_instance_id: String,
+            pub group_instance_id: Option<String>,
             ///The time period in ms to retain the offset.
             #[kafka(versions = "2-4", default = "-1")]
             pub retention_time_ms: i64,
@@ -508,7 +508,7 @@ pub mod request {
             pub commit_timestamp: i64,
             ///Any associated metadata the client wants to keep.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub committed_metadata: String,
+            pub committed_metadata: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "8+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -535,7 +535,7 @@ pub mod request {
             pub group_id: String,
             ///Each topic we would like to fetch offsets for, or null to fetch offsets for all topics.
             #[kafka(versions = "0-7", nullable = "2-7")]
-            pub topics: Vec<OffsetFetchRequestTopic>,
+            pub topics: Option<Vec<OffsetFetchRequestTopic>>,
             ///Each group we would like to fetch offsets for
             #[kafka(versions = "8+")]
             pub groups: Vec<OffsetFetchRequestGroup>,
@@ -577,7 +577,7 @@ pub mod request {
             pub group_id: String,
             ///Each topic we would like to fetch offsets for, or null to fetch offsets for all topics.
             #[kafka(versions = "8+", nullable = "8+")]
-            pub topics: Vec<OffsetFetchRequestTopics>,
+            pub topics: Option<Vec<OffsetFetchRequestTopics>>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -619,7 +619,7 @@ pub mod request {
             pub member_id: String,
             ///The unique identifier of the consumer instance provided by end user.
             #[kafka(versions = "5+", nullable = "5+", default = "null")]
-            pub group_instance_id: String,
+            pub group_instance_id: Option<String>,
             ///The unique name the for class of protocols implemented by the group we want to join.
             #[kafka(versions = "0+")]
             pub protocol_type: String,
@@ -628,7 +628,7 @@ pub mod request {
             pub protocols: Vec<JoinGroupRequestProtocol>,
             ///The reason why the member (re-)joins the group.
             #[kafka(versions = "8+", nullable = "8+", default = "null")]
-            pub reason: String,
+            pub reason: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "6+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -661,7 +661,7 @@ pub mod request {
             pub member_id: String,
             ///The unique identifier of the consumer instance provided by end user.
             #[kafka(versions = "3+", nullable = "3+", default = "null")]
-            pub group_instance_id: String,
+            pub group_instance_id: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -691,10 +691,10 @@ pub mod request {
             pub member_id: String,
             ///The group instance ID to remove from the group.
             #[kafka(versions = "3+", nullable = "3+", default = "null")]
-            pub group_instance_id: String,
+            pub group_instance_id: Option<String>,
             ///The reason why the member left the group.
             #[kafka(versions = "5+", nullable = "5+", default = "null")]
-            pub reason: String,
+            pub reason: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -715,13 +715,13 @@ pub mod request {
             pub member_id: String,
             ///The unique identifier of the consumer instance provided by end user.
             #[kafka(versions = "3+", nullable = "3+", default = "null")]
-            pub group_instance_id: String,
+            pub group_instance_id: Option<String>,
             ///The group protocol type.
             #[kafka(versions = "5+", nullable = "5+", default = "null")]
-            pub protocol_type: String,
+            pub protocol_type: Option<String>,
             ///The group protocol name.
             #[kafka(versions = "5+", nullable = "5+", default = "null")]
-            pub protocol_name: String,
+            pub protocol_name: Option<String>,
             ///Each assignment.
             #[kafka(versions = "0+")]
             pub assignments: Vec<SyncGroupRequestAssignment>,
@@ -829,7 +829,7 @@ pub mod request {
             pub name: String,
             ///The configuration value.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub value: String,
+            pub value: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "5+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -877,7 +877,7 @@ pub mod request {
         pub struct DeleteTopicState {
             ///The topic name
             #[kafka(versions = "6+", nullable = "6+", default = "null")]
-            pub name: String,
+            pub name: Option<String>,
             ///The unique topic ID
             #[kafka(versions = "6+")]
             pub topic_id: krost::types::Uuid,
@@ -931,7 +931,7 @@ pub mod request {
         pub struct InitProducerIdRequest {
             ///The transactional id, or null if the producer is not transactional.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub transactional_id: String,
+            pub transactional_id: Option<String>,
             ///The time in ms to wait before aborting idle transactions sent by this producer. This is only relevant if a TransactionalId has been defined.
             #[kafka(versions = "0+")]
             pub transaction_timeout_ms: i32,
@@ -1132,7 +1132,7 @@ pub mod request {
             pub member_id: String,
             ///The unique identifier of the consumer instance provided by end user.
             #[kafka(versions = "3+", nullable = "3+", default = "null")]
-            pub group_instance_id: String,
+            pub group_instance_id: Option<String>,
             ///Each topic that we want to commit offsets for.
             #[kafka(versions = "0+")]
             pub topics: Vec<TxnOffsetCommitRequestTopic>,
@@ -1153,7 +1153,7 @@ pub mod request {
             pub committed_leader_epoch: i32,
             ///Any associated metadata the client wants to keep.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub committed_metadata: String,
+            pub committed_metadata: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1180,16 +1180,16 @@ pub mod request {
             pub resource_type_filter: i8,
             ///The resource name, or null to match any resource name.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub resource_name_filter: String,
+            pub resource_name_filter: Option<String>,
             ///The resource pattern to match.
             #[kafka(versions = "1+", default = "3")]
             pub pattern_type_filter: i8,
             ///The principal to match, or null to match any principal.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub principal_filter: String,
+            pub principal_filter: Option<String>,
             ///The host to match, or null to match any host.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub host_filter: String,
+            pub host_filter: Option<String>,
             ///The operation to match.
             #[kafka(versions = "0+")]
             pub operation: i8,
@@ -1258,16 +1258,16 @@ pub mod request {
             pub resource_type_filter: i8,
             ///The resource name.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub resource_name_filter: String,
+            pub resource_name_filter: Option<String>,
             ///The pattern type.
             #[kafka(versions = "1+", default = "3")]
             pub pattern_type_filter: i8,
             ///The principal filter, or null to accept all principals.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub principal_filter: String,
+            pub principal_filter: Option<String>,
             ///The host filter, or null to accept all hosts.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub host_filter: String,
+            pub host_filter: Option<String>,
             ///The ACL operation.
             #[kafka(versions = "0+")]
             pub operation: i8,
@@ -1306,7 +1306,7 @@ pub mod request {
             pub resource_name: String,
             ///The configuration keys to list, or null to list all configuration keys.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub configuration_keys: Vec<String>,
+            pub configuration_keys: Option<Vec<String>>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1333,7 +1333,7 @@ pub mod request {
             pub name: String,
             ///The value to set for the configuration key.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub value: String,
+            pub value: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1396,7 +1396,7 @@ pub mod request {
         pub struct DescribeLogDirsRequest {
             ///Each topic that we want to describe log directories for, or null for all topics.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub topics: Vec<DescribableLogDirTopic>,
+            pub topics: Option<Vec<DescribableLogDirTopic>>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1462,7 +1462,7 @@ pub mod request {
             pub count: i32,
             ///The new partition assignments.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub assignments: Vec<CreatePartitionsAssignment>,
+            pub assignments: Option<Vec<CreatePartitionsAssignment>>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1531,7 +1531,7 @@ pub mod request {
         pub struct DescribeDelegationTokenRequest {
             ///Each owner that we want to describe delegation tokens for, or null to describe all tokens.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub owners: Vec<DescribeDelegationTokenOwner>,
+            pub owners: Option<Vec<DescribeDelegationTokenOwner>>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1570,7 +1570,7 @@ pub mod request {
             pub election_type: i8,
             ///The topic partitions to elect leaders.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub topic_partitions: Vec<TopicPartitions>,
+            pub topic_partitions: Option<Vec<TopicPartitions>>,
             ///The time in ms to wait for the election to complete.
             #[kafka(versions = "0+", default = "60000")]
             pub timeout_ms: i32,
@@ -1615,7 +1615,7 @@ pub mod request {
             pub config_operation: i8,
             ///The value to set for the configuration key.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub value: String,
+            pub value: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1657,7 +1657,7 @@ pub mod request {
             pub partition_index: i32,
             ///The replicas to place the partitions on, or null to cancel a pending reassignment for this partition.
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub replicas: Vec<i32>,
+            pub replicas: Option<Vec<i32>>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1684,7 +1684,7 @@ pub mod request {
             pub timeout_ms: i32,
             ///The topics to list partition reassignments for, or null to list everything.
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub topics: Vec<ListPartitionReassignmentsTopics>,
+            pub topics: Option<Vec<ListPartitionReassignmentsTopics>>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1753,7 +1753,7 @@ pub mod request {
             pub match_type: i8,
             ///The string to match against, or null if unused for the match type.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub r#match: String,
+            pub r#match: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1780,7 +1780,7 @@ pub mod request {
             pub entity_type: String,
             ///The name of the entity, or null if the default.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub entity_name: String,
+            pub entity_name: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1819,7 +1819,7 @@ pub mod request {
         pub struct DescribeUserScramCredentialsRequest {
             ///The users to describe, or null/empty to describe all users.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub users: Vec<UserName>,
+            pub users: Option<Vec<UserName>>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -1887,7 +1887,7 @@ pub mod request {
         #[kafka(apikey = 52i16, versions = "0", flexible = "0+")]
         pub struct VoteRequest {
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub cluster_id: String,
+            pub cluster_id: Option<String>,
             #[kafka(versions = "0+")]
             pub topics: Vec<TopicData>,
             ///The tagged fields.
@@ -1932,7 +1932,7 @@ pub mod request {
         #[kafka(apikey = 53i16, versions = "0")]
         pub struct BeginQuorumEpochRequest {
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub cluster_id: String,
+            pub cluster_id: Option<String>,
             #[kafka(versions = "0+")]
             pub topics: Vec<TopicData>,
         }
@@ -1962,7 +1962,7 @@ pub mod request {
         #[kafka(apikey = 54i16, versions = "0")]
         pub struct EndQuorumEpochRequest {
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub cluster_id: String,
+            pub cluster_id: Option<String>,
             #[kafka(versions = "0+")]
             pub topics: Vec<TopicData>,
         }
@@ -2115,7 +2115,7 @@ pub mod request {
             pub request_data: Vec<u8>,
             ///Value of the initial client principal when the request is redirected by a broker.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub request_principal: Vec<u8>,
+            pub request_principal: Option<Vec<u8>>,
             ///The original client's address in bytes.
             #[kafka(versions = "0+")]
             pub client_host_address: Vec<u8>,
@@ -2134,9 +2134,9 @@ pub mod request {
                 tagged = "0+",
                 tag = 0i32,
                 nullable = "0+",
-                default = "null"
+                default = "null",
             )]
-            pub cluster_id: String,
+            pub cluster_id: Option<String>,
             ///The broker ID of the follower
             #[kafka(versions = "0+", default = "-1")]
             pub replica_id: i32,
@@ -2247,7 +2247,7 @@ pub mod request {
             pub features: Vec<Feature>,
             ///The rack which this broker is in.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub rack: String,
+            pub rack: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2390,7 +2390,9 @@ pub mod request {
         DeleteTopicsRequest(delete_topics::DeleteTopicsRequest),
         DeleteRecordsRequest(delete_records::DeleteRecordsRequest),
         InitProducerIdRequest(init_producer_id::InitProducerIdRequest),
-        OffsetForLeaderEpochRequest(offset_for_leader_epoch::OffsetForLeaderEpochRequest),
+        OffsetForLeaderEpochRequest(
+            offset_for_leader_epoch::OffsetForLeaderEpochRequest,
+        ),
         AddPartitionsToTxnRequest(add_partitions_to_txn::AddPartitionsToTxnRequest),
         AddOffsetsToTxnRequest(add_offsets_to_txn::AddOffsetsToTxnRequest),
         EndTxnRequest(end_txn::EndTxnRequest),
@@ -2405,13 +2407,21 @@ pub mod request {
         DescribeLogDirsRequest(describe_log_dirs::DescribeLogDirsRequest),
         SaslAuthenticateRequest(sasl_authenticate::SaslAuthenticateRequest),
         CreatePartitionsRequest(create_partitions::CreatePartitionsRequest),
-        CreateDelegationTokenRequest(create_delegation_token::CreateDelegationTokenRequest),
+        CreateDelegationTokenRequest(
+            create_delegation_token::CreateDelegationTokenRequest,
+        ),
         RenewDelegationTokenRequest(renew_delegation_token::RenewDelegationTokenRequest),
-        ExpireDelegationTokenRequest(expire_delegation_token::ExpireDelegationTokenRequest),
-        DescribeDelegationTokenRequest(describe_delegation_token::DescribeDelegationTokenRequest),
+        ExpireDelegationTokenRequest(
+            expire_delegation_token::ExpireDelegationTokenRequest,
+        ),
+        DescribeDelegationTokenRequest(
+            describe_delegation_token::DescribeDelegationTokenRequest,
+        ),
         DeleteGroupsRequest(delete_groups::DeleteGroupsRequest),
         ElectLeadersRequest(elect_leaders::ElectLeadersRequest),
-        IncrementalAlterConfigsRequest(incremental_alter_configs::IncrementalAlterConfigsRequest),
+        IncrementalAlterConfigsRequest(
+            incremental_alter_configs::IncrementalAlterConfigsRequest,
+        ),
         AlterPartitionReassignmentsRequest(
             alter_partition_reassignments::AlterPartitionReassignmentsRequest,
         ),
@@ -2467,7 +2477,7 @@ pub mod response {
             pub batch_index: i32,
             ///The error message of the record that caused the batch to be dropped
             #[kafka(versions = "8+", nullable = "8+", default = "null")]
-            pub batch_index_error_message: String,
+            pub batch_index_error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2494,7 +2504,7 @@ pub mod response {
             pub record_errors: Vec<BatchIndexAndErrorMessage>,
             ///The global error message summarizing the common root cause of the records that caused the batch to be dropped
             #[kafka(versions = "8+", nullable = "8+", default = "null")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2603,13 +2613,13 @@ pub mod response {
             pub snapshot_id: SnapshotId,
             ///The aborted transactions.
             #[kafka(versions = "4+", nullable = "4+")]
-            pub aborted_transactions: Vec<AbortedTransaction>,
+            pub aborted_transactions: Option<Vec<AbortedTransaction>>,
             ///The preferred read replica for the consumer to use on its next fetch request
             #[kafka(versions = "11+", default = "-1")]
             pub preferred_read_replica: i32,
             ///The record data.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub records: krost::record::RecordBatch,
+            pub records: Option<krost::record::RecordBatch>,
             ///The tagged fields.
             #[kafka(versions = "12+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2692,7 +2702,7 @@ pub mod response {
             pub brokers: Vec<MetadataResponseBroker>,
             ///The cluster ID that responding broker belongs to.
             #[kafka(versions = "2+", nullable = "2+", default = "null")]
-            pub cluster_id: String,
+            pub cluster_id: Option<String>,
             ///The ID of the controller broker.
             #[kafka(versions = "1+", default = "-1")]
             pub controller_id: i32,
@@ -2719,7 +2729,7 @@ pub mod response {
             pub port: i32,
             ///The rack of the broker, or null if it has not been assigned to a rack.
             #[kafka(versions = "1+", nullable = "1+", default = "null")]
-            pub rack: String,
+            pub rack: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -2758,7 +2768,7 @@ pub mod response {
             pub error_code: i16,
             ///The topic name.
             #[kafka(versions = "0+", nullable = "12+")]
-            pub name: String,
+            pub name: Option<String>,
             ///The topic id.
             #[kafka(versions = "10+")]
             pub topic_id: krost::types::Uuid,
@@ -2947,7 +2957,7 @@ pub mod response {
             pub committed_leader_epoch: i32,
             ///The partition metadata.
             #[kafka(versions = "0-7", nullable = "0-7")]
-            pub metadata: String,
+            pub metadata: Option<String>,
             ///The error code, or 0 if there was no error.
             #[kafka(versions = "0-7")]
             pub error_code: i16,
@@ -2980,7 +2990,7 @@ pub mod response {
             pub committed_leader_epoch: i32,
             ///The partition metadata.
             #[kafka(versions = "8+", nullable = "8+")]
-            pub metadata: String,
+            pub metadata: Option<String>,
             ///The partition-level error code, or 0 if there was no error.
             #[kafka(versions = "8+")]
             pub error_code: i16,
@@ -3028,7 +3038,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message, or null if there was no error.
             #[kafka(versions = "1-3", nullable = "1-3")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The node id.
             #[kafka(versions = "0-3")]
             pub node_id: i32,
@@ -3064,7 +3074,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message, or null if there was no error.
             #[kafka(versions = "4+", nullable = "4+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "3+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3085,10 +3095,10 @@ pub mod response {
             pub generation_id: i32,
             ///The group protocol name.
             #[kafka(versions = "7+", nullable = "7+", default = "null")]
-            pub protocol_type: String,
+            pub protocol_type: Option<String>,
             ///The group protocol selected by the coordinator.
             #[kafka(versions = "0+", nullable = "7+")]
-            pub protocol_name: String,
+            pub protocol_name: Option<String>,
             ///The leader of the group.
             #[kafka(versions = "0+")]
             pub leader: String,
@@ -3111,7 +3121,7 @@ pub mod response {
             pub member_id: String,
             ///The unique identifier of the consumer instance provided by end user.
             #[kafka(versions = "5+", nullable = "5+", default = "null")]
-            pub group_instance_id: String,
+            pub group_instance_id: Option<String>,
             ///The group member metadata.
             #[kafka(versions = "0+")]
             pub metadata: Vec<u8>,
@@ -3159,7 +3169,7 @@ pub mod response {
             pub member_id: String,
             ///The group instance ID to remove from the group.
             #[kafka(versions = "3+", nullable = "3+")]
-            pub group_instance_id: String,
+            pub group_instance_id: Option<String>,
             ///The error code, or 0 if there was no error.
             #[kafka(versions = "3+")]
             pub error_code: i16,
@@ -3180,10 +3190,10 @@ pub mod response {
             pub error_code: i16,
             ///The group protocol type.
             #[kafka(versions = "5+", nullable = "5+", default = "null")]
-            pub protocol_type: String,
+            pub protocol_type: Option<String>,
             ///The group protocol name.
             #[kafka(versions = "5+", nullable = "5+", default = "null")]
-            pub protocol_name: String,
+            pub protocol_name: Option<String>,
             ///The member assignment.
             #[kafka(versions = "0+")]
             pub assignment: Vec<u8>,
@@ -3213,7 +3223,7 @@ pub mod response {
             pub member_id: String,
             ///The unique identifier of the consumer instance provided by end user.
             #[kafka(versions = "4+", nullable = "4+", default = "null")]
-            pub group_instance_id: String,
+            pub group_instance_id: Option<String>,
             ///The client ID used in the member's latest join group request.
             #[kafka(versions = "0+")]
             pub client_id: String,
@@ -3396,7 +3406,7 @@ pub mod response {
             pub name: String,
             ///The configuration value.
             #[kafka(versions = "5+", nullable = "5+")]
-            pub value: String,
+            pub value: Option<String>,
             ///True if the configuration is read-only.
             #[kafka(versions = "5+")]
             pub read_only: bool,
@@ -3423,7 +3433,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message, or null if there was no error.
             #[kafka(versions = "1+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///Optional topic config error returned if configs are not returned in the response.
             #[kafka(versions = "5+", tagged = "5+", tag = 0i32)]
             pub topic_config_error_code: i16,
@@ -3435,7 +3445,7 @@ pub mod response {
             pub replication_factor: i16,
             ///Configuration of the topic.
             #[kafka(versions = "5+", nullable = "5+")]
-            pub configs: Vec<CreatableTopicConfigs>,
+            pub configs: Option<Vec<CreatableTopicConfigs>>,
             ///The tagged fields.
             #[kafka(versions = "5+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3459,7 +3469,7 @@ pub mod response {
         pub struct DeletableTopicResult {
             ///The topic name
             #[kafka(versions = "0+", nullable = "6+")]
-            pub name: String,
+            pub name: Option<String>,
             ///the unique topic ID
             #[kafka(versions = "6+")]
             pub topic_id: krost::types::Uuid,
@@ -3468,7 +3478,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message, or null if there was no error.
             #[kafka(versions = "5+", nullable = "5+", default = "null")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3750,7 +3760,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///Each Resource that is referenced in an ACL.
             #[kafka(versions = "0+")]
             pub resources: Vec<DescribeAclsResource>,
@@ -3816,7 +3826,7 @@ pub mod response {
             pub error_code: i16,
             ///The result message, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3843,7 +3853,7 @@ pub mod response {
             pub error_code: i16,
             ///The deletion error message, or null if the deletion succeeded.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The ACL resource type.
             #[kafka(versions = "0+")]
             pub resource_type: i8,
@@ -3876,7 +3886,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message, or null if the filter succeeded.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The ACLs which matched this filter.
             #[kafka(versions = "0+")]
             pub matching_acls: Vec<DeleteAclsMatchingAcl>,
@@ -3906,7 +3916,7 @@ pub mod response {
             pub name: String,
             ///The synonym value.
             #[kafka(versions = "1+", nullable = "0+")]
-            pub value: String,
+            pub value: Option<String>,
             ///The synonym source.
             #[kafka(versions = "1+")]
             pub source: i8,
@@ -3921,7 +3931,7 @@ pub mod response {
             pub name: String,
             ///The configuration value.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub value: String,
+            pub value: Option<String>,
             ///True if the configuration is read-only.
             #[kafka(versions = "0+")]
             pub read_only: bool,
@@ -3942,7 +3952,7 @@ pub mod response {
             pub config_type: i8,
             ///The configuration documentation.
             #[kafka(versions = "3+", nullable = "0+")]
-            pub documentation: String,
+            pub documentation: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "4+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -3954,7 +3964,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message, or null if we were able to successfully describe the configurations.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The resource type.
             #[kafka(versions = "0+")]
             pub resource_type: i8,
@@ -3990,7 +4000,7 @@ pub mod response {
             pub error_code: i16,
             ///The resource error message, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The resource type.
             #[kafka(versions = "0+")]
             pub resource_type: i8,
@@ -4112,7 +4122,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The SASL authentication bytes from the server, as defined by the SASL mechanism.
             #[kafka(versions = "0+")]
             pub auth_bytes: Vec<u8>,
@@ -4148,7 +4158,7 @@ pub mod response {
             pub error_code: i16,
             ///The result message, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4340,7 +4350,7 @@ pub mod response {
             pub error_code: i16,
             ///The result message, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "2+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4379,7 +4389,7 @@ pub mod response {
             pub error_code: i16,
             ///The resource error message, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The resource type.
             #[kafka(versions = "0+")]
             pub resource_type: i8,
@@ -4403,7 +4413,7 @@ pub mod response {
             pub error_code: i16,
             ///The top-level error message, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The responses to topics to reassign.
             #[kafka(versions = "0+")]
             pub responses: Vec<ReassignableTopicResponse>,
@@ -4421,7 +4431,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message for this partition, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4451,7 +4461,7 @@ pub mod response {
             pub error_code: i16,
             ///The top-level error message, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The ongoing reassignments for each topic.
             #[kafka(versions = "0+")]
             pub topics: Vec<OngoingTopicReassignment>,
@@ -4535,10 +4545,10 @@ pub mod response {
             pub error_code: i16,
             ///The error message, or `null` if the quota description succeeded.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///A result entry.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub entries: Vec<EntryData>,
+            pub entries: Option<Vec<EntryData>>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4550,7 +4560,7 @@ pub mod response {
             pub entity_type: String,
             ///The entity name, or null if the default.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub entity_name: String,
+            pub entity_name: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4601,7 +4611,7 @@ pub mod response {
             pub entity_type: String,
             ///The name of the entity, or null if the default.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub entity_name: String,
+            pub entity_name: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "1+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4613,7 +4623,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message, or `null` if the quota alteration succeeded.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The quota entity to alter.
             #[kafka(versions = "0+")]
             pub entity: Vec<EntityData>,
@@ -4634,7 +4644,7 @@ pub mod response {
             pub error_code: i16,
             ///The message-level error message, if any.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The results for descriptions, one per user.
             #[kafka(versions = "0+")]
             pub results: Vec<DescribeUserScramCredentialsResult>,
@@ -4664,7 +4674,7 @@ pub mod response {
             pub error_code: i16,
             ///The user-level error message, if any.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The mechanism and related information associated with the user's SCRAM credentials.
             #[kafka(versions = "0+")]
             pub credential_infos: Vec<CredentialInfo>,
@@ -4697,7 +4707,7 @@ pub mod response {
             pub error_code: i16,
             ///The error message, if any.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4929,7 +4939,7 @@ pub mod response {
             pub error_code: i16,
             ///The top-level error message, or `null` if there was no top-level error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///Results for each feature update.
             #[kafka(versions = "0+")]
             pub results: Vec<UpdatableFeatureResult>,
@@ -4947,7 +4957,7 @@ pub mod response {
             pub error_code: i16,
             ///The feature update error, or `null` if the feature update succeeded.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -4959,7 +4969,7 @@ pub mod response {
         pub struct EnvelopeResponse {
             ///The embedded response header and data.
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub response_data: Vec<u8>,
+            pub response_data: Option<Vec<u8>>,
             ///The error code, or 0 if there was no error.
             #[kafka(versions = "0+")]
             pub error_code: i16,
@@ -5058,7 +5068,7 @@ pub mod response {
             pub error_code: i16,
             ///The top-level error message, or null if there was no error.
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The cluster ID that responding broker belongs to.
             #[kafka(versions = "0+")]
             pub cluster_id: String,
@@ -5088,7 +5098,7 @@ pub mod response {
             pub port: i32,
             ///The rack of the broker, or null if it has not been assigned to a rack.
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub rack: String,
+            pub rack: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5136,7 +5146,7 @@ pub mod response {
             pub error_code: i16,
             ///The partition error message, which may be null if no additional details are available
             #[kafka(versions = "0+", nullable = "0+", default = "null")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             #[kafka(versions = "0+")]
             pub active_producers: Vec<ProducerState>,
             ///The tagged fields.
@@ -5210,7 +5220,7 @@ pub mod response {
             pub error_code: i16,
             ///The top-level error message, or `null` if there was no top-level error.
             #[kafka(versions = "0+", nullable = "0+")]
-            pub error_message: String,
+            pub error_message: Option<String>,
             ///The tagged fields.
             #[kafka(versions = "0+")]
             pub _tagged_fields: krost::types::TaggedFields,
@@ -5342,7 +5352,9 @@ pub mod response {
         DeleteTopicsResponse(delete_topics::DeleteTopicsResponse),
         DeleteRecordsResponse(delete_records::DeleteRecordsResponse),
         InitProducerIdResponse(init_producer_id::InitProducerIdResponse),
-        OffsetForLeaderEpochResponse(offset_for_leader_epoch::OffsetForLeaderEpochResponse),
+        OffsetForLeaderEpochResponse(
+            offset_for_leader_epoch::OffsetForLeaderEpochResponse,
+        ),
         AddPartitionsToTxnResponse(add_partitions_to_txn::AddPartitionsToTxnResponse),
         AddOffsetsToTxnResponse(add_offsets_to_txn::AddOffsetsToTxnResponse),
         EndTxnResponse(end_txn::EndTxnResponse),
@@ -5357,13 +5369,23 @@ pub mod response {
         DescribeLogDirsResponse(describe_log_dirs::DescribeLogDirsResponse),
         SaslAuthenticateResponse(sasl_authenticate::SaslAuthenticateResponse),
         CreatePartitionsResponse(create_partitions::CreatePartitionsResponse),
-        CreateDelegationTokenResponse(create_delegation_token::CreateDelegationTokenResponse),
-        RenewDelegationTokenResponse(renew_delegation_token::RenewDelegationTokenResponse),
-        ExpireDelegationTokenResponse(expire_delegation_token::ExpireDelegationTokenResponse),
-        DescribeDelegationTokenResponse(describe_delegation_token::DescribeDelegationTokenResponse),
+        CreateDelegationTokenResponse(
+            create_delegation_token::CreateDelegationTokenResponse,
+        ),
+        RenewDelegationTokenResponse(
+            renew_delegation_token::RenewDelegationTokenResponse,
+        ),
+        ExpireDelegationTokenResponse(
+            expire_delegation_token::ExpireDelegationTokenResponse,
+        ),
+        DescribeDelegationTokenResponse(
+            describe_delegation_token::DescribeDelegationTokenResponse,
+        ),
         DeleteGroupsResponse(delete_groups::DeleteGroupsResponse),
         ElectLeadersResponse(elect_leaders::ElectLeadersResponse),
-        IncrementalAlterConfigsResponse(incremental_alter_configs::IncrementalAlterConfigsResponse),
+        IncrementalAlterConfigsResponse(
+            incremental_alter_configs::IncrementalAlterConfigsResponse,
+        ),
         AlterPartitionReassignmentsResponse(
             alter_partition_reassignments::AlterPartitionReassignmentsResponse,
         ),
@@ -5371,7 +5393,9 @@ pub mod response {
             list_partition_reassignments::ListPartitionReassignmentsResponse,
         ),
         OffsetDeleteResponse(offset_delete::OffsetDeleteResponse),
-        DescribeClientQuotasResponse(describe_client_quotas::DescribeClientQuotasResponse),
+        DescribeClientQuotasResponse(
+            describe_client_quotas::DescribeClientQuotasResponse,
+        ),
         AlterClientQuotasResponse(alter_client_quotas::AlterClientQuotasResponse),
         DescribeUserScramCredentialsResponse(
             describe_user_scram_credentials::DescribeUserScramCredentialsResponse,
@@ -5392,7 +5416,9 @@ pub mod response {
         BrokerRegistrationResponse(broker_registration::BrokerRegistrationResponse),
         BrokerHeartbeatResponse(broker_heartbeat::BrokerHeartbeatResponse),
         UnregisterBrokerResponse(unregister_broker::UnregisterBrokerResponse),
-        DescribeTransactionsResponse(describe_transactions::DescribeTransactionsResponse),
+        DescribeTransactionsResponse(
+            describe_transactions::DescribeTransactionsResponse,
+        ),
         ListTransactionsResponse(list_transactions::ListTransactionsResponse),
         AllocateProducerIdsResponse(allocate_producer_ids::AllocateProducerIdsResponse),
     }
@@ -5422,7 +5448,7 @@ pub mod header {
         pub correlation_id: i32,
         ///The client ID string.
         #[kafka(versions = "1+", nullable = "1+")]
-        pub client_id: String,
+        pub client_id: Option<String>,
         ///The tagged fields.
         #[kafka(versions = "2+")]
         pub _tagged_fields: krost::types::TaggedFields,
