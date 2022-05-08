@@ -59,48 +59,48 @@ Output:
 ```rust
 pub mod request {
     pub mod produce {
-        #[derive(Debug, PartialEq, Krost, Clone)]
+        #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         #[kafka(apikey = 0i16, versions = "0-9", flexible = "9+")]
         pub struct ProduceRequest {
             ///The transactional ID, or null if the producer is not transactional.
-            #[kafka(versions = "3+", default = "null")]
-            pub transactional_id: Option<krost::primitive::String>,
+            #[kafka(versions = "3+", nullable = "3+", default = "null")]
+            pub transactional_id: Option<String>,
             ///The number of acknowledgments the producer requires the leader to have received before considering a request complete. Allowed values: 0 for no acknowledgments, 1 for only the leader and -1 for the full ISR.
             #[kafka(versions = "0+")]
-            pub acks: krost::primitive::Int16,
+            pub acks: i16,
             ///The timeout to await a response in milliseconds.
             #[kafka(versions = "0+")]
-            pub timeout_ms: krost::primitive::Int32,
+            pub timeout_ms: i32,
             ///Each topic to produce to.
             #[kafka(versions = "0+")]
             pub topic_data: Vec<TopicProduceData>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
-            pub _tagged_fields: krost::primitive::TaggedFields,
+            pub _tagged_fields: krost::types::TaggedFields,
         }
-        #[derive(Debug, PartialEq, Krost, Clone)]
+        #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         pub struct PartitionProduceData {
             ///The partition index.
             #[kafka(versions = "0+")]
-            pub index: krost::primitive::Int32,
+            pub index: i32,
             ///The record data to be produced.
-            #[kafka(versions = "0+")]
+            #[kafka(versions = "0+", nullable = "0+")]
             pub records: Option<krost::record::RecordBatch>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
-            pub _tagged_fields: krost::primitive::TaggedFields,
+            pub _tagged_fields: krost::types::TaggedFields,
         }
-        #[derive(Debug, PartialEq, Krost, Clone)]
+        #[derive(Debug, PartialEq, krost_derive::Message, Clone)]
         pub struct TopicProduceData {
             ///The topic name.
             #[kafka(versions = "0+")]
-            pub name: krost::primitive::String,
+            pub name: String,
             ///Each partition to produce to.
             #[kafka(versions = "0+")]
             pub partition_data: Vec<PartitionProduceData>,
             ///The tagged fields.
             #[kafka(versions = "9+")]
-            pub _tagged_fields: krost::primitive::TaggedFields,
+            pub _tagged_fields: krost::types::TaggedFields,
         }
     }
 }
