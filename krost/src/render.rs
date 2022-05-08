@@ -1,5 +1,5 @@
-use crate::{schema, KrostError};
 use crate::schema::Versions;
+use crate::{schema, KrostError};
 use heck::ToSnakeCase;
 use itertools::Itertools;
 use proc_macro2::TokenStream;
